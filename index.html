@@ -48,4 +48,554 @@ gap:20px;
 grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
 margin-bottom:25px;
 }
+
+.card{
+background:var(--card);
+border:1px solid var(--border);
+border-radius:18px;
+padding:20px;
+}
+
+.metric{
+font-size:42px;
+font-weight:bold;
+}
+
+button{
+background:var(--primary);
+color:white;
+border:none;
+padding:12px 18px;
+border-radius:12px;
+cursor:pointer;
+font-weight:bold;
+}
+
+input,select{
+width:100%;
+padding:12px;
+margin-top:8px;
+margin-bottom:14px;
+background:#1a1830;
+border:1px solid rgba(255,255,255,0.08);
+border-radius:10px;
+color:white;
+}
+
+.table{
+width:100%;
+border-collapse:collapse;
+}
+
+.table th,
+.table td{
+padding:14px;
+text-align:left;
+border-bottom:1px solid rgba(255,255,255,0.06);
+}
+
+.badge{
+padding:6px 12px;
+border-radius:999px;
+font-size:12px;
+font-weight:bold;
+}
+
+.success{
+background:rgba(52,211,153,0.12);
+color:var(--success);
+}
+
+.warning{
+background:rgba(251,191,36,0.12);
+color:var(--warning);
+}
+
+.danger{
+background:rgba(248,113,113,0.12);
+color:var(--danger);
+}
+
+.primary{
+background:rgba(139,92,246,0.12);
+color:var(--primary);
+}
+
+.top{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:30px;
+flex-wrap:wrap;
+gap:20px;
+}
+
+.week-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+gap:16px;
+}
+
+.day-card{
+background:#1a1830;
+border-radius:14px;
+padding:16px;
+min-height:180px;
+}
+
+.event{
+background:rgba(139,92,246,0.12);
+padding:10px;
+border-radius:10px;
+margin-top:10px;
+font-size:13px;
+}
+
+.small{
+padding:8px 12px;
+font-size:12px;
+}
+
+@media(max-width:900px){
+body{
+padding:18px;
+}
+}
+</style>
+</head>
+<body>
+
+<div id="dashboard">
+
+<div class="top">
+<div>
+<h1>MOVE Marketing</h1>
+<p style="color:var(--muted);">Central Operacional</p>
+</div>
+
+<div style="display:flex;gap:10px;">
+<button onclick="exportPDF()">Exportar PDF</button>
+<button onclick="resetSystem()">Resetar</button>
+</div>
+</div>
+
+<div class="grid metrics">
+<div class="card">
+<p>Total de Clientes</p>
+<div class="metric" id="metricClients">0</div>
+</div>
+
+<div class="card">
+<p>Conteúdos</p>
+<div class="metric" style="color:var(--primary);" id="metricContents">0</div>
+</div>
+
+<div class="card">
+<p>Publicados</p>
+<div class="metric" style="color:var(--success);" id="metricPublished">0</div>
+</div>
+
+<div class="card">
+<p>Atrasados</p>
+<div class="metric" style="color:var(--danger);" id="metricDelayed">0</div>
+</div>
+</div>
+
+<div class="grid" style="grid-template-columns:2fr 1fr;margin-bottom:25px;">
+<div class="card">
+<h2>Produção mensal</h2>
+<canvas id="chart"></canvas>
+</div>
+
+<div class="card">
+<h2>Status</h2>
+<canvas id="statusChart"></canvas>
+</div>
+</div>
+
+<div class="grid" style="grid-template-columns:1fr 1fr;margin-bottom:25px;gap:20px;">
+
+<div class="card">
+<h2>Novo Cliente</h2>
+<input type="text" id="clientName" placeholder="Nome do cliente">
+<input type="text" id="clientResponsible" placeholder="Responsável">
+<button onclick="addClient()">Salvar Cliente</button>
+</div>
+
+<div class="card">
+<h2>Novo Conteúdo</h2>
+<select id="contentClient"></select>
+<input type="text" id="contentTitle" placeholder="Título do conteúdo">
+<input type="date" id="contentDate">
+
+<select id="contentStatus">
+<option>Produção</option>
+<option>Publicado</option>
+<option>Pendente</option>
+<option>Atrasado</option>
+</select>
+
+<button onclick="addContent()">Salvar Conteúdo</button>
+</div>
+
+</div>
+
+<div class="card" style="margin-bottom:25px;">
+<h2>Clientes</h2>
+
+<table class="table">
+<thead>
+<tr>
+<th>Cliente</th>
+<th>Responsável</th>
+<th>Ações</th>
+</tr>
+</thead>
+
+<tbody id="clientTable"></tbody>
+</table>
+</div>
+
+<div class="card" style="margin-bottom:25px;">
+<h2>Conteúdos</h2>
+
+<table class="table">
+<thead>
+<tr>
+<th>Cliente</th>
+<th>Conteúdo</th>
+<th>Prazo</th>
+<th>Status</th>
+<th>Ações</th>
+</tr>
+</thead>
+
+<tbody id="contentTable"></tbody>
+</table>
+</div>
+
+<div class="card">
+<h2>Agenda da Semana</h2>
+<div class="week-grid" id="agenda"></div>
+</div>
+
+</div>
+
+<script>
+
+let clients = JSON.parse(localStorage.getItem('move_clients')) || [];
+let contents = JSON.parse(localStorage.getItem('move_contents')) || [];
+
+function saveAll(){
+localStorage.setItem('move_clients', JSON.stringify(clients));
+localStorage.setItem('move_contents', JSON.stringify(contents));
+}
+
+function addClient(){
+
+const name = document.getElementById('clientName').value;
+const responsible = document.getElementById('clientResponsible').value;
+
+if(!name || !responsible){
+alert('Preencha todos os campos');
+return;
+}
+
+clients.push({
+id:Date.now(),
+name,
+responsible
+});
+
+saveAll();
+renderAll();
+
+document.getElementById('clientName').value='';
+document.getElementById('clientResponsible').value='';
+
+}
+
+function addContent(){
+
+const client = document.getElementById('contentClient').value;
+const title = document.getElementById('contentTitle').value;
+const date = document.getElementById('contentDate').value;
+const status = document.getElementById('contentStatus').value;
+
+if(!client || !title || !date){
+alert('Preencha todos os campos');
+return;
+}
+
+contents.push({
+id:Date.now(),
+client,
+title,
+date,
+status
+});
+
+saveAll();
+renderAll();
+
+document.getElementById('contentTitle').value='';
+document.getElementById('contentDate').value='';
+
+}
+
+function deleteClient(id){
+clients = clients.filter(c=>c.id !== id);
+saveAll();
+renderAll();
+}
+
+function deleteContent(id){
+contents = contents.filter(c=>c.id !== id);
+saveAll();
+renderAll();
+}
+
+function getBadge(status){
+
+if(status==='Publicado'){
+return '<span class="badge success">Publicado</span>';
+}
+
+if(status==='Pendente'){
+return '<span class="badge warning">Pendente</span>';
+}
+
+if(status==='Atrasado'){
+return '<span class="badge danger">Atrasado</span>';
+}
+
+return '<span class="badge primary">Produção</span>';
+
+}
+
+function renderClients(){
+
+const table = document.getElementById('clientTable');
+const select = document.getElementById('contentClient');
+
+select.innerHTML='';
+
+clients.forEach(client=>{
+
+select.innerHTML += `<option>${client.name}</option>`;
+
+});
+
+table.innerHTML = clients.map(client=>`
+
+<tr>
+<td>${client.name}</td>
+<td>${client.responsible}</td>
+<td>
+<button class="small" onclick="deleteClient(${client.id})">
+Excluir
+</button>
+</td>
+</tr>
+
+`).join('');
+
+}
+
+function renderContents(){
+
+const table = document.getElementById('contentTable');
+
+table.innerHTML = contents.map(content=>`
+
+<tr>
+<td>${content.client}</td>
+<td>${content.title}</td>
+<td>${formatDate(content.date)}</td>
+<td>${getBadge(content.status)}</td>
+<td>
+<button class="small" onclick="deleteContent(${content.id})">
+Excluir
+</button>
+</td>
+</tr>
+
+`).join('');
+
+}
+
+function renderAgenda(){
+
+const agenda = document.getElementById('agenda');
+
+const days = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+
+let grouped = {};
+
+contents.forEach(content=>{
+
+const d = new Date(content.date);
+const day = days[d.getDay()];
+
+if(!grouped[day]){
+grouped[day] = [];
+}
+
+grouped[day].push(content);
+
+});
+
+agenda.innerHTML = days.map(day=>`
+
+<div class="day-card">
+
+<h3>${day}</h3>
+
+${grouped[day] ?
+
+grouped[day].map(item=>`
+
+<div class="event">
+
+<strong>${item.client}</strong><br>
+${item.title}<br>
+<small>${formatDate(item.date)}</small>
+
+</div>
+
+`).join('')
+
+:
+
+'<p style="color:var(--muted);margin-top:12px;">Sem conteúdos</p>'
+
+}
+
+</div>
+
+`).join('');
+
+}
+
+function renderMetrics(){
+
+document.getElementById('metricClients').innerText = clients.length;
+
+document.getElementById('metricContents').innerText = contents.length;
+
+document.getElementById('metricPublished').innerText =
+contents.filter(c=>c.status==='Publicado').length;
+
+document.getElementById('metricDelayed').innerText =
+contents.filter(c=>c.status==='Atrasado').length;
+
+}
+
+let chart;
+let statusChart;
+
+function renderCharts(){
+
+if(chart) chart.destroy();
+if(statusChart) statusChart.destroy();
+
+chart = new Chart(document.getElementById('chart'), {
+
+type:'bar',
+
+data:{
+labels: clients.map(c=>c.name),
+
+datasets:[{
+label:'Conteúdos',
+data: clients.map(c=>
+contents.filter(x=>x.client===c.name).length
+),
+backgroundColor:'#8b5cf6'
+}]
+}
+
+});
+
+statusChart = new Chart(document.getElementById('statusChart'), {
+
+type:'doughnut',
+
+data:{
+labels:['Publicado','Produção','Pendente','Atrasado'],
+
+datasets:[{
+data:[
+contents.filter(c=>c.status==='Publicado').length,
+contents.filter(c=>c.status==='Produção').length,
+contents.filter(c=>c.status==='Pendente').length,
+contents.filter(c=>c.status==='Atrasado').length
+],
+backgroundColor:[
+'#34d399',
+'#8b5cf6',
+'#fbbf24',
+'#f87171'
+]
+}]
+}
+
+});
+
+}
+
+function renderAll(){
+
+renderClients();
+renderContents();
+renderAgenda();
+renderMetrics();
+renderCharts();
+saveAll();
+
+}
+
+function formatDate(date){
+
+return new Date(date).toLocaleDateString('pt-BR', {
+timeZone:'UTC'
+});
+
+}
+
+async function exportPDF(){
+
+const { jsPDF } = window.jspdf;
+
+const canvas = await html2canvas(
+document.getElementById('dashboard')
+);
+
+const imgData = canvas.toDataURL('image/png');
+
+const pdf = new jsPDF('p','mm','a4');
+
+const width = pdf.internal.pageSize.getWidth();
+const height = canvas.height * width / canvas.width;
+
+pdf.addImage(imgData, 'PNG', 0, 0, width, height);
+
+pdf.save('move-relatorio.pdf');
+
+}
+
+function resetSystem(){
+
+if(confirm('Deseja apagar tudo?')){
+localStorage.clear();
+location.reload();
+}
+
+}
+
+renderAll();
+
+</script>
+
+</body>
 </html>
