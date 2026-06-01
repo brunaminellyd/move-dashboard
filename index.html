@@ -476,13 +476,14 @@ button,input,select,textarea{font-family:inherit}
   </div>
   <div class="mg" id="m1"></div>
   <div class="mg" id="m2"></div>
-  <div class="gc" style="margin-bottom:14px">
-    <div class="card"><div style="font-size:12px;font-weight:600;color:var(--t)">Produção mensal</div><div style="font-size:10px;color:var(--tm);margin-bottom:12px">Jan–Mai 2026</div><div id="ch-area"></div></div>
-    <div class="card"><div style="font-size:12px;font-weight:600;color:var(--t)">Status atual</div><div style="font-size:10px;color:var(--tm);margin-bottom:8px">Distribuição</div><div id="ch-donut"></div></div>
+  <div class="card" style="margin-bottom:18px">
+    <div class="card-h">Posts feitos por <em style="font-family:var(--font-d);font-style:italic;color:var(--violet)">cliente</em></div>
+    <div class="card-sub">Volume de publicações no mês — comparativo por cliente</div>
+    <div id="ch-bar"></div>
   </div>
   <div class="g2">
-    <div class="card"><div style="font-size:12px;font-weight:600;color:var(--t);margin-bottom:2px">⚡ Atenção imediata</div><div style="font-size:10px;color:var(--tm);margin-bottom:11px">Precisa de ação hoje</div><div id="d-urgent"></div></div>
-    <div class="card"><div style="font-size:12px;font-weight:600;color:var(--t)">Posts feitos por cliente</div><div style="font-size:10px;color:var(--tm);margin-bottom:10px">Este mês</div><div id="ch-bar"></div></div>
+    <div class="card"><div class="card-h">Atenção <em style="font-family:var(--font-d);font-style:italic;color:var(--violet)">imediata</em></div><div class="card-sub">Precisa de ação hoje</div><div id="d-urgent"></div></div>
+    <div class="card"><div class="card-h">Status <em style="font-family:var(--font-d);font-style:italic;color:var(--violet)">atual</em></div><div class="card-sub">Distribuição dos clientes</div><div id="ch-donut"></div></div>
   </div>
 </section>
 
@@ -1043,18 +1044,34 @@ function svgDonut(id,data){
   s+='</svg>';
   const el=document.getElementById(id); if(el) el.innerHTML=s;
 }
-function svgBar(id,data,col,H){
-  H=H||180;
-  const W=470,PL=8,PR=8,PT=12,PB=26,w=W-PL-PR,h=H-PT-PB;
-  const mx=Math.max(...data.map(d=>d.v),1),gap=w/data.length,bw=Math.max(gap*.6,6);
-  let s='<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="font-family:Jost,system-ui,sans-serif">';
-  s+='<line x1="'+PL+'" y1="'+(PT+h)+'" x2="'+(W-PR)+'" y2="'+(PT+h)+'" stroke="rgba(123,79,203,.1)" stroke-width="1"/>';
+function svgBar(id,data,col){
+  // Barras horizontais: cada item é uma linha (nome à esquerda, barra no meio, valor à direita)
+  const W=800, rowH=28, PT=18, PB=14, PL=10, PR=10, labelW=180, valW=44;
+  const H=PT+PB+data.length*rowH;
+  const barX=PL+labelW+8;
+  const barW=W-PR-valW-8-barX;
+  const mx=Math.max(...data.map(d=>d.v),1);
+  let s='<svg viewBox="0 0 '+W+' '+H+'" width="100%" preserveAspectRatio="xMinYMin meet" style="font-family:Jost,system-ui,sans-serif">';
+  // Eixo X de referência (linhas verticais 25/50/75/100%)
+  [0.25,0.5,0.75,1].forEach(p=>{
+    const x=barX+barW*p;
+    s+='<line x1="'+x.toFixed(1)+'" y1="'+PT+'" x2="'+x.toFixed(1)+'" y2="'+(H-PB+4)+'" stroke="rgba(123,79,203,.08)" stroke-width="1"/>';
+    s+='<text x="'+x.toFixed(1)+'" y="'+(PT-6)+'" font-size="9" fill="#A39EAE" text-anchor="middle">'+Math.round(mx*p)+'</text>';
+  });
   data.forEach((d,i)=>{
-    const x=PL+gap*i+gap/2-bw/2,bh=Math.max((d.v/mx)*h,2),y=PT+h-bh;
-    const c=col||(i%2===0?'#7B4FCB':'#9B6FEB');
-    s+='<rect x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+bh.toFixed(1)+'" rx="5" fill="'+c+'" opacity=".9"/>';
-    if(d.v>0) s+='<text x="'+(x+bw/2).toFixed(1)+'" y="'+(y-5).toFixed(1)+'" font-size="11" fill="#3A2D52" font-weight="600" text-anchor="middle">'+d.v+'</text>';
-    s+='<text x="'+(x+bw/2).toFixed(1)+'" y="'+(PT+h+17)+'" font-size="10" fill="#6B647A" font-weight="500" text-anchor="middle">'+d.l+'</text>';
+    const y=PT+i*rowH;
+    const ymid=y+rowH/2;
+    const bh=14;
+    const bw=Math.max((d.v/mx)*barW,0);
+    const c=col||(d.v===0?'#DDD8EE':i%2===0?'#7B4FCB':'#9B6FEB');
+    // Nome do cliente (esquerda)
+    s+='<text x="'+(PL+labelW).toFixed(1)+'" y="'+(ymid+4).toFixed(1)+'" font-size="12" fill="#3A2D52" font-weight="500" text-anchor="end">'+esc(d.l)+'</text>';
+    // Trilha de fundo da barra
+    s+='<rect x="'+barX.toFixed(1)+'" y="'+(ymid-bh/2).toFixed(1)+'" width="'+barW.toFixed(1)+'" height="'+bh+'" rx="7" fill="#F0EAFA"/>';
+    // Barra colorida
+    if(bw>0) s+='<rect x="'+barX.toFixed(1)+'" y="'+(ymid-bh/2).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+bh+'" rx="7" fill="'+c+'" opacity=".92"/>';
+    // Valor à direita
+    s+='<text x="'+(W-PR).toFixed(1)+'" y="'+(ymid+4).toFixed(1)+'" font-size="13" fill="#1A1028" font-weight="600" text-anchor="end">'+d.v+'</text>';
   });
   s+='</svg>';
   const el=document.getElementById(id); if(el) el.innerHTML=s;
@@ -1106,10 +1123,6 @@ function renderDash(){
     {l:'Sem dados',v:cliSemDados,s:'sem retorno',c:'#A86CC9'},
   ].map(m=>'<div class="mc"><div class="mc-l">'+m.l+'</div><div class="mc-v" style="color:'+m.c+'">'+m.v+'</div><div class="mc-s">'+m.s+'</div></div>').join('');
 
-  svgArea('ch-area',[
-    {mes:'Jan',pub:38,ag:12},{mes:'Fev',pub:42,ag:10},
-    {mes:'Mar',pub:35,ag:15},{mes:'Abr',pub:51,ag:8},{mes:'Mai',pub:tot,ag:ag},
-  ]);
   svgDonut('ch-donut',[
     {l:'Em dia',v:cliEmDia,c:'#1E9E6A'},
     {l:'Pendência',v:cliPendStat,c:'#C47A1A'},
@@ -1138,7 +1151,12 @@ function renderDash(){
         +'<span class="badge" style="background:'+tbg+';color:'+tcol+';font-weight:600">'+tag+'</span></div>';
     }).join('');
 
-  svgBar('ch-bar',S.clients.slice(0,8).map(c=>({l:c.name.split(' ')[0],v:c.feitos||0})));
+  // Barras: todos os clientes ordenados por publicações (decrescente)
+  const sortedClients=S.clients.slice().sort((a,b)=>(b.feitos||0)-(a.feitos||0));
+  svgBar('ch-bar',sortedClients.map(c=>({
+    l:c.name.length>22?c.name.slice(0,20)+'…':c.name,
+    v:c.feitos||0
+  })));
   updateBadges();
 }
 
