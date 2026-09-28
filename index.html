@@ -456,7 +456,6 @@ button,input,select,textarea{font-family:inherit}
     <div class="s-sec">Acompanhamento</div>
     <button class="nb" data-v="pendencias"><span class="nb-ico">◬</span>Pendências<span class="nb-badge" id="nb-pend">0</span></button>
     <button class="nb" data-v="relatorios"><span class="nb-ico">⬡</span>Relatórios</button>
-    <button class="nb" data-v="agenda"><span class="nb-ico">⬠</span>Agenda</button>
   </nav>
   <div class="s-foot"><div class="s-foot-txt">MOVE Marketing<br><em>Painel da equipe</em></div></div>
 </aside>
@@ -529,20 +528,6 @@ button,input,select,textarea{font-family:inherit}
   <div class="card" style="margin-bottom:14px;padding:0;overflow:hidden" id="rep-tbl"></div>
   <div class="card" style="margin-bottom:14px" id="rep-history"></div>
   <div class="g2" id="rep-ins"></div>
-</section>
-
-<!-- ═══ AGENDA ═════════════════════════════ -->
-<section class="view" id="v-agenda">
-  <div class="ph">
-    <div class="ph-l"><div class="pt">Agenda <em>Operacional</em></div><div class="ps" id="ag-week"></div></div>
-    <div class="ph-r">
-      <button class="btn btn-o btn-sm" id="btn-clear-ag">Limpar semana</button>
-      <button class="btn btn-ok btn-sm" id="btn-auto-ag">⚡ Gerar automática</button>
-      <button class="btn btn-p btn-sm" id="btn-new-ev">+ Evento</button>
-    </div>
-  </div>
-  <div class="wcal" id="week-cal"></div>
-  <div class="card"><div style="font-size:12px;font-weight:600;color:var(--t);margin-bottom:11px">Volume semanal</div><div id="ch-weekly"></div></div>
 </section>
 
 </main>
@@ -622,13 +607,6 @@ const PAUTA={
   agir:{l:'⚠️ AGIR', c:'#C47A1A',b:'rgba(196,122,26,.12)'},
   unk: {l:'❓',      c:'#6B647A',b:'rgba(107,100,122,.10)'},
 };
-const EVS={
-  producao: {b:'rgba(139,92,246,.12)',c:'#8b5cf6'},
-  aprovacao:{b:'rgba(251,191,36,.1)', c:'#fbbf24'},
-  publicar: {b:'rgba(52,211,153,.1)', c:'#34d399'},
-  urgente:  {b:'rgba(248,113,113,.1)',c:'#f87171'},
-  reuniao:  {b:'rgba(129,140,248,.1)',c:'#818cf8'},
-};
 const KB_COLS=[
   {k:'producao',           l:'Em Produção',      c:'#8b5cf6'},
   {k:'aguardando_aprovacao',l:'Aguard. Aprovação',c:'#fbbf24'},
@@ -660,19 +638,6 @@ const DEF_CLI=[
   {id:12,name:'Lar & Estilo',      pkg:12,pkgTipo:'',         feitos:3, resp:'Mariana de Grande',respSM:'',                 last:'10/04/2026',status:'atrasado',         gmn:'nao_tem',  obs:'Mudança na criação de conteúdos, não fazemos mais vídeos',                                                        updated:'2026-04-27T01:32:00'},
 ];
 const DEF_CNT=[]; // Conteúdos removidos — gestão agora é por cliente
-const DEF_AG=[
-  {id:201,day:'13',time:'10:00',name:'DrConsult – Story preventiva',   type:'producao'},
-  {id:202,day:'13',time:'14:00',name:'Clínica Estela – Reels Mães',    type:'producao'},
-  {id:203,day:'13',time:'16:00',name:'Lar & Estilo – Story catálogo',  type:'aprovacao'},
-  {id:204,day:'14',time:'09:00',name:'Bella Moda – Carrossel coleção', type:'aprovacao'},
-  {id:205,day:'14',time:'11:00',name:'Studio Fit – Cobrar materiais',  type:'urgente'},
-  {id:206,day:'14',time:'15:00',name:'RealEasy – Post destaque',       type:'aprovacao'},
-  {id:207,day:'15',time:'10:00',name:'Grupo Floresta – Feed',          type:'publicar'},
-  {id:208,day:'15',time:'14:00',name:'NovaTech – Carrossel',           type:'publicar'},
-  {id:209,day:'15',time:'16:30',name:'Reunião DrConsult',              type:'reuniao'},
-  {id:210,day:'16',time:'09:00',name:'Grupo Floresta – Feed semanal',  type:'publicar'},
-  {id:211,day:'16',time:'12:00',name:'Lar & Estilo – Lançamento',      type:'publicar'},
-];
 
 // Configuração fixa do Firebase para sincronizar entre dispositivos.
 const FIREBASE_EMBEDDED_CONFIG={
@@ -690,7 +655,7 @@ const CLOUD_STATE_DOC='current';
    STATE
 ════════════════════════════════════════════ */
 const S={
-  clients:[], contents:[], agenda:[], nextId:300,
+  clients:[], contents:[], nextId:300,
   cliFilter:'todos', cliSearch:'', cliResp:'todos', cliGMN:'todos',
   cntFilter:'todos', cntSearch:'', cntView:'lista', cntResp:'todos',
   exportLogs:[], firebaseCfg:null, firebaseReady:false,
@@ -703,7 +668,7 @@ const S={
 ════════════════════════════════════════════ */
 const LS='move_v5';
 function save(){
-  try{ localStorage.setItem(LS,JSON.stringify({clients:S.clients,contents:S.contents,agenda:S.agenda,nextId:S.nextId,exportLogs:S.exportLogs,firebaseCfg:S.firebaseCfg,lastCloudSyncAt:S.lastCloudSyncAt})); }
+  try{ localStorage.setItem(LS,JSON.stringify({clients:S.clients,contents:S.contents,nextId:S.nextId,exportLogs:S.exportLogs,firebaseCfg:S.firebaseCfg,lastCloudSyncAt:S.lastCloudSyncAt})); }
   catch(e){}
   queueCloudStateSave();
 }
@@ -713,7 +678,6 @@ function load(){
     if(d){
       S.clients=d.clients||[];
       S.contents=d.contents||[];
-      S.agenda=d.agenda||[];
       S.nextId=d.nextId||300;
       S.exportLogs=Array.isArray(d.exportLogs)?d.exportLogs:[];
       S.firebaseCfg=d.firebaseCfg||null;
@@ -726,7 +690,6 @@ function load(){
 function reset(notify){
   S.clients=JSON.parse(JSON.stringify(DEF_CLI));
   S.contents=JSON.parse(JSON.stringify(DEF_CNT));
-  S.agenda=JSON.parse(JSON.stringify(DEF_AG));
   S.nextId=300;
   S.exportLogs=[];
   save();
@@ -752,7 +715,6 @@ function buildCloudStatePayload(){
   return {
     clients:S.clients,
     contents:S.contents,
-    agenda:S.agenda,
     nextId:S.nextId,
     exportLogs:S.exportLogs||[],
     updatedAtIso:new Date().toISOString(),
@@ -765,7 +727,6 @@ function applyCloudState(payload){
   try{
     S.clients=payload.clients;
     S.contents=payload.contents;
-    S.agenda=Array.isArray(payload.agenda)?payload.agenda:[];
     S.nextId=payload.nextId||300;
     S.exportLogs=Array.isArray(payload.exportLogs)?payload.exportLogs:[];
     S.lastCloudSyncAt=payload.updatedAtIso||new Date().toISOString();
@@ -783,7 +744,7 @@ async function saveCloudStateNow(){
     const payload=buildCloudStatePayload();
     await fb.db.collection(CLOUD_STATE_COLLECTION).doc(CLOUD_STATE_DOC).set(payload,{merge:true});
     S.lastCloudSyncAt=payload.updatedAtIso;
-    try{ localStorage.setItem(LS,JSON.stringify({clients:S.clients,contents:S.contents,agenda:S.agenda,nextId:S.nextId,exportLogs:S.exportLogs,firebaseCfg:S.firebaseCfg,lastCloudSyncAt:S.lastCloudSyncAt})); }catch(e){}
+    try{ localStorage.setItem(LS,JSON.stringify({clients:S.clients,contents:S.contents,nextId:S.nextId,exportLogs:S.exportLogs,firebaseCfg:S.firebaseCfg,lastCloudSyncAt:S.lastCloudSyncAt})); }catch(e){}
   }catch(e){
     S.firebaseReady=false;
   }finally{
@@ -825,7 +786,6 @@ async function startCloudStateListener(){
           const active=document.querySelector('.view.on');
           if(active&&active.id==='v-clientes') renderClients();
           else if(active&&active.id==='v-conteudos') renderContents();
-          else if(active&&active.id==='v-agenda') renderAgenda();
           else if(active&&active.id==='v-relatorios') renderRel();
           else if(active&&active.id==='v-pendencias') renderPend();
           updateBadges();
@@ -941,6 +901,23 @@ function normGMN(v){
   if(raw==='nao_feito' || raw==='nao-feito' || raw==='naofeito') return 'nao_feito';
   if(raw==='nao_tem' || raw==='nao-tem' || raw==='naotem') return 'nao_tem';
   return 'nao_tem';
+}
+function dateInputValue(value){
+  if(!value) return '';
+  const s=String(value).trim();
+  if(/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+  const p=s.split('/');
+  if(p.length<2) return '';
+  const d=parseInt(p[0],10),m=parseInt(p[1],10);
+  let y=p[2]?parseInt(p[2],10):new Date().getFullYear();
+  if(isNaN(d)||d<1||d>31||isNaN(m)||m<1||m>12||isNaN(y)) return '';
+  if(y<100) y+=2000;
+  return String(y).padStart(4,'0')+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+}
+function formatDateBR(value){
+  if(!value) return '';
+  const match=String(value).trim().match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  return match?match[3]+'/'+match[2]+'/'+match[1]:String(value).trim();
 }
 // Parser de data DD/MM/AAAA ou DD/MM (assume ano atual)
 function parseProgDate(s){
@@ -1541,50 +1518,6 @@ function renderRel(){
 
 
 /* ════════════════════════════════════════════
-   RENDER — AGENDA
-════════════════════════════════════════════ */
-function renderAgenda(){
-  const wdays=[{l:'Seg',n:'12'},{l:'Ter',n:'13',today:true},{l:'Qua',n:'14'},{l:'Qui',n:'15'},{l:'Sex',n:'16'},{l:'Sáb',n:'17'},{l:'Dom',n:'18'}];
-  document.getElementById('ag-week').textContent='Semana de 12 a 18 de maio de 2026';
-  document.getElementById('week-cal').innerHTML=wdays.map(d=>{
-    const evs=S.agenda.filter(e=>e.day===d.n).sort((a,b)=>a.time.localeCompare(b.time));
-    return '<div class="dc'+(d.today?' today':'')+'">'
-      +'<div class="dc-h"><div class="dc-n">'+d.l+'</div><div class="dc-d">'+d.n+'</div>'+(d.today?'<div class="dc-tag">Hoje</div>':'')+'</div>'
-      +'<div class="dc-evs">'
-      +(!evs.length?'<div style="font-size:10px;color:var(--tm);text-align:center;padding:8px 0">—</div>'
-        :evs.map(ev=>{
-          const st=EVS[ev.type]||EVS.producao;
-          return '<div class="ev" style="background:'+st.b+';border-left-color:'+st.c+'" data-dev="'+ev.id+'">'
-            +'<div class="ev-t" style="color:'+st.c+'">'+ev.time+'</div>'
-            +'<div class="ev-n">'+esc(ev.name)+'</div></div>';
-        }).join(''))
-      +'</div></div>';
-  }).join('');
-  const vols=wdays.map(d=>({l:d.l,v:S.agenda.filter(e=>e.day===d.n).length}));
-  svgBar('ch-weekly',vols,'#8b5cf6',148);
-}
-
-/* ════════════════════════════════════════════
-   AUTO AGENDA
-════════════════════════════════════════════ */
-function autoAgenda(){
-  const wdays=['12','13','14','15','16','17','18'];
-  let added=0;
-  S.contents.forEach(c=>{
-    if(!c.deadline) return;
-    const day=c.deadline.split('/')[0];
-    if(!wdays.includes(day)) return;
-    const already=S.agenda.some(a=>a.name.includes(c.title.substring(0,15)));
-    if(already) return;
-    const tm={publicado:'publicar',agendado:'publicar',producao:'producao',aguardando_aprovacao:'aprovacao',atrasado:'urgente',sem_material:'urgente'};
-    S.agenda.push({id:gid(),day,time:'10:00',name:c.client+' – '+c.title,type:tm[c.status]||'producao'});
-    added++;
-  });
-  save(); renderAgenda();
-  toast(added>0?added+' evento'+(added>1?'s':'')+' adicionado'+(added>1?'s':'')+' ✓':'Todos os conteúdos já estão na agenda','wa');
-}
-
-/* ════════════════════════════════════════════
    INLINE EDIT (estilo Notion)
 ════════════════════════════════════════════ */
 function startInlineEdit(el){
@@ -1656,9 +1589,11 @@ function startInlineEdit(el){
   else return;
 
   const wide=field==='name'||field==='last';
-  el.innerHTML='<input class="cell-input'+(wide?' wide':'')+'" '+(isNum?'type="number" min="0"':'type="text"')+' value="'+esc(curVal)+'">';
+  const inputType=field==='last'?'date':isNum?'number':'text';
+  const inputValue=field==='last'?dateInputValue(curVal):curVal;
+  el.innerHTML='<input class="cell-input'+(wide?' wide':'')+'" type="'+inputType+'" '+(isNum?'min="0"':'')+' value="'+esc(inputValue)+'">';
   const inp=el.querySelector('input');
-  inp.focus(); inp.select();
+  inp.focus(); if(field!=='last') inp.select();
 
   const done=ok=>{
     if(!ok){ renderClients(); return; }
@@ -1677,7 +1612,8 @@ function startInlineEdit(el){
     } else if(field==='feitos'){
       const n=parseInt(v)||0; if(n!==c.feitos){ c.feitos=n; changed=true; }
     } else if(field==='last'){
-      if(v!==c.last){ c.last=v; changed=true; }
+      const lastValue=formatDateBR(v);
+      if(lastValue!==c.last){ c.last=lastValue; changed=true; }
     } else if(field==='name'){
       if(v && v!==c.name){ c.name=v; changed=true; }
     }
@@ -1726,7 +1662,7 @@ function openModal(mode,tid){
       +'</div>'
       +'<div class="fg2">'
         +'<div class="field"><label>Situação</label><select id="fs">'+selSC(c?c.status:'tudo_em_dia')+'</select></div>'
-        +'<div class="field"><label>Último programado</label><input id="fl" value="'+(c?c.last:'')+'" placeholder="Ex: 25/04/2026"><div class="field-hint">Data DD/MM/AAAA</div></div>'
+        +'<div class="field"><label>Último programado</label><input id="fl" type="date" value="'+(c?dateInputValue(c.last):'')+'"><div class="field-hint">Selecione a data no calendário ou digite-a</div></div>'
       +'</div>'
       +'<div class="field"><label>Google Meu Negócio</label>'
         +'<select id="fgmn">'
@@ -1840,17 +1776,6 @@ function openModal(mode,tid){
         +'<div class="field-hint">No Google Drive, clique direito no arquivo → Compartilhar → "Qualquer pessoa com o link" → Copiar link → cole aqui</div>'
       +'</div>';
   }
-  else if(mode==='new-ev'){
-    MT.textContent='Novo evento na agenda';
-    MS.textContent='Adicionar evento';
-    MB.innerHTML=
-      '<div class="fg2">'
-        +'<div class="field"><label>Dia da semana</label><select id="fday"><option value="12">Seg 12/05</option><option value="13" selected>Ter 13/05 (hoje)</option><option value="14">Qua 14/05</option><option value="15">Qui 15/05</option><option value="16">Sex 16/05</option><option value="17">Sáb 17/05</option><option value="18">Dom 18/05</option></select></div>'
-        +'<div class="field"><label>Horário</label><input id="ftim" value="10:00" placeholder="Ex: 14:30"></div>'
-      +'</div>'
-      +'<div class="field"><label>Descrição *</label><input id="fname" placeholder="Ex: Reunião com cliente X"></div>'
-      +'<div class="field"><label>Tipo</label><select id="ftp"><option value="producao">Em Produção</option><option value="aprovacao">Aprovação</option><option value="publicar">Publicar</option><option value="urgente">Urgente</option><option value="reuniao">Reunião</option></select></div>';
-  }
   else if(mode==='fbcfg'){
     const fc=S.firebaseCfg||{};
     MT.textContent='Configuração Firebase';
@@ -1883,7 +1808,7 @@ function openModal(mode,tid){
       +'</div>'
       +'<div style="margin-top:15px;padding-top:12px;border-top:1px solid var(--div);font-size:11px;color:var(--tm);line-height:1.6"><strong style="color:var(--ts)">Como funciona:</strong><br>• Quem receber o link abre o mesmo arquivo HTML e vê os dados<br>• É só visualização — não afeta os dados de ninguém<br>• Para atualizar a equipe, gere um novo link</div>';
 
-    const payload={clients:S.clients,contents:S.contents,agenda:S.agenda,sharedAt:new Date().toISOString()};
+    const payload={clients:S.clients,contents:S.contents,sharedAt:new Date().toISOString()};
     const url=window.location.href.split('#')[0]+'#share='+btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
     setTimeout(()=>{
       const uel=document.getElementById('share-url-txt');
@@ -1914,7 +1839,7 @@ async function saveModal(){
   if(m==='new-c'||m==='edit-c'){
     const name=(document.getElementById('fn').value||'').trim();
     if(!name){ toast('Preencha o nome','er'); return; }
-    const obj={name,pkg:parseInt(document.getElementById('fp').value)||0,feitos:parseInt(document.getElementById('ff').value)||0,pkgTipo:document.getElementById('fpt').value.trim(),resp:document.getElementById('fr').value,respSM:document.getElementById('frsm').value,status:document.getElementById('fs').value,last:document.getElementById('fl').value.trim(),obs:document.getElementById('fo').value.trim(),gmn:document.getElementById('fgmn').value,updated:new Date().toISOString()};
+    const obj={name,pkg:parseInt(document.getElementById('fp').value)||0,feitos:parseInt(document.getElementById('ff').value)||0,pkgTipo:document.getElementById('fpt').value.trim(),resp:document.getElementById('fr').value,respSM:document.getElementById('frsm').value,status:document.getElementById('fs').value,last:formatDateBR(document.getElementById('fl').value),obs:document.getElementById('fo').value.trim(),gmn:document.getElementById('fgmn').value,updated:new Date().toISOString()};
     if(S.editId){ const c=S.clients.find(x=>x.id===S.editId); if(c) Object.assign(c,obj); toast('"'+obj.name+'" atualizado ✓'); }
     else { S.clients.push({id:gid(),...obj}); toast('"'+obj.name+'" adicionado ✓'); }
     save(); closeModal(); renderClients(); renderDash();
@@ -1982,12 +1907,6 @@ async function saveModal(){
     for(let i=1;i<=qtd;i++) S.contents.push({id:gid(),title:pfx+'Post '+i,client:c.name,type,resp,deadline:dl,status,priority});
     save(); closeModal(); renderContents(); renderDash();
     toast(qtd+' posts gerados para '+c.name+' ✓');
-  }
-  else if(m==='new-ev'){
-    const name=(document.getElementById('fname').value||'').trim();
-    if(!name){ toast('Preencha a descrição','er'); return; }
-    S.agenda.push({id:gid(),day:document.getElementById('fday').value,time:document.getElementById('ftim').value||'09:00',name,type:document.getElementById('ftp').value});
-    save(); closeModal(); renderAgenda(); toast('Evento adicionado ✓');
   }
   else if(m==='log-manual'){
     const name=(document.getElementById('flog-name').value||'').trim();
@@ -2197,7 +2116,7 @@ async function initFirebaseClient(){
   const app=firebase.apps.length?firebase.app():firebase.initializeApp(S.firebaseCfg);
   FBX={app,db:app.firestore(),storage:app.storage()};
   S.firebaseReady=true;
-  try{ localStorage.setItem(LS,JSON.stringify({clients:S.clients,contents:S.contents,agenda:S.agenda,nextId:S.nextId,exportLogs:S.exportLogs,firebaseCfg:S.firebaseCfg,lastCloudSyncAt:S.lastCloudSyncAt})); }catch(e){}
+  try{ localStorage.setItem(LS,JSON.stringify({clients:S.clients,contents:S.contents,nextId:S.nextId,exportLogs:S.exportLogs,firebaseCfg:S.firebaseCfg,lastCloudSyncAt:S.lastCloudSyncAt})); }catch(e){}
   return FBX;
 }
 async function saveExportCloud(doc){
@@ -2272,7 +2191,7 @@ function checkShare(){
   try{
     const data=JSON.parse(decodeURIComponent(escape(atob(hash.slice(7)))));
     if(data.clients&&data.contents){
-      S.clients=data.clients; S.contents=data.contents; S.agenda=data.agenda||[];
+      S.clients=data.clients; S.contents=data.contents;
       const dt=data.sharedAt?new Date(data.sharedAt).toLocaleString('pt-BR'):'—';
       document.getElementById('share-dt').textContent='dados de '+dt;
       const b=document.getElementById('share-banner'); if(b) b.style.display='flex';
@@ -2293,7 +2212,7 @@ async function exitShareAndRestoreOwn(){
 /* ════════════════════════════════════════════
    NAVIGATION
 ════════════════════════════════════════════ */
-const REND={dashboard:renderDash,clientes:renderClients,pendencias:renderPend,relatorios:renderRel,agenda:renderAgenda};
+const REND={dashboard:renderDash,clientes:renderClients,pendencias:renderPend,relatorios:renderRel};
 function navigate(v){
   document.querySelectorAll('.view').forEach(e=>e.classList.remove('on'));
   document.querySelectorAll('.nb').forEach(e=>e.classList.remove('on'));
@@ -2325,7 +2244,6 @@ document.addEventListener('click',e=>{
   // Top buttons
   if(t.id==='btn-new-cli')  { openModal('new-c'); return; }
   if(t.id==='btn-new-cnt')  { openModal('new-k'); return; }
-  if(t.id==='btn-new-ev')   { openModal('new-ev'); return; }
   if(t.id==='btn-lote')     { openModal('lote'); return; }
   if(t.id==='btn-pdf')      { exportPDF(); return; }
   if(t.id==='btn-fb')       { openModal('fbcfg'); return; }
@@ -2343,8 +2261,6 @@ document.addEventListener('click',e=>{
   }
   if(t.id==='btn-share')    { openModal('share'); return; }
   if(t.id==='btn-own')      { exitShareAndRestoreOwn(); return; }
-  if(t.id==='btn-agenda-auto'||t.id==='btn-auto-ag') { autoAgenda(); return; }
-  if(t.id==='btn-clear-ag') { confirm2('🗑️','Limpar agenda?','Todos os eventos desta semana serão removidos.','Limpar',()=>{ S.agenda=[]; save(); renderAgenda(); toast('Agenda limpa','wa'); }); return; }
   if(t.id==='btn-reset')    { confirm2('⚠️','Redefinir dados?','Restaura os dados de exemplo originais.','Redefinir',()=>{ reset(true); renderDash(); }); return; }
 
   // Modal
@@ -2426,10 +2342,6 @@ document.addEventListener('click',e=>{
   const ck=t.closest('[data-ck]');
   if(ck){ const it=S.contents.find(x=>x.id===parseInt(ck.dataset.ck)); if(it){ it.status=ck.dataset.next; save(); renderContents(); renderDash(); toast('Status: '+(SK[ck.dataset.next]?.l||ck.dataset.next)); } return; }
 
-  // Delete agenda event
-  const dev=t.closest('[data-dev]');
-  if(dev){ const id=parseInt(dev.dataset.dev); const ev=S.agenda.find(x=>x.id===id);
-    if(ev) confirm2('🗑️','Remover "'+ev.name+'"?','O evento será removido da agenda.','Remover',()=>{ S.agenda=S.agenda.filter(x=>x.id!==id); save(); renderAgenda(); toast('Evento removido','wa'); }); return; }
 });
 
 // Search + filters
