@@ -919,6 +919,10 @@ function formatDateBR(value){
   const match=String(value).trim().match(/^(\d{4})-(\d{2})-(\d{2})$/);
   return match?match[3]+'/'+match[2]+'/'+match[1]:String(value).trim();
 }
+function openDatePicker(input){
+  if(!input||typeof input.showPicker!=='function') return;
+  try{ input.showPicker(); }catch(e){}
+}
 // Parser de data DD/MM/AAAA ou DD/MM (assume ano atual)
 function parseProgDate(s){
   if(!s) return null;
@@ -1580,20 +1584,20 @@ function startInlineEdit(el){
     return;
   }
 
+  if(field==='last'){ startLastInlineEdit(el,c); return; }
+
   // Demais campos: input simples
   let curVal, isNum=false;
   if(field==='pkg'){ curVal=c.pkgTipo||String(c.pkg||0); }
   else if(field==='feitos'){ curVal=String(c.feitos||0); isNum=true; }
-  else if(field==='last'){ curVal=c.last||''; }
   else if(field==='name'){ curVal=c.name||''; }
   else return;
 
-  const wide=field==='name'||field==='last';
-  const inputType=field==='last'?'date':isNum?'number':'text';
-  const inputValue=field==='last'?dateInputValue(curVal):curVal;
-  el.innerHTML='<input class="cell-input'+(wide?' wide':'')+'" type="'+inputType+'" '+(isNum?'min="0"':'')+' value="'+esc(inputValue)+'">';
+  const wide=field==='name';
+  const inputType=isNum?'number':'text';
+  el.innerHTML='<input class="cell-input'+(wide?' wide':'')+'" type="'+inputType+'" '+(isNum?'min="0"':'')+' value="'+esc(curVal)+'">';
   const inp=el.querySelector('input');
-  inp.focus(); if(field!=='last') inp.select();
+  inp.focus(); inp.select();
 
   const done=ok=>{
     if(!ok){ renderClients(); return; }
@@ -1611,9 +1615,6 @@ function startInlineEdit(el){
       }
     } else if(field==='feitos'){
       const n=parseInt(v)||0; if(n!==c.feitos){ c.feitos=n; changed=true; }
-    } else if(field==='last'){
-      const lastValue=formatDateBR(v);
-      if(lastValue!==c.last){ c.last=lastValue; changed=true; }
     } else if(field==='name'){
       if(v && v!==c.name){ c.name=v; changed=true; }
     }
@@ -1624,6 +1625,34 @@ function startInlineEdit(el){
   inp.addEventListener('keydown',e=>{
     if(e.key==='Enter'){ e.preventDefault(); inp.blur(); }
     if(e.key==='Escape'){ e.preventDefault(); done(false); }
+  });
+}
+
+function startLastInlineEdit(el,c){
+  const current=c.last||'';
+  el.innerHTML='<span style="position:relative;display:inline-flex;align-items:center;gap:4px">'
+    +'<input class="cell-input wide" type="text" value="'+esc(current)+'" placeholder="DD/MM/AAAA" aria-label="Último programado">'
+    +'<button class="ico" type="button" title="Selecionar data no calendário" aria-label="Selecionar data no calendário">▦</button>'
+    +'<input type="date" value="'+dateInputValue(current)+'" aria-label="Selecionar data" tabindex="-1" style="position:absolute;right:0;top:0;width:1px;height:1px;opacity:0">'
+    +'</span>';
+  const wrap=el.querySelector('span');
+  const textInput=wrap.querySelector('input[type="text"]');
+  const dateInput=wrap.querySelector('input[type="date"]');
+  const calendarButton=wrap.querySelector('button');
+  wrap.addEventListener('click',e=>e.stopPropagation());
+  const commit=()=>{
+    const value=formatDateBR(textInput.value.trim());
+    if(value!==c.last){ c.last=value; c.updated=new Date().toISOString(); save(); renderClients(); renderDash(); }
+    else renderClients();
+  };
+  textInput.focus(); textInput.select();
+  calendarButton.addEventListener('mousedown',e=>e.preventDefault());
+  calendarButton.addEventListener('click',e=>{ e.stopPropagation(); openDatePicker(dateInput); });
+  dateInput.addEventListener('change',()=>{ textInput.value=formatDateBR(dateInput.value); commit(); });
+  wrap.addEventListener('focusout',()=>setTimeout(()=>{ if(!wrap.contains(document.activeElement)) commit(); },0));
+  textInput.addEventListener('keydown',e=>{
+    if(e.key==='Enter'){ e.preventDefault(); textInput.blur(); }
+    if(e.key==='Escape'){ e.preventDefault(); renderClients(); }
   });
 }
 
