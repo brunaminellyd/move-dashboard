@@ -919,10 +919,6 @@ function formatDateBR(value){
   const match=String(value).trim().match(/^(\d{4})-(\d{2})-(\d{2})$/);
   return match?match[3]+'/'+match[2]+'/'+match[1]:String(value).trim();
 }
-function openDatePicker(input){
-  if(!input||typeof input.showPicker!=='function') return;
-  try{ input.showPicker(); }catch(e){}
-}
 // Parser de data DD/MM/AAAA ou DD/MM (assume ano atual)
 function parseProgDate(s){
   if(!s) return null;
@@ -1597,11 +1593,7 @@ function startInlineEdit(el){
   const inputValue=field==='last'?dateInputValue(curVal):curVal;
   el.innerHTML='<input class="cell-input'+(wide?' wide':'')+'" type="'+inputType+'" '+(isNum?'min="0"':'')+' value="'+esc(inputValue)+'">';
   const inp=el.querySelector('input');
-  inp.focus();
-  if(field==='last'){
-    inp.addEventListener('click',()=>openDatePicker(inp));
-    openDatePicker(inp);
-  } else inp.select();
+  inp.focus(); if(field!=='last') inp.select();
 
   const done=ok=>{
     if(!ok){ renderClients(); return; }
@@ -1832,8 +1824,6 @@ function openModal(mode,tid){
     },60);
   }
 
-  const dateInput=MB.querySelector('input[type="date"]');
-  if(dateInput) dateInput.addEventListener('click',()=>openDatePicker(dateInput));
   ov.classList.add('on');
   setTimeout(()=>{ const inp=MB.querySelector('input:not([type="number"])'); if(inp) inp.focus(); },80);
 }
