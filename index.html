@@ -150,6 +150,7 @@ button,input,select,textarea{font-family:inherit}
 .cell-feitos .num{min-width:28px;text-align:center;font-weight:600;color:var(--violet-dark);font-size:15px;font-family:var(--font-b)}
 .tag-pill{display:inline-flex;align-items:center;padding:4px 11px;border-radius:99px;font-size:11px;font-weight:500;letter-spacing:.01em;line-height:1.3;margin:2px 4px 2px 0;cursor:pointer;transition:var(--tr);border:1px solid transparent}
 .tag-pill:hover{opacity:.85;transform:translateY(-1px)}
+.pending-owner{display:inline-flex;align-items:center;padding:4px 10px;border-radius:99px;font-size:10px;font-weight:600;letter-spacing:.04em;white-space:nowrap;line-height:1.3}
 .tag-pill.sm::before{content:'SM ';opacity:.7;font-weight:600;margin-right:3px;letter-spacing:.08em;font-size:9px}
 .obs-cell{font-size:12.5px;color:var(--ts);line-height:1.6;max-width:300px;white-space:pre-wrap;cursor:cell;border-radius:var(--r-sm);padding:4px 8px;margin:-4px -8px}
 .obs-cell:hover{background:var(--violet-pale)}
@@ -518,7 +519,6 @@ button,input,select,textarea{font-family:inherit}
     <div class="ph-l"><div class="pt">Relatório <em>Executivo</em></div><div class="ps" id="rep-per"></div></div>
     <div class="ph-r">
       <button class="btn btn-o btn-sm" id="btn-reset">↺ Redefinir dados</button>
-      <button class="btn btn-o btn-sm" id="btn-fb">⚙ Firebase</button>
       <button class="btn btn-ok btn-sm" id="btn-save-exp">☁ Exportar e salvar</button>
       <button class="btn btn-p" id="btn-pdf">⬇ Exportar PDF</button>
     </div>
@@ -601,6 +601,11 @@ const GMN={
   feito:    {l:'FEITO',     c:'#1E9E6A',b:'rgba(30,158,106,.12)'},
   nao_feito:{l:'NÃO FEITO', c:'#C0392B',b:'rgba(192,57,43,.12)'},
   nao_tem:  {l:'NÃO TEM',   c:'#6B647A',b:'rgba(107,100,122,.10)'},
+};
+const RPEND={
+  move:{l:'MOVE',c:'#7B4FCB',b:'rgba(123,79,203,.12)'},
+  cliente:{l:'CLIENTE',c:'#C47A1A',b:'rgba(196,122,26,.12)'},
+  terceiro:{l:'TERCEIRO',c:'#5D6BE0',b:'rgba(93,107,224,.12)'},
 };
 const PAUTA={
   bom: {l:'✅ BOM',  c:'#1E9E6A',b:'rgba(30,158,106,.12)'},
@@ -902,6 +907,16 @@ function normGMN(v){
   if(raw==='nao_tem' || raw==='nao-tem' || raw==='naotem') return 'nao_tem';
   return 'nao_tem';
 }
+function pendenciaValue(c){
+  const value=String(c?.responsavelPendencia||'').toLowerCase();
+  return ['alguma_pendencia','atrasado','sem_dados'].includes(c?.status)&&RPEND[value]?value:null;
+}
+function pendenciaChip(c,print=false){
+  const value=pendenciaValue(c);
+  if(!value) return '—';
+  const cfg=RPEND[value];
+  return '<span class="'+(print?'pr-pill':'pending-owner')+'" style="background:'+cfg.b+';color:'+cfg.c+'">'+cfg.l+'</span>';
+}
 function dateInputValue(value){
   if(!value) return '';
   const s=String(value).trim();
@@ -1189,6 +1204,7 @@ function renderClients(){
     +'<th>Responsáveis</th>'
     +'<th>Último programado</th>'
     +'<th>Situação</th>'
+    +'<th>Resp. pendência</th>'
     +'<th>Pauta?</th>'
     +'<th>Google MN</th>'
     +'<th>Texto / Observações</th>'
@@ -1237,6 +1253,7 @@ function renderClients(){
         +'<td><span class="cell-edit" data-edit="resp" data-id="'+c.id+'" style="display:inline-block;min-width:120px">'+respPills+'</span></td>'
         +'<td><span class="cell-edit" data-edit="last" data-id="'+c.id+'" style="color:'+(c.last?'var(--ts)':'var(--tm)')+';font-size:11px">'+(c.last||'— vazio —')+'</span></td>'
         +'<td><span class="tag-pill" data-cc="'+c.id+'" data-next="'+nextSt+'" style="background:'+sc.b+';color:'+sc.c+'" title="Clique para avançar">'+sc.l+'</span></td>'
+        +'<td><span class="cell-edit" data-edit="responsavelPendencia" data-id="'+c.id+'" title="Clique para editar">'+pendenciaChip(c)+'</span></td>'
         +'<td><span class="pauta-pill" style="background:'+pCfg.b+';color:'+pCfg.c+'" title="Calculado automaticamente: (Último programado − Última edição) ≥ 5 dias = BOM">'+pCfg.l+'</span></td>'
         +'<td><span class="gmn-pill" data-gmn-cycle="'+c.id+'" data-next-gmn="'+nextGmn+'" style="background:'+gmnCfg.b+';color:'+gmnCfg.c+'" title="Clique para ciclar">'+gmnCfg.l+'</span></td>'
         +'<td><div class="'+obsCls+'" data-edit="obs" data-id="'+c.id+'">'+obsHtml+'</div></td>'
@@ -1246,7 +1263,7 @@ function renderClients(){
           +'<button class="ico del" data-dc="'+c.id+'" title="Excluir">✕</button>'
         +'</td>'
       +'</tr>';
-    }).join(''):'<tr><td colspan="11" class="empty">Nenhum cliente encontrado</td></tr>')
+    }).join(''):'<tr><td colspan="12" class="empty">Nenhum cliente encontrado</td></tr>')
     +'</tbody>';
   updateBadges();
 }
@@ -1479,22 +1496,22 @@ function renderRel(){
 
   document.getElementById('rep-tbl').innerHTML=
     '<div style="padding:14px 18px;border-bottom:1px solid var(--div);display:flex;justify-content:space-between;align-items:center"><div class="card-h" style="margin:0">Resumo por <em style="font-family:var(--font-d);font-style:italic;color:var(--violet)">cliente</em></div></div>'
-    +'<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Cliente</th><th style="text-align:center">Pacote</th><th style="text-align:center">Feitos</th><th style="text-align:center">Faltam</th><th>Situação</th><th>GMN</th><th>Comentários</th></tr></thead><tbody>'
+    +'<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Cliente</th><th style="text-align:center">Pacote</th><th style="text-align:center">Faltam</th><th>Situação</th><th>Responsável</th><th>GMN</th><th>Comentários</th></tr></thead><tbody>'
     +S.clients.map((c,i)=>{
       const sc=SC[c.status]||{l:c.status,c:'#6B647A',b:'rgba(107,100,122,.1)'};
       const f=c.feitos||0,p=c.pkg||0,fal=p-f;
       const pkgTxt=c.pkgTipo?esc(c.pkgTipo):String(p);
-      const fc=p>0?(fal>0?'#C47A1A':fal===0?'#1E9E6A':'#5D6BE0'):'#6B647A';
-      const falTxt=p>0?(fal>0?fal:fal===0?'✓':Math.abs(fal)+'a+'):'—';
+      const fc=p>0?(fal>0?'#C47A1A':'#1E9E6A'):'#6B647A';
+      const falTxt=p>0?(fal>0?fal:fal===0?'✓':'+'+Math.abs(fal)):'—';
       const gmnVal=normGMN(c.gmn), gmnCfg=GMN[gmnVal]||{l:'—',c:'#6B647A',b:'transparent'};
       const obs=(c.obs||'').trim();
       const obsCell=obs?esc(obs).replace(/\n/g,'<br>'):'<span style="color:var(--tm);font-style:italic">—</span>';
       return '<tr>'
         +'<td style="font-weight:500;color:var(--t)">'+esc(c.name)+'</td>'
         +'<td style="text-align:center;font-weight:500;color:var(--ts)">'+pkgTxt+'</td>'
-        +'<td style="text-align:center;font-weight:600;color:#1E9E6A">'+f+'</td>'
         +'<td style="text-align:center;font-weight:600;color:'+fc+'">'+falTxt+'</td>'
         +'<td>'+bdg(sc)+'</td>'
+        +'<td>'+pendenciaChip(c)+'</td>'
         +'<td><span class="badge" style="background:'+gmnCfg.b+';color:'+gmnCfg.c+';font-weight:600">'+gmnCfg.l+'</span></td>'
         +'<td style="font-size:11.5px;color:var(--ts);line-height:1.5;max-width:260px">'+obsCell+'</td>'
         +'</tr>';
@@ -1529,6 +1546,25 @@ function startInlineEdit(el){
   const id=parseInt(el.dataset.id);
   const c=S.clients.find(x=>x.id===id);
   if(!c) return;
+
+  if(field==='responsavelPendencia'){
+    const current=RPEND[c.responsavelPendencia]?c.responsavelPendencia:'';
+    el.innerHTML='<select class="cell-input" aria-label="Responsável pela pendência" style="width:auto;min-width:125px;text-align:left">'
+      +'<option value="">— nenhum —</option>'
+      +Object.entries(RPEND).map(([k,v])=>'<option value="'+k+'"'+(k===current?' selected':'')+'>'+v.l+'</option>').join('')
+      +'</select>';
+    const select=el.querySelector('select');
+    select.addEventListener('click',e=>e.stopPropagation());
+    select.focus();
+    select.addEventListener('change',()=>{
+      const value=select.value;
+      const next=RPEND[value]?value:null;
+      if(next!==c.responsavelPendencia){ c.responsavelPendencia=next; c.updated=new Date().toISOString(); save(); renderClients(); toast('Responsável pela pendência salvo ✓'); }
+      else renderClients();
+    });
+    select.addEventListener('keydown',e=>{ if(e.key==='Escape'){ e.preventDefault(); renderClients(); } });
+    return;
+  }
 
   // Responsáveis: mostra popover com 2 dropdowns
   if(field==='resp'){
@@ -1693,6 +1729,7 @@ function openModal(mode,tid){
         +'<div class="field"><label>Situação</label><select id="fs">'+selSC(c?c.status:'tudo_em_dia')+'</select></div>'
         +'<div class="field"><label>Último programado</label><input id="fl" type="date" value="'+(c?dateInputValue(c.last):'')+'"><div class="field-hint">Selecione a data no calendário ou digite-a</div></div>'
       +'</div>'
+      +'<div class="field"><label>Responsável pela pendência</label><select id="frp"><option value="">— nenhum —</option>'+Object.entries(RPEND).map(([k,v])=>'<option value="'+k+'"'+(c&&c.responsavelPendencia===k?' selected':'')+'>'+v.l+'</option>').join('')+'</select><div class="field-hint">Quem precisa agir para resolver a pendência</div></div>'
       +'<div class="field"><label>Google Meu Negócio</label>'
         +'<select id="fgmn">'
           +'<option value="nao_tem"'+(c&&normGMN(c.gmn)==='nao_tem'?' selected':'')+'>NÃO TEM — cliente não usa GMN</option>'
@@ -1868,7 +1905,7 @@ async function saveModal(){
   if(m==='new-c'||m==='edit-c'){
     const name=(document.getElementById('fn').value||'').trim();
     if(!name){ toast('Preencha o nome','er'); return; }
-    const obj={name,pkg:parseInt(document.getElementById('fp').value)||0,feitos:parseInt(document.getElementById('ff').value)||0,pkgTipo:document.getElementById('fpt').value.trim(),resp:document.getElementById('fr').value,respSM:document.getElementById('frsm').value,status:document.getElementById('fs').value,last:formatDateBR(document.getElementById('fl').value),obs:document.getElementById('fo').value.trim(),gmn:document.getElementById('fgmn').value,updated:new Date().toISOString()};
+    const obj={name,pkg:parseInt(document.getElementById('fp').value)||0,feitos:parseInt(document.getElementById('ff').value)||0,pkgTipo:document.getElementById('fpt').value.trim(),resp:document.getElementById('fr').value,respSM:document.getElementById('frsm').value,responsavelPendencia:RPEND[document.getElementById('frp').value]?document.getElementById('frp').value:null,status:document.getElementById('fs').value,last:formatDateBR(document.getElementById('fl').value),obs:document.getElementById('fo').value.trim(),gmn:document.getElementById('fgmn').value,updated:new Date().toISOString()};
     if(S.editId){ const c=S.clients.find(x=>x.id===S.editId); if(c) Object.assign(c,obj); toast('"'+obj.name+'" atualizado ✓'); }
     else { S.clients.push({id:gid(),...obj}); toast('"'+obj.name+'" adicionado ✓'); }
     save(); closeModal(); renderClients(); renderDash();
@@ -1994,8 +2031,8 @@ function exportPDF(){
     const sc=SC[c.status]||{l:c.status,c:'#6B647A',b:'rgba(107,100,122,.1)'};
     const f=c.feitos||0,p=c.pkg||0,fal=p-f;
     const pkgTxt=c.pkgTipo?esc(c.pkgTipo):String(p);
-    const falColor=p>0?(fal>0?'#C47A1A':fal===0?'#1E9E6A':'#5D6BE0'):'#6B647A';
-    const falTxt=p>0?(fal>0?String(fal):fal===0?'✓':Math.abs(fal)+'+'):'—';
+    const falColor=p>0?(fal>0?'#C47A1A':'#1E9E6A'):'#6B647A';
+    const falTxt=p>0?(fal>0?String(fal):fal===0?'✓':'+'+Math.abs(fal)):'—';
     const gmnVal=normGMN(c.gmn);
     const gmnCfg=GMN[gmnVal]||{l:'—',c:'#6B647A',b:'transparent'};
     const obs=(c.obs||'').trim();
@@ -2003,9 +2040,9 @@ function exportPDF(){
     return '<tr>'
       +'<td style="font-weight:500;color:#1A1028">'+esc(c.name)+'</td>'
       +'<td style="text-align:center;font-weight:500;color:#3A2D52">'+pkgTxt+'</td>'
-      +'<td style="text-align:center;font-weight:600;color:#1E9E6A">'+f+'</td>'
       +'<td style="text-align:center;font-weight:600;color:'+falColor+'">'+falTxt+'</td>'
       +'<td><span class="pr-pill" style="background:'+sc.b+';color:'+sc.c+'">'+sc.l+'</span></td>'
+      +'<td>'+pendenciaChip(c,true)+'</td>'
       +'<td><span class="pr-pill" style="background:'+gmnCfg.b+';color:'+gmnCfg.c+'">'+gmnCfg.l+'</span></td>'
       +'<td style="font-size:9.5px;color:#6B647A;white-space:normal;line-height:1.4;max-width:220px">'+obsCell+'</td>'
       +'</tr>';
@@ -2040,7 +2077,7 @@ function exportPDF(){
       +'</div>'
     +'</div>'
     +'<div class="pr-sec"><div class="pr-sec-title">Resumo por <em>cliente</em></div>'
-      +'<table class="pr-tbl"><thead><tr><th>Cliente</th><th style="text-align:center">Pacote</th><th style="text-align:center">Feitos</th><th style="text-align:center">Faltam</th><th>Situação</th><th>GMN</th><th>Comentários</th></tr></thead><tbody>'+cliRows+'</tbody></table>'
+      +'<table class="pr-tbl"><thead><tr><th>Cliente</th><th style="text-align:center">Pacote</th><th style="text-align:center">Faltam</th><th>Situação</th><th>Responsável</th><th>GMN</th><th>Comentários</th></tr></thead><tbody>'+cliRows+'</tbody></table>'
     +'</div>'
     +'<div class="pr-footer"><span>MOVE Marketing — Central Operacional</span><span>'+ds+'</span></div>';
 
@@ -2062,28 +2099,42 @@ function exportPDF(){
 function buildSnapshotDoc(){
   const now=new Date();
   const ds=now.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
-  const pub=S.contents.filter(c=>c.status==='publicado').length;
-  const tot=S.contents.length||1;
-  const pct=Math.round(pub/tot*100);
-  const cliR=S.clients.map(c=>{ const sc=SC[c.status]||{l:c.status}; const f=c.feitos||0,p=c.pkg||0,fal=p-f;
+  const totCli=S.clients.length;
+  const totPkg=S.clients.reduce((sum,c)=>sum+(Number(c.pkg)||0),0);
+  const totFeitos=S.clients.reduce((sum,c)=>sum+(Number(c.feitos)||0),0);
+  const pct=totPkg?Math.round(totFeitos/totPkg*100):0;
+  const atrasados=S.clients.filter(c=>c.status==='atrasado').length;
+  const cliR=S.clients.map(c=>{
+    const sc=SC[c.status]||{l:c.status||'—'};
+    const f=Number(c.feitos)||0,p=Number(c.pkg)||0,fal=p-f;
     const pkgTxt=c.pkgTipo?esc(c.pkgTipo):String(p);
-    const falTxt=p>0?(fal>0?String(fal):fal===0?'✓':Math.abs(fal)+'+'):'—';
-    return '<tr><td>'+esc(c.name)+'</td><td>'+pkgTxt+'</td><td>'+f+'</td><td>'+falTxt+'</td><td>'+esc(c.resp)+'</td><td>'+sc.l+'</td></tr>'; }).join('');
-  const cntR=S.contents.map(c=>{ const sc=SK[c.status]||{l:c.status}; return '<tr><td>'+esc(c.title)+'</td><td>'+esc(c.client)+'</td><td>'+c.type+'</td><td>'+esc(c.resp)+'</td><td>'+c.deadline+'</td><td>'+sc.l+'</td></tr>'; }).join('');
-  const html='<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>MOVE — Painel '+ds+'</title>'
-    +'<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:Plus Jakarta Sans,Segoe UI,sans-serif;background:#eef2ff;color:#17203a;padding:0}.hdr{background:linear-gradient(135deg,#315db8,#4f7ae0);padding:24px 36px;display:flex;align-items:center;justify-content:space-between}.logo-m{width:42px;height:42px;background:rgba(255,255,255,.2);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#fff}.brand{font-size:20px;font-weight:800;color:#fff}.sub{font-size:9px;color:rgba(255,255,255,.7);letter-spacing:.1em;text-transform:uppercase}.hdr-r{text-align:right;color:rgba(255,255,255,.86);font-size:12px}.hdr-t{font-size:18px;font-weight:700;color:#fff}.banner{background:#dbe8ff;border-left:4px solid #315db8;padding:10px 18px;font-size:12px;color:#315db8}.wrap{padding:26px 36px;max-width:1100px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}.stat{background:#fff;border:1px solid #d7e1f5;border-radius:14px;padding:16px;text-align:center}.stat-n{font-size:34px;font-weight:800;color:#315db8}.stat-l{font-size:11px;color:#5b6b94;margin-top:3px}.sec-t{font-size:12px;font-weight:700;color:#17203a;border-left:4px solid #315db8;padding-left:9px;margin:20px 0 12px;text-transform:uppercase;letter-spacing:.05em}.pb{background:#dbe8ff;border-radius:99px;height:9px;overflow:hidden;margin:7px 0}.pbf{height:100%;background:#315db8;border-radius:99px}table{width:100%;border-collapse:collapse;font-size:12px;background:#fff;border:1px solid #d7e1f5;border-radius:10px;overflow:hidden;margin-bottom:14px}th{background:#edf3ff;padding:8px 12px;text-align:left;font-size:9px;font-weight:700;color:#5e6d96;text-transform:uppercase}td{padding:8px 12px;border-bottom:1px solid #edf3ff}tr:last-child td{border-bottom:none}.ftr{margin-top:24px;padding:13px 36px;border-top:1px solid #d7e1f5;font-size:10px;color:#7d8bb0;display:flex;justify-content:space-between}</style>'
+    const falTxt=p>0?(fal>0?String(fal):fal===0?'✓':'+'+Math.abs(fal)):'—';
+    const falColor=p>0?(fal>0?'#C47A1A':'#1E9E6A'):'#6B647A';
+    const owner=pendenciaValue(c);
+    const ownerCfg=owner?RPEND[owner]:null;
+    const ownerCell=ownerCfg?'<span class="owner" style="background:'+ownerCfg.b+';color:'+ownerCfg.c+'">'+ownerCfg.l+'</span>':'—';
+    const commentCell=c.obs?esc(c.obs).replace(/\n/g,'<br>'):'—';
+    return '<tr><td>'+esc(c.name)+'</td><td>'+pkgTxt+'</td><td style="color:'+falColor+';font-weight:700">'+falTxt+'</td><td>'+ownerCell+'</td><td>'+esc(sc.l)+'</td><td>'+commentCell+'</td></tr>';
+  }).join('');
+  const cntR=S.contents.map(c=>{
+    const sc=SK[c.status]||{l:c.status||'—'};
+    return '<tr><td>'+esc(c.title)+'</td><td>'+esc(c.client)+'</td><td>'+esc(c.type)+'</td><td>'+esc(c.resp)+'</td><td>'+esc(c.deadline)+'</td><td>'+esc(sc.l)+'</td></tr>';
+  }).join('');
+  const html='<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MOVE — Painel '+ds+'</title>'
+    +'<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:Plus Jakarta Sans,Segoe UI,sans-serif;background:#eef2ff;color:#17203a;padding:0}.hdr{background:linear-gradient(135deg,#315db8,#4f7ae0);padding:24px 36px;display:flex;align-items:center;justify-content:space-between}.logo-m{width:42px;height:42px;background:rgba(255,255,255,.2);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#fff}.brand{font-size:20px;font-weight:800;color:#fff}.sub{font-size:9px;color:rgba(255,255,255,.7);letter-spacing:.1em;text-transform:uppercase}.hdr-r{text-align:right;color:rgba(255,255,255,.86);font-size:12px}.hdr-t{font-size:18px;font-weight:700;color:#fff}.banner{background:#dbe8ff;border-left:4px solid #315db8;padding:10px 18px;font-size:12px;color:#315db8}.wrap{padding:26px 36px;max-width:1100px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}.stat{background:#fff;border:1px solid #d7e1f5;border-radius:14px;padding:16px;text-align:center}.stat-n{font-size:34px;font-weight:800;color:#315db8}.stat-l{font-size:11px;color:#5b6b94;margin-top:3px}.sec-t{font-size:12px;font-weight:700;color:#17203a;border-left:4px solid #315db8;padding-left:9px;margin:20px 0 12px;text-transform:uppercase;letter-spacing:.05em}.pb{background:#dbe8ff;border-radius:99px;height:9px;overflow:hidden;margin:7px 0}.pbf{height:100%;background:#315db8;border-radius:99px}table{width:100%;border-collapse:collapse;font-size:12px;background:#fff;border:1px solid #d7e1f5;border-radius:10px;overflow:hidden;margin-bottom:14px}th{background:#edf3ff;padding:8px 12px;text-align:left;font-size:9px;font-weight:700;color:#5e6d96;text-transform:uppercase}td{padding:8px 12px;border-bottom:1px solid #edf3ff}tr:last-child td{border-bottom:none}.ftr{margin-top:24px;padding:13px 36px;border-top:1px solid #d7e1f5;font-size:10px;color:#7d8bb0;display:flex;justify-content:space-between} .owner{display:inline-block;padding:3px 9px;border-radius:99px;font-size:10px;font-weight:700}</style>'
     +'</head><body>'
     +'<div class="hdr"><div style="display:flex;align-items:center;gap:12px"><div class="logo-m">M</div><div><div class="brand">MOVE Marketing</div><div class="sub">Central Operacional</div></div></div><div class="hdr-r"><div class="hdr-t">Painel Operacional</div><div>'+ds+'</div></div></div>'
     +'<div class="banner">Snapshot gerado em '+ds+' — visualização somente leitura</div>'
     +'<div class="wrap">'
-    +'<div class="stats"><div class="stat"><div class="stat-n">'+tot+'</div><div class="stat-l">Planejados</div></div><div class="stat"><div class="stat-n" style="color:#0f9d78">'+pub+'</div><div class="stat-l">Publicados ('+pct+'%)</div></div><div class="stat"><div class="stat-n" style="color:#315db8">'+S.clients.length+'</div><div class="stat-l">Clientes</div></div><div class="stat"><div class="stat-n" style="color:#e35d64">'+S.contents.filter(c=>c.status==='atrasado').length+'</div><div class="stat-l">Atrasados</div></div></div>'
-    +'<div class="sec-t">Progresso</div><div style="display:flex;justify-content:space-between;font-size:11px;color:#5b6b94;margin-bottom:4px"><span>'+pub+' de '+tot+'</span><span style="font-weight:700;color:#315db8">'+pct+'%</span></div><div class="pb"><div class="pbf" style="width:'+pct+'%"></div></div>'
-    +'<div class="sec-t">Clientes</div><table><thead><tr><th>Cliente</th><th>Pacote</th><th>Feitos</th><th>Faltam</th><th>Responsável</th><th>Status</th></tr></thead><tbody>'+cliR+'</tbody></table>'
+    +'<div class="stats"><div class="stat"><div class="stat-n">'+totPkg+'</div><div class="stat-l">Pacote contratado</div></div><div class="stat"><div class="stat-n" style="color:#1e9e6a">'+totFeitos+'</div><div class="stat-l">Conteúdos feitos</div></div><div class="stat"><div class="stat-n">'+totCli+'</div><div class="stat-l">Clientes</div></div><div class="stat"><div class="stat-n" style="color:#c0392b">'+atrasados+'</div><div class="stat-l">Atrasados</div></div></div>'
+    +'<div class="sec-t">Progresso do pacote</div><div style="display:flex;justify-content:space-between;font-size:11px;color:#5b6b94;margin-bottom:4px"><span>'+totFeitos+' de '+totPkg+' conteúdos feitos</span><span style="font-weight:700;color:#315db8">'+pct+'%</span></div><div class="pb"><div class="pbf" style="width:'+Math.min(pct,100)+'%"></div></div>'
+    +'<div class="sec-t">Clientes</div><table><thead><tr><th>Cliente</th><th>Pacote</th><th>Faltam</th><th>Responsável pela pendência</th><th>Status</th><th>Comentários</th></tr></thead><tbody>'+cliR+'</tbody></table>'
     +'<div class="sec-t">Conteúdos</div><table><thead><tr><th>Título</th><th>Cliente</th><th>Tipo</th><th>Responsável</th><th>Prazo</th><th>Status</th></tr></thead><tbody>'+cntR+'</tbody></table>'
     +'</div><div class="ftr"><span>MOVE Marketing</span><span>'+ds+'</span></div>'
     +'</body></html>';
-  return {now,ds,html,pub,tot,pct,filename:'MOVE_Painel_'+now.toISOString().slice(0,10)+'.html'};
+  return {now,ds,html,pub:totFeitos,tot:totPkg,pct,filename:'MOVE_Painel_'+now.toISOString().slice(0,10)+'.html'};
 }
+
 function triggerBlobDownload(blob,filename){
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
@@ -2099,10 +2150,6 @@ function addExportLog(log){
 function renderExportHistory(){
   const el=document.getElementById('rep-history');
   if(!el) return;
-  const cfgOk=!!(S.firebaseCfg&&S.firebaseCfg.projectId&&S.firebaseCfg.storageBucket);
-  const statusTxt=cfgOk?(S.firebaseReady?'☁ Firebase conectado':'⚙ Firebase configurado'):'⚠ Firebase não configurado';
-  const statusColor=cfgOk?(S.firebaseReady?'var(--ok)':'var(--wa)'):'var(--tm)';
-
   const rows=S.exportLogs.map(r=>{
     const dt=new Date(r.createdAt);
     const ds=dt.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
@@ -2129,13 +2176,12 @@ function renderExportHistory(){
     +'<div><div class="card-h" style="margin-bottom:2px">Registros <em style="font-family:var(--font-d);font-style:italic;color:var(--violet)">exportados</em></div>'
     +'<div class="card-sub" style="margin:0">Histórico dos relatórios enviados — diário</div></div>'
     +'<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">'
-      +'<span style="font-size:11px;color:'+statusColor+';font-weight:500">'+statusTxt+'</span>'
       +'<button class="btn btn-g btn-sm" id="btn-add-log">+ Registrar manual</button>'
     +'</div>'
   +'</div>'
     +(rows||'<div class="export-log-empty">Nenhum registro salvo ainda. Os exports diários aparecem aqui automaticamente.</div>');
 
-  if(cfgOk && !FB_FETCHING) pullExportLogsCloud();
+  if(S.firebaseCfg&&!FB_FETCHING) pullExportLogsCloud();
 }
 let FBX=null;
 async function initFirebaseClient(){
@@ -2178,7 +2224,7 @@ async function pullExportLogsCloud(){
         downloadUrl:v.downloadUrl||'',
       };
     });
-    const localOnly=S.exportLogs.filter(x=>!x.downloadUrl);
+    const localOnly=S.exportLogs.filter(x=>!x.downloadUrl&&!cloud.some(y=>y.filename===x.filename&&y.createdAt===x.createdAt));
     S.exportLogs=[...cloud,...localOnly].slice(0,120);
     save();
     renderExportHistory();
@@ -2193,19 +2239,9 @@ async function saveDailyExport(){
   const doc=buildSnapshotDoc();
   triggerBlobDownload(new Blob([doc.html],{type:'text/html;charset=utf-8'}),doc.filename);
   const reg={id:Date.now(),createdAt:doc.now.toISOString(),filename:doc.filename,location:'local'};
-  try{
-    if(S.firebaseCfg){
-      await saveExportCloud(doc);
-      reg.location='registrado na nuvem';
-    }
-    addExportLog(reg);
-    toast(reg.location==='registrado na nuvem'?'Snapshot baixado e registrado ✓':'Snapshot baixado localmente ✓');
-  }catch(err){
-    S.firebaseReady=false;
-    save();
-    addExportLog({...reg,location:'local (erro firebase)'});
-    toast('Snapshot baixado. Registro na nuvem falhou.','wa');
-  }
+  addExportLog(reg);
+  toast('Snapshot baixado localmente ✓');
+  if(S.firebaseCfg) saveExportCloud(doc).catch(err=>{ S.firebaseReady=false; console.warn('Registro opcional do snapshot na nuvem falhou:',err); });
 }
 function downloadSnap(){
   const doc=buildSnapshotDoc();
@@ -2400,4 +2436,3 @@ load();
 </script>
 </body>
 </html>
-
