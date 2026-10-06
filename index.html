@@ -477,8 +477,8 @@ button,input,select,textarea{font-family:inherit}
   <div class="mg" id="m1"></div>
   <div class="mg" id="m2"></div>
   <div class="card" style="margin-bottom:18px">
-    <div class="card-h">Posts feitos por <em style="font-family:var(--font-d);font-style:italic;color:var(--violet)">cliente</em></div>
-    <div class="card-sub">Volume de publicações no mês — comparativo por cliente</div>
+    <div class="card-h">Pendências por <em style="font-family:var(--font-d);font-style:italic;color:var(--violet)">cliente</em></div>
+    <div class="card-sub">Conteúdos restantes no mês · ordenado por maior pendência</div>
     <div id="ch-bar"></div>
   </div>
   <div class="g2">
@@ -1060,6 +1060,7 @@ function svgBar(id,data,col){
     const bh=14;
     const bw=Math.max((d.v/mx)*barW,0);
     const c=col||(d.v===0?'#DDD8EE':i%2===0?'#7B4FCB':'#9B6FEB');
+    s+='<g>'+(d.tooltip?'<title>'+esc(d.tooltip)+'</title>':'');
     // Nome do cliente (esquerda)
     s+='<text x="'+(PL+labelW).toFixed(1)+'" y="'+(ymid+4).toFixed(1)+'" font-size="12" fill="#3A2D52" font-weight="500" text-anchor="end">'+esc(d.l)+'</text>';
     // Trilha de fundo da barra
@@ -1068,6 +1069,8 @@ function svgBar(id,data,col){
     if(bw>0) s+='<rect x="'+barX.toFixed(1)+'" y="'+(ymid-bh/2).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+bh+'" rx="7" fill="'+c+'" opacity=".92"/>';
     // Valor à direita
     s+='<text x="'+(W-PR).toFixed(1)+'" y="'+(ymid+4).toFixed(1)+'" font-size="13" fill="#1A1028" font-weight="600" text-anchor="end">'+d.v+'</text>';
+    if(d.statusColor) s+='<circle cx="'+(barX+barW+8).toFixed(1)+'" cy="'+ymid.toFixed(1)+'" r="4" fill="'+d.statusColor+'"/>';
+    s+='</g>';
   });
   s+='</svg>';
   const el=document.getElementById(id); if(el) el.innerHTML=s;
@@ -1147,12 +1150,23 @@ function renderDash(){
         +'<span class="badge" style="background:'+tbg+';color:'+tcol+';font-weight:600">'+tag+'</span></div>';
     }).join('');
 
-  // Barras: todos os clientes ordenados por publicações (decrescente)
-  const sortedClients=S.clients.slice().sort((a,b)=>(b.feitos||0)-(a.feitos||0));
-  svgBar('ch-bar',sortedClients.map(c=>({
-    l:c.name.length>22?c.name.slice(0,20)+'…':c.name,
-    v:c.feitos||0
-  })));
+  // Barras: todos os clientes ordenados pela quantidade faltante (decrescente)
+  const statusColors={atrasado:'#D92D20',alguma_pendencia:'#D98A1F',sem_dados:'#EAB308',tudo_em_dia:'#20A36A'};
+  const chartData=S.clients.map((c,index)=>({
+    c,index,
+    faltam:Math.max((c.pkg||0)-(c.feitos||0),0)
+  })).sort((a,b)=>b.faltam-a.faltam||a.index-b.index).map(({c,faltam})=>{
+    const status=SC[c.status]?.l||c.status||'—';
+    const responsavelKey=pendenciaValue(c);
+    const responsavel=responsavelKey?RPEND[responsavelKey].l:'—';
+    return {
+      l:c.name.length>22?c.name.slice(0,20)+'…':c.name,
+      v:faltam,
+      statusColor:statusColors[c.status]||null,
+      tooltip:c.name+'\n'+faltam+' conteúdos pendentes\nResponsável: '+responsavel+'\nSituação: '+status
+    };
+  });
+  svgBar('ch-bar',chartData,'#7C4DCE');
   updateBadges();
 }
 
