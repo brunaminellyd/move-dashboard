@@ -340,6 +340,10 @@ button,input,select,textarea{font-family:inherit}
 .srch,.btn,.vtog,.ftab,.field input,.field select,.field textarea{border-radius:12px}
 .field input,.field select,.field textarea,.srch{background:#fff}
 
+/* ── Dashboard charts ── */
+.dash-charts{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(320px,1fr);gap:18px;align-items:start;margin-bottom:18px}
+@media(max-width:1100px){.dash-charts{grid-template-columns:minmax(0,1fr)}}
+
 /* ══ RESPONSIVE ══════════════════════════════════════ */
 @media(max-width:1024px){
   #sidebar{width:196px}.view{padding:20px 22px}
@@ -482,14 +486,22 @@ button,input,select,textarea{font-family:inherit}
   </div>
   <div class="mg" id="m1"></div>
   <div class="mg" id="m2"></div>
-  <div class="card" style="margin-bottom:18px">
-    <div class="card-h">Pendências por <em style="font-family:var(--font-d);font-style:italic;color:var(--violet)">cliente</em></div>
-    <div class="card-sub">Conteúdos restantes no mês · ordenado por maior pendência</div>
-    <div id="ch-bar"></div>
+  <div class="dash-charts">
+    <div class="card">
+      <div class="card-h">Pendências por <em style="font-family:var(--font-d);font-style:italic;color:var(--violet)">cliente</em></div>
+      <div class="card-sub">Conteúdos restantes no mês · ordenado por maior pendência</div>
+      <div id="ch-bar"></div>
+    </div>
+    <div class="card">
+      <div class="card-h">Status <em style="font-family:var(--font-d);font-style:italic;color:var(--violet)">atual</em></div>
+      <div class="card-sub">Distribuição dos clientes</div>
+      <div id="ch-donut"></div>
+    </div>
   </div>
-  <div class="g2">
-    <div class="card"><div class="card-h">Atenção <em style="font-family:var(--font-d);font-style:italic;color:var(--violet)">imediata</em></div><div class="card-sub">Precisa de ação hoje</div><div id="d-urgent"></div></div>
-    <div class="card"><div class="card-h">Status <em style="font-family:var(--font-d);font-style:italic;color:var(--violet)">atual</em></div><div class="card-sub">Distribuição dos clientes</div><div id="ch-donut"></div></div>
+  <div class="card">
+    <div class="card-h">Atenção <em style="font-family:var(--font-d);font-style:italic;color:var(--violet)">imediata</em></div>
+    <div class="card-sub">Precisa de ação hoje</div>
+    <div id="d-urgent"></div>
   </div>
 </section>
 
