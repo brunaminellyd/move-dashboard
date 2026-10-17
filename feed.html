@@ -10,7 +10,7 @@
 header{background:var(--preto);color:#fff;padding:12px 20px;display:flex;gap:16px;align-items:center}
 header b{color:var(--lilas);font-size:18px}header a{color:#fff;margin-left:auto}
 #app{display:grid;grid-template-columns:260px 1fr;min-height:calc(100vh - 50px)}
-aside{background:var(--roxo);color:#fff;padding:14px}aside input,aside button{width:100%;margin:4px 0}
+aside{background:var(--roxo);color:#fff;padding:14px}aside input,aside select,aside button{width:100%;margin:4px 0}
 .pl{padding:8px;border-radius:8px;cursor:pointer}.pl:hover,.pl.on{background:rgba(255,255,255,.2)}.pl small{display:block;opacity:.7}
 main{padding:20px}input,select,textarea,button{font:inherit;padding:8px;border-radius:8px;border:1px solid #ccc}
 button{background:var(--roxo);color:#fff;border:0;cursor:pointer}button.sec{background:#fff;color:var(--roxo);border:1px solid var(--roxo)}button.red{background:#c0392b}
@@ -23,12 +23,16 @@ button{background:var(--roxo);color:#fff;border:0;cursor:pointer}button.sec{back
 .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}.day{background:#fff;min-height:90px;padding:4px;border-radius:6px;font-size:12px}
 .chip{background:var(--lilas);border-radius:4px;padding:2px 4px;margin-top:3px;cursor:pointer;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:10px}
-.modal.on{display:flex}.box{background:#fff;border-radius:12px;padding:16px;width:min(560px,100%);max-height:94vh;overflow:auto}
+.modal.on{display:flex}.box{background:#fff;border-radius:12px;padding:16px;width:min(720px,100%);max-height:94vh;overflow:auto;position:relative}
 .box label{display:block;margin-top:10px;font-weight:600}.box input,.box select,.box textarea{width:100%}
-.mid{display:inline-block;position:relative;margin:4px}.mid img,.mid video{width:70px;height:90px;object-fit:cover;border-radius:6px}
+.mid{display:inline-block;position:relative;margin:4px;cursor:pointer;border:2px solid transparent;border-radius:8px}.mid.sel{border-color:var(--roxo)}.mid img,.mid video{width:80px;height:100px;object-fit:cover;border-radius:6px;display:block}
 .mid i{position:absolute;top:-4px;right:-4px;background:#c0392b;color:#fff;border-radius:50%;width:18px;height:18px;text-align:center;font-size:12px;cursor:pointer;font-style:normal}
 .cm{background:var(--off);border-radius:8px;padding:6px 8px;margin:4px 0;font-size:14px}
 #msg{color:#c0392b;margin:6px 0}
+.mh{display:flex;justify-content:space-between;align-items:center;position:sticky;top:-16px;background:#fff;padding:8px 0;z-index:2}.mh h3{margin:0}
+.x{width:38px;height:38px;border-radius:50%;background:#c0392b;color:#fff;font-size:24px;line-height:1;padding:0;flex:none}
+#pBig{background:#111;border-radius:10px;text-align:center;overflow:hidden}#pBig img,#pBig video{max-width:100%;max-height:60vh;display:block;margin:0 auto}#pBig small{color:#aaa;display:block;padding:30px}
+@media(max-width:600px){.modal{padding:0}.box{width:100%;height:100%;max-height:100%;border-radius:0}}
 @media(max-width:800px){#app{grid-template-columns:1fr}}
 </style>
 </head>
@@ -38,7 +42,7 @@ button{background:var(--roxo);color:#fff;border:0;cursor:pointer}button.sec{back
 <div id="app" style="display:none">
 <aside>
  <b>Novo planejamento</b>
- <input id="nCli" placeholder="Nome do cliente">
+ <select id="nCli"><option value="">Carregando clientes…</option></select>
  <input id="nMes" type="month">
  <button onclick="novoPlano()">Criar</button>
  <hr><div id="lista"></div>
@@ -58,20 +62,20 @@ button{background:var(--roxo);color:#fff;border:0;cursor:pointer}button.sec{back
 </div>
 
 <div class="modal" id="mp"><div class="box">
- <h3 id="mt">Post</h3>
+ <div class="mh"><h3 id="mt">Post</h3><button class="x" onclick="fechar()" aria-label="Fechar">×</button></div>
  <label>Tipo</label><select id="pTipo"><option value="estatico">Estático (1 imagem)</option><option value="carrossel">Carrossel (até 10 imagens)</option><option value="reels">Reels (1 vídeo)</option></select>
- <label>Arquivos</label><div id="pMid"></div><input type="file" id="pArq" multiple accept="image/*,video/*">
+ <label>Arquivos <small>(clique na miniatura para ampliar)</small></label><div id="pBig"></div><div id="pMid"></div><input type="file" id="pArq" multiple accept="image/*,video/*">
  <label>Legenda</label><textarea id="pLeg" rows="5"></textarea>
  <label>Data prevista</label><input type="date" id="pData">
  <div id="msg"></div>
- <div class="bar" style="margin-top:12px"><button onclick="salvarPost()" id="bSalvar">Salvar</button><button class="sec" onclick="fechar()">Fechar</button><button class="red" id="bDel" onclick="excluirPost()">Excluir</button></div>
+ <div class="bar" style="margin-top:12px"><button onclick="salvarPost()" id="bSalvar">Salvar</button><button class="red" id="bDel" onclick="excluirPost()">Excluir</button></div>
  <div id="cmBox"><h4>Comentários do cliente</h4><div id="cms"></div><input id="rTxt" placeholder="Responder como MOVE"><button onclick="responder()" style="margin-top:6px">Responder</button></div>
 </div></div>
 
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import {getFirestore,collection,doc,addDoc,setDoc,updateDoc,deleteDoc,getDocs,onSnapshot,query,orderBy,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import {getFirestore,collection,doc,addDoc,setDoc,updateDoc,deleteDoc,getDocs,getDoc,onSnapshot,query,orderBy,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 /* ===== 1) COLE AQUI a firebaseConfig do seu index.html ===== */
 const firebaseConfig = {
@@ -87,20 +91,27 @@ const CLD = { cloud:"bmcglaf1", preset:"move_feed_unsigned", maxImgMB:10, maxVid
 
 const app=initializeApp(firebaseConfig), auth=getAuth(app), db=getFirestore(app);
 const $=id=>document.getElementById(id), esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-let planos=[],cur=null,posts=[],stat={},ulP=null,ulC={},editId=null,midias=[],ulM=null,verAba="g";
+let clientes=[],aberto=0,planos=[],cur=null,posts=[],stat={},ulP=null,ulC={},editId=null,midias=[],ulM=null,verAba="g",bigIdx=0;
 const thumb=m=>!m?"":m.tipo==="video"?m.url.replace("/upload/","/upload/so_0,f_jpg,q_auto,w_500/").replace(/\.\w+$/,".jpg"):m.url.replace("/upload/","/upload/f_auto,q_auto,w_500/");
 const slug=s=>s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
 const nomeMes=m=>{const[a,b]=m.split("-");return new Date(a,b-1,1).toLocaleDateString("pt-BR",{month:"long",year:"numeric"})};
 
 onAuthStateChanged(auth,u=>{
  $("login").style.display=u?"none":"block";$("app").style.display=u?"grid":"none";
- if(u){$("quem").textContent=u.email||"";onSnapshot(query(collection(db,"feed_plans"),orderBy("criadoEm","desc")),s=>{planos=s.docs.map(d=>({id:d.id,...d.data()}));lista()})}
+ if(u){$("quem").textContent=u.email||"";
+  getDoc(doc(db,"app_state","current")).then(s=>{clientes=((s.data()||{}).clients||[]).slice().sort((a,b)=>String(a.name).localeCompare(String(b.name),"pt-BR"));
+   $("nCli").innerHTML='<option value="">Selecione o cliente</option>'+clientes.map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join("")}).catch(()=>{$("nCli").innerHTML='<option value="">Não foi possível carregar os clientes</option>'});
+  const ms=x=>{const t=x.updatedAt||x.createdAt||x.criadoEm;return t&&t.toMillis?t.toMillis():0};
+  onSnapshot(collection(db,"feed_plans"),s=>{planos=s.docs.map(d=>{const x=d.data();return{id:d.id,...x,clienteNome:x.clientName||x.clienteNome||"Cliente",mes:x.period||x.mes||"2026-01"}}).sort((a,b)=>ms(b)-ms(a));lista();
+   const q=new URLSearchParams(location.search).get("plano");if(q&&!aberto&&planos.some(p=>p.id===q)){aberto=1;abrirPlano(q)}})}
 });
 
 function lista(){$("lista").innerHTML=planos.map(p=>`<div class="pl ${cur&&cur.id===p.id?"on":""}" onclick="abrirPlano('${p.id}')">${esc(p.clienteNome)}<small>${nomeMes(p.mes)}</small></div>`).join("");
  if(cur){const n=planos.find(p=>p.id===cur.id);if(n){cur=n;cab()}}}
-window.novoPlano=async()=>{const c=$("nCli").value.trim(),m=$("nMes").value;if(!c||!m)return alert("Informe cliente e mês.");
- const r=await addDoc(collection(db,"feed_plans"),{clienteNome:c,mes:m,shareAtivo:false,shareToken:null,criadoEm:serverTimestamp()});$("nCli").value="";abrirPlano(r.id)};
+window.novoPlano=async()=>{const c=clientes.find(x=>String(x.id)===$("nCli").value),m=$("nMes").value;if(!c||!m)return alert("Escolha o cliente e o mês.");
+ const now=serverTimestamp();
+ const r=await addDoc(collection(db,"feed_plans"),{clientId:String(c.id),clientName:String(c.name),period:m,status:"rascunho",createdAt:now,updatedAt:now,createdBy:auth.currentUser.uid,schemaVersion:1,shareAtivo:false,shareToken:null});
+ $("nCli").value="";setTimeout(()=>abrirPlano(r.id),400)};
 window.abrirPlano=id=>{cur=planos.find(p=>p.id===id);if(!cur)return;ulP&&ulP();Object.values(ulC).forEach(f=>f());ulC={};stat={};
  $("vazio").style.display="none";$("plano").style.display="block";cab();lista();
  ulP=onSnapshot(query(collection(db,"feed_plans",id,"posts"),orderBy("ordem")),s=>{posts=s.docs.map(d=>({id:d.id,...d.data()}));
@@ -132,15 +143,21 @@ async function mover(de,para){if(de===para)return;const l=posts.filter(p=>p.id!=
 /* ---- modal de post ---- */
 window.abrirPost=id=>{editId=id||null;const p=posts.find(x=>x.id===id);
  if(!p&&posts.length>=20)return alert("Limite de 20 posts por planejamento.");
- midias=p?[...(p.midias||[])]:[];$("mt").textContent=p?"Editar post":"Novo post";$("pTipo").value=p?p.tipo:"estatico";$("pLeg").value=p?p.legenda||"":"";
+ midias=p?[...(p.midias||[])]:[];bigIdx=0;$("mt").textContent=p?"Editar post":"Novo post";$("pTipo").value=p?p.tipo:"estatico";$("pLeg").value=p?p.legenda||"":"";
  $("pData").value=p?p.dataPrevista||"":"";$("pData").min=cur.mes+"-01";$("pData").max=cur.mes+"-31";$("pArq").value="";$("msg").textContent="";
  $("bDel").style.display=$("cmBox").style.display=p?"":"none";ulM&&ulM();
  if(p)ulM=onSnapshot(query(collection(db,"feed_plans",cur.id,"posts",p.id,"comentarios"),orderBy("criadoEm")),s=>{
   $("cms").innerHTML=s.docs.map(d=>d.data()).map(c=>`<div class="cm"><b>${esc(c.autor)}</b> ${c.tipo==="ajuste"?"🔴 pediu ajuste":c.tipo==="aprovado"?"🟢 aprovou":""}<br>${esc(c.texto)}</div>`).join("")||"Sem comentários."});
  mids();$("mp").classList.add("on")};
-function mids(){$("pMid").innerHTML=midias.map((m,i)=>`<span class="mid">${m.tipo==="video"?`<video src="${m.url}"></video>`:`<img src="${thumb(m)}">`}<i onclick="tirar(${i})">×</i></span>`).join("")}
+const gr=m=>m.url.replace("/upload/","/upload/f_auto,q_auto,w_1080/");
+function mids(){if(bigIdx>=midias.length)bigIdx=Math.max(0,midias.length-1);const b=midias[bigIdx];
+ $("pBig").innerHTML=b?(b.tipo==="video"?`<video src="${b.url}" controls playsinline></video>`:`<img src="${gr(b)}">`):"<small>Nenhum arquivo ainda.</small>";
+ $("pMid").innerHTML=midias.map((m,i)=>`<span class="mid ${i===bigIdx?"sel":""}" onclick="ver(${i})">${m.tipo==="video"?`<video src="${m.url}"></video>`:`<img src="${thumb(m)}">`}<i onclick="event.stopPropagation();tirar(${i})">×</i></span>`).join("")}
+window.ver=i=>{bigIdx=i;mids()};
 window.tirar=i=>{midias.splice(i,1);mids()};
 window.fechar=()=>{ulM&&ulM();ulM=null;$("mp").classList.remove("on")};
+document.addEventListener("keydown",e=>{if(e.key==="Escape")fechar()});
+$("mp").addEventListener("click",e=>{if(e.target.id==="mp")fechar()});
 async function comprimir(f){if(!f.type.startsWith("image/")||f.type==="image/gif")return f;const b=await createImageBitmap(f),s=Math.min(1,1080/b.width),c=document.createElement("canvas");
  c.width=b.width*s;c.height=b.height*s;c.getContext("2d").drawImage(b,0,0,c.width,c.height);return new Promise(r=>c.toBlob(r,"image/jpeg",.85))}
 function enviar(arq,onP){return new Promise((ok,err)=>{const vid=arq.type.startsWith("video/");

@@ -2306,7 +2306,7 @@ document.addEventListener('click',e=>{
   const t=e.target;
 
   // Sidebar nav
-  const nb=t.closest('.nb'); if(nb&&nb.dataset.v){ navigate(nb.dataset.v); return; }
+  const nb=t.closest('.nb'); if(nb&&nb.dataset.v){ if(nb.dataset.v==='move-feed'){ location.href='feed.html'; return; } navigate(nb.dataset.v); return; }
 
   // A sessão da equipe usa Firebase Authentication.
   if(t.id==='btn-logout'){ if(window.firebase&&firebase.apps.length) firebase.app().auth().signOut().catch(()=>toast('Não foi possível sair da conta','er')); return; }
@@ -2323,7 +2323,7 @@ document.addEventListener('click',e=>{
   if(t.id==='feed-cancel'){ document.getElementById('feed-plan-form').classList.remove('on'); return; }
   if(t.id==='feed-refresh'){ FEED_LOADED=false; loadFeedPlans(true); return; }
   const selectedFeedPlan=t.closest('[data-feed-plan]');
-  if(selectedFeedPlan){ FEED_SELECTED_PLAN=selectedFeedPlan.dataset.feedPlan; renderFeedPlans(); return; }
+  if(selectedFeedPlan){ location.href='feed.html?plano='+encodeURIComponent(selectedFeedPlan.dataset.feedPlan); return; }
   if(t.id==='btn-new-cli')  { openModal('new-c'); return; }
   if(t.id==='btn-new-cnt')  { openModal('new-k'); return; }
   if(t.id==='btn-pdf')      { exportPDF(); return; }
