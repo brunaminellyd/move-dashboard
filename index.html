@@ -2315,6 +2315,11 @@ function clearAuthenticatedSessionData(){
 (async()=>{
   const wait=document.getElementById('auth-wait');
   const form=document.getElementById('login-form');
+  // A tela de login precisa da configuração do Firebase antes de ler os dados locais do painel.
+  try{
+    const cached=JSON.parse(localStorage.getItem(LS)||'null');
+    S.firebaseCfg=(cached&&cached.firebaseCfg)||FIREBASE_EMBEDDED_CONFIG;
+  }catch(e){ S.firebaseCfg=FIREBASE_EMBEDDED_CONFIG; }
   const showLogin=(message='')=>{
     document.body.className='auth-logged-out';
     wait.style.display='none'; form.style.display='block';
@@ -2339,7 +2344,8 @@ function clearAuthenticatedSessionData(){
       renderDash();
     },()=>showLogin('Não foi possível verificar o acesso. Confira a conexão e tente novamente.'));
   }catch(err){
-    showLogin('Falha ao conectar ao Firebase. Verifique a configuração e recarregue a página.');
+    const detail=err.code||err.message||'erro desconhecido';
+    showLogin('Falha ao iniciar o Firebase ('+detail+'). Confira a conexão e recarregue a página.');
     console.error('Firebase Authentication:',err);
   }
 })();
