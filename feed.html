@@ -52,6 +52,9 @@ input:focus,select:focus,textarea:focus{border-color:var(--violet);box-shadow:0 
 #pBig{background:#111;border-radius:10px;text-align:center;overflow:hidden}#pBig img,#pBig video{max-width:100%;max-height:60vh;display:block;margin:0 auto}#pBig small{color:#aaa;display:block;padding:30px}
 @media(max-width:800px){body{padding:8px}#app{grid-template-columns:1fr;height:auto}aside{border-radius:18px}main{padding:22px 16px;overflow:visible}.day{min-height:58px;padding:3px;font-size:10px}.chip{font-size:10px;padding:1px 3px}#lista{max-height:220px}}
 @media(max-width:600px){.modal{padding:0}.box{width:100%;height:100%;max-height:100%;border-radius:0}}
+#toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);background:#030303;color:#fff;padding:12px 20px;border-radius:12px;font-size:13.5px;opacity:0;pointer-events:none;transition:var(--tr);z-index:50;box-shadow:0 10px 30px rgba(0,0,0,.3)}#toast.on{opacity:1;transform:translate(-50%,0)}
+.prog{height:8px;background:rgba(91,16,143,.12);border-radius:99px;overflow:hidden;max-width:560px;margin:2px 0 18px}.prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,#5B108F,#D084FF);transition:width .5s}
+button.sec.on{background:var(--vp);border-color:var(--violet)}.cnt{text-align:right;font-size:12px;color:var(--tm);margin-top:4px}
 </style>
 </head>
 <body>
@@ -72,12 +75,12 @@ input:focus,select:focus,textarea:focus{border-color:var(--violet);box-shadow:0 
 <main>
  <div id="vazio"><div class="pt">MOVE <em>Feed</em></div><div class="ps">Planejamento visual de conteúdos para aprovação dos clientes</div><div class="empty">Escolha um planejamento na lista ao lado ou crie um novo.</div></div>
  <div id="plano" style="display:none">
-  <div class="top"><div><div class="kick">MOVE Feed</div><h2 id="tit"></h2></div><button class="del" onclick="excluirPlano()">Excluir planejamento</button></div>
+  <div class="top"><div><div class="kick">MOVE Feed</div><h2 id="tit"></h2></div><div class="bar" style="margin:0"><button class="sec" onclick="duplicarPlano()">Duplicar para o próximo mês</button><button class="del" onclick="excluirPlano()">Excluir planejamento</button></div></div>
   <div class="bar">
    <button onclick="abrirPost()">＋ Novo post</button><span id="cont"></span>
-   <button class="sec" onclick="aba('g')">Grade</button><button class="sec" onclick="aba('c')">Calendário</button>
+   <button class="sec" onclick="aba('g')">Grade</button><button class="sec" onclick="aba('c')">Calendário</button><button class="sec" id="bFiltro" onclick="filtrar()">Só com ajuste</button>
   </div>
-  <div class="bar" id="share"></div>
+  <div class="bar" id="share"></div><div class="prog"><i id="progI"></i></div>
   <div id="vg" class="grid"></div><div id="vc" class="cal" style="display:none"></div>
  </div>
 </main>
@@ -87,7 +90,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--violet);box-shadow:0 
  <div class="mh"><h3 id="mt">Post</h3><button class="x" onclick="fechar()" aria-label="Fechar">×</button></div>
  <label>Tipo</label><select id="pTipo"><option value="estatico">Estático (1 imagem)</option><option value="carrossel">Carrossel (até 10 imagens)</option><option value="reels">Reels (1 vídeo)</option></select>
  <label>Arquivos <small>(clique na miniatura para ampliar)</small></label><div id="pBig"></div><div id="pMid"></div><input type="file" id="pArq" multiple accept="image/*,video/*">
- <label>Legenda</label><textarea id="pLeg" rows="5"></textarea>
+ <label>Legenda</label><textarea id="pLeg" rows="5" maxlength="2200" oninput="contar()"></textarea><div id="pCnt" class="cnt">0 / 2200</div>
  <label>Data prevista</label><input type="date" id="pData">
  <div id="msg"></div>
  <div class="bar" style="margin-top:12px"><button onclick="salvarPost()" id="bSalvar">Salvar</button><button class="red" id="bDel" onclick="excluirPost()">Excluir</button></div>
@@ -130,7 +133,7 @@ onAuthStateChanged(auth,u=>{
 
 function lista(){$("lista").innerHTML=planos.map(p=>`<div class="pl ${cur&&cur.id===p.id?"on":""}" onclick="abrirPlano('${p.id}')">${esc(p.clienteNome)}<small>${nomeMes(p.mes)}</small></div>`).join("");
  if(cur){const n=planos.find(p=>p.id===cur.id);if(n){cur=n;cab()}}}
-window.novoPlano=async()=>{const c=clientes.find(x=>String(x.id)===$("nCli").value),m=$("nMes").value;if(!c||!m)return alert("Escolha o cliente e o mês.");
+window.novoPlano=async()=>{const c=clientes.find(x=>String(x.id)===$("nCli").value),m=$("nMes").value;if(!c||!m)return toast("Escolha o cliente e o mês.");
  const now=serverTimestamp();
  const r=await addDoc(collection(db,"feed_plans"),{clientId:String(c.id),clientName:String(c.name),period:m,status:"rascunho",createdAt:now,updatedAt:now,createdBy:auth.currentUser.uid,schemaVersion:1,shareAtivo:false,shareToken:null});
  $("nCli").value="";setTimeout(()=>abrirPlano(r.id),400)};
@@ -143,7 +146,8 @@ function cab(){$("tit").textContent=cur.clienteNome+" — "+nomeMes(cur.mes);
  const l=cur.shareAtivo&&cur.shareToken?new URL("feed-cliente.html?t="+cur.shareToken,location.href).href:"";
  $("share").innerHTML=l?`<input readonly value="${l}" style="width:340px" onclick="this.select()"><button onclick="navigator.clipboard.writeText('${l}');this.textContent='Copiado!'">Copiar link</button><button class="sec" onclick="gerarLink()">Gerar novo link</button><button class="red" onclick="desativar()">Desativar link</button>`
   :`<button onclick="gerarLink()">Gerar link para o cliente</button>`;
- $("cont").textContent=posts.length+"/20 posts"}
+ const ap=posts.filter(p=>stat[p.id]==="aprovado").length,aj=posts.filter(p=>stat[p.id]==="ajuste").length;
+ $("cont").textContent=posts.length+"/20 posts · "+ap+" aprovados · "+aj+" com ajuste";$("progI").style.width=(posts.length?ap/posts.length*100:0)+"%"}
 window.gerarLink=async()=>{if(cur.shareToken)await deleteDoc(doc(db,"feed_shares",cur.shareToken));
  const t=crypto.randomUUID().replace(/-/g,"");await setDoc(doc(db,"feed_shares",t),{planId:cur.id});await updateDoc(doc(db,"feed_plans",cur.id),{shareAtivo:true,shareToken:t})};
 window.desativar=async()=>{if(!confirm("O link atual deixará de funcionar. Continuar?"))return;
@@ -152,7 +156,7 @@ window.aba=a=>{verAba=a;desenhar()};
 
 function badge(p){return stat[p.id]==="ajuste"?'<span class="st aj">ajuste</span>':stat[p.id]==="aprovado"?'<span class="st ok">aprovado</span>':""}
 function desenhar(){if(!cur)return;cab();$("vg").style.display=verAba==="g"?"grid":"none";$("vc").style.display=verAba==="c"?"grid":"none";
- $("vg").innerHTML=posts.map(p=>`<div class="cell" draggable="true" data-id="${p.id}" style="background-image:url('${thumb(p.midias?.[0])}')" onclick="abrirPost('${p.id}')">
+ $("vg").innerHTML=posts.filter(p=>!filtroAj||stat[p.id]==="ajuste").map(p=>`<div class="cell" draggable="true" data-id="${p.id}" style="background-image:url('${thumb(p.midias?.[0])}')" onclick="abrirPost('${p.id}')">
   <span class="tag">${p.tipo==="reels"?"▶ Reels":p.tipo==="carrossel"?"❐ "+(p.midias||[]).length:"Estático"}</span>${badge(p)}<span class="dt">${p.dataPrevista?p.dataPrevista.slice(8)+"/"+p.dataPrevista.slice(5,7):""}</span></div>`).join("");
  document.querySelectorAll(".cell").forEach(c=>{c.ondragstart=e=>e.dataTransfer.setData("id",c.dataset.id);c.ondragover=e=>e.preventDefault();c.ondrop=e=>{e.preventDefault();mover(e.dataTransfer.getData("id"),c.dataset.id)}});
  const[a,m]=cur.mes.split("-").map(Number),ini=new Date(a,m-1,1).getDay(),dias=new Date(a,m,0).getDate();let h=["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"].map(d=>`<div class="wd">${d}</div>`).join("");
@@ -162,6 +166,19 @@ function desenhar(){if(!cur)return;cab();$("vg").style.display=verAba==="g"?"gri
 async function mover(de,para){if(de===para)return;const l=posts.filter(p=>p.id!==de),i=l.findIndex(p=>p.id===para),mv=posts.find(p=>p.id===de);l.splice(i,0,mv);
  await Promise.all(l.map((p,n)=>updateDoc(doc(db,"feed_plans",cur.id,"posts",p.id),{ordem:n})))}
 
+let filtroAj=false;
+function toast(m){let t=$("toast");if(!t){t=document.createElement("div");t.id="toast";document.body.appendChild(t)}t.textContent=m;t.className="on";clearTimeout(t._t);t._t=setTimeout(()=>t.className="",3400)}
+window.filtrar=()=>{filtroAj=!filtroAj;$("bFiltro").classList.toggle("on",filtroAj);desenhar()};
+window.contar=()=>{const n=$("pLeg").value.length;$("pCnt").textContent=n+" / 2200";$("pCnt").style.color=n>2200?"#C0392B":""};
+window.duplicarPlano=async()=>{
+ const[a,m]=cur.mes.split("-").map(Number),d=new Date(a,m,1),novo=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0"),max=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();
+ if(!confirm("Criar "+nomeMes(novo)+" para "+cur.clienteNome+", copiando tipo, legenda e data de cada post (sem as imagens)?"))return;
+ try{const now=serverTimestamp();
+  const r=await addDoc(collection(db,"feed_plans"),{clientId:cur.clientId||null,clientName:cur.clienteNome,period:novo,status:"rascunho",createdAt:now,updatedAt:now,createdBy:auth.currentUser.uid,schemaVersion:1,shareAtivo:false,shareToken:null});
+  for(const p of posts){const dt=p.dataPrevista?novo+"-"+String(Math.min(+p.dataPrevista.slice(8),max)).padStart(2,"0"):null;
+   await addDoc(collection(db,"feed_plans",r.id,"posts"),{tipo:p.tipo,legenda:p.legenda||"",dataPrevista:dt,ordem:p.ordem,midias:[],criadoEm:serverTimestamp()})}
+  toast("Planejamento duplicado.");setTimeout(()=>abrirPlano(r.id),500);
+ }catch(e){toast("Não foi possível duplicar: "+e.message)}};
 window.excluirPlano=async()=>{
  if(!confirm("Excluir o planejamento de "+cur.clienteNome+" ("+nomeMes(cur.mes)+") com todos os posts e comentários? Não dá para desfazer."))return;
  const id=cur.id,tk=cur.shareToken;ulP&&ulP();ulP=null;Object.values(ulC).forEach(f=>f());ulC={};
@@ -172,11 +189,11 @@ window.excluirPlano=async()=>{
   if(tk)await deleteDoc(doc(db,"feed_shares",tk));
   await deleteDoc(doc(db,"feed_plans",id));
   cur=null;posts=[];$("plano").style.display="none";$("vazio").style.display="block";lista();
- }catch(e){alert("Não foi possível excluir: "+e.message)}};
+ }catch(e){toast("Não foi possível excluir: "+e.message)}};
 /* ---- modal de post ---- */
 window.abrirPost=id=>{editId=id||null;const p=posts.find(x=>x.id===id);
- if(!p&&posts.length>=20)return alert("Limite de 20 posts por planejamento.");
- midias=p?[...(p.midias||[])]:[];bigIdx=0;$("mt").textContent=p?"Editar post":"Novo post";$("pTipo").value=p?p.tipo:"estatico";$("pLeg").value=p?p.legenda||"":"";
+ if(!p&&posts.length>=20)return toast("Limite de 20 posts por planejamento.");
+ midias=p?[...(p.midias||[])]:[];bigIdx=0;$("mt").textContent=p?"Editar post":"Novo post";$("pTipo").value=p?p.tipo:"estatico";$("pLeg").value=p?p.legenda||"":"";contar();
  $("pData").value=p?p.dataPrevista||"":"";$("pData").min=cur.mes+"-01";$("pData").max=cur.mes+"-31";$("pArq").value="";$("msg").textContent="";
  $("bDel").style.display=$("cmBox").style.display=p?"":"none";ulM&&ulM();
  if(p)ulM=onSnapshot(query(collection(db,"feed_plans",cur.id,"posts",p.id,"comentarios"),orderBy("criadoEm")),s=>{
@@ -211,7 +228,7 @@ window.salvarPost=async()=>{const tipo=$("pTipo").value,novos=[...$("pArq").file
   const d={tipo,midias,legenda:$("pLeg").value,dataPrevista:$("pData").value||null};
   if(editId)await updateDoc(doc(db,"feed_plans",cur.id,"posts",editId),d);
   else await addDoc(collection(db,"feed_plans",cur.id,"posts"),{...d,ordem:posts.length,criadoEm:serverTimestamp()});
-  fechar();
+  fechar();toast("Post salvo.");
  }catch(e){msg.textContent=e.message}$("bSalvar").disabled=false};
 window.excluirPost=async()=>{if(!confirm("Excluir este post e seus comentários?"))return;const r=collection(db,"feed_plans",cur.id,"posts",editId,"comentarios");
  for(const d of (await getDocs(r)).docs)await deleteDoc(d.ref);delete ulC[editId];await deleteDoc(doc(db,"feed_plans",cur.id,"posts",editId));fechar()};

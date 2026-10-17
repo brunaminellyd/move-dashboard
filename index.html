@@ -468,6 +468,21 @@ body.auth-pending #auth-gate,body.auth-logged-out #auth-gate{display:flex}
 .auth-logout:hover{color:#fff;background:rgba(255,255,255,.07)}
 @media(max-width:700px){.feed-intro{grid-template-columns:1fr}.auth-card{padding:28px 22px}}
 </style>
+<style id="move-ux">
+/* Contraste e legibilidade */
+.s-sub{color:rgba(238,232,248,.62)!important}.s-sec{color:rgba(238,232,248,.5)!important;font-size:10.5px!important}
+.s-foot-txt{color:rgba(238,232,248,.62)!important;font-size:11px!important}.s-foot-txt em{color:rgba(208,132,255,.85)!important}
+.mc-v,.pr-stat-n,.ph-l .pt,.modal-title{font-variant-numeric:lining-nums;font-feature-settings:"lnum" 1}
+.tbl th{font-size:11.5px!important;color:var(--ts)!important}.tbl td{font-size:13.5px}
+.card,.mc{border-color:#D9C8E6!important;box-shadow:0 4px 24px rgba(45,8,72,.10)!important}
+[data-go]{cursor:pointer}.mc[data-go]:hover{transform:translateY(-2px);border-color:var(--violet-light)!important;box-shadow:0 10px 30px rgba(91,16,143,.16)!important}
+/* Tabela de clientes: cabeçalho e coluna Cliente fixos */
+#v-clientes .tbl-wrap{overflow:auto;max-height:calc(100vh - 290px)}
+#v-clientes .tbl thead th{position:sticky;top:0;z-index:3}
+#v-clientes .tbl th:nth-child(2),#v-clientes .tbl td:nth-child(2){position:sticky;left:0;z-index:2;background:#fff}
+#v-clientes .tbl thead th:nth-child(2){z-index:4}
+#v-clientes .tbl tbody tr:hover td:nth-child(2){background:#FBF6FE}
+</style>
 </head>
 <body class="auth-pending">
 <div id="auth-gate" aria-live="polite">
@@ -1224,14 +1239,14 @@ function renderDash(){
     {l:'Conteúdos feitos',v:totFeitos,s:pctFeitos+'% do pacote',c:'#1E9E6A'},
     {l:'GMN feito',v:gmnFeitos,s:gmnAtivos.length+' clientes com GMN ('+gmnPct+'%)',c:'#5D6BE0'},
     {l:'GMN não feito',v:gmnNaoFeitos,s:'precisa ação',c:'#C47A1A'},
-  ].map(m=>'<div class="mc"><div class="mc-l">'+m.l+'</div><div class="mc-v" style="color:'+m.c+'">'+m.v+'</div><div class="mc-s">'+m.s+'</div></div>').join('');
+  ].map(m=>'<div class="mc"'+(m.go?' data-go="'+m.go+'"':'')+'><div class="mc-l">'+m.l+'</div><div class="mc-v" style="color:'+m.c+'">'+m.v+'</div><div class="mc-s">'+m.s+'</div></div>').join('');
 
   document.getElementById('m2').innerHTML=[
-    {l:'Clientes ativos',v:S.clients.length,s:'neste mês',c:'#D084FF'},
-    {l:'Alguma pendência',v:cliPend,s:'status na tabela',c:'#C47A1A'},
-    {l:'Atrasados',v:cliAtras,s:'precisa ação',c:'#C0392B'},
-    {l:'Sem dados',v:cliSemDados,s:'sem retorno',c:'#A86CC9'},
-  ].map(m=>'<div class="mc"><div class="mc-l">'+m.l+'</div><div class="mc-v" style="color:'+m.c+'">'+m.v+'</div><div class="mc-s">'+m.s+'</div></div>').join('');
+    {l:'Clientes ativos',v:S.clients.length,s:'neste mês',c:'#5B108F',go:'todos'},
+    {l:'Alguma pendência',v:cliPend,s:'status na tabela',c:'#C47A1A',go:'alguma_pendencia'},
+    {l:'Atrasados',v:cliAtras,s:'precisa ação',c:'#C0392B',go:'atrasado'},
+    {l:'Sem dados',v:cliSemDados,s:'sem retorno',c:'#7B3FA8',go:'sem_dados'},
+  ].map(m=>'<div class="mc"'+(m.go?' data-go="'+m.go+'"':'')+'><div class="mc-l">'+m.l+'</div><div class="mc-v" style="color:'+m.c+'">'+m.v+'</div><div class="mc-s">'+m.s+'</div></div>').join('');
 
   svgDonut('ch-donut',[
     {l:'Em dia',v:cliEmDia,c:'#1E9E6A'},
@@ -1349,8 +1364,8 @@ function renderClients(){
       const pCfg=PAUTA[pauta];
       // Responsáveis: principal + SM
       let respPills='';
-      if(c.resp) respPills+='<span class="tag-pill" style="background:rgba(139,92,246,.18);color:#c4b5fd">'+esc(c.resp)+'</span>';
-      if(c.respSM) respPills+='<span class="tag-pill sm" style="background:rgba(251,146,60,.16);color:#fb923c">'+esc(c.respSM)+'</span>';
+      if(c.resp) respPills+='<span class="tag-pill" style="background:rgba(91,16,143,.10);color:#43096F">'+esc(c.resp)+'</span>';
+      if(c.respSM) respPills+='<span class="tag-pill sm" style="background:rgba(196,122,26,.13);color:#8A5200">'+esc(c.respSM)+'</span>';
       if(!respPills) respPills='<span style="color:var(--tm);font-size:10px">— vazio —</span>';
       // Observação truncada visual
       const obsTxt=(c.obs||'').trim();
@@ -2353,6 +2368,7 @@ document.addEventListener('click',e=>{
   const vt=t.closest('[data-cv]'); if(vt){ S.cntView=vt.dataset.cv; renderContents(); return; }
 
   // Filter tabs - clients
+  const go=t.closest('[data-go]'); if(go){ S.cliFilter=go.dataset.go; navigate('clientes'); return; }
   const cf=t.closest('[data-cf]'); if(cf){ S.cliFilter=cf.dataset.cf; renderClients(); return; }
   const gf=t.closest('[data-gf]'); if(gf){ S.cliGMN=gf.dataset.gf; renderClients(); return; }
 

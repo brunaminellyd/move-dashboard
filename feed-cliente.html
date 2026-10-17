@@ -33,14 +33,18 @@ header h1{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;
 button{font-family:inherit;font-weight:500;border-radius:12px;padding:11px 20px}
 .cell{border-radius:10px;box-shadow:0 2px 20px rgba(45,8,72,.1)}.grid{gap:6px}.day{border-radius:10px}
 .box{border-radius:14px;box-shadow:0 32px 80px rgba(0,0,0,.3)}.cm{border-radius:8px}
+.perfil{display:flex;align-items:center;gap:16px;margin-top:4px}.av{width:66px;height:66px;border-radius:50%;background:linear-gradient(135deg,#5B108F,#D084FF);display:grid;place-items:center;font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;color:#fff;flex:none}
+#stats{color:rgba(255,255,255,.7);font-size:13px;margin-top:2px}.perfil h1{margin:0!important}
+.st{position:absolute;bottom:6px;left:6px;font-size:11px;padding:2px 8px;border-radius:20px;color:#fff}.ok{background:#1E9E6A}.aj{background:#C0392B}
+.apr{width:100%;margin-bottom:12px;background:#1E9E6A}
 </style>
 </head>
 <body>
-<header><b>MOVE Marketing</b><h1 id="tit">Carregando…</h1></header>
+<header><b>MOVE Marketing</b><div class="perfil"><div class="av" id="av"></div><div><h1 id="tit">Carregando…</h1><div id="stats"></div></div></div></header>
 <div id="erro">Este link não está disponível. Peça um novo link à equipe MOVE.</div>
 <main id="main" style="display:none">
  <div class="bar"><button class="sec" onclick="aba('g')">Grade</button><button class="sec" onclick="aba('c')">Calendário</button></div>
- <div id="vg" class="grid"></div><div id="vc" class="cal" style="display:none"></div>
+ <button class="apr" onclick="aprovarTudo()">✓ Aprovar planejamento inteiro</button><div id="vg" class="grid"></div><div id="vc" class="cal" style="display:none"></div>
 </main>
 <div class="modal" id="m"><button class="x" onclick="fechar()" aria-label="Fechar">×</button><div class="box">
  <div class="vis" id="vis"></div>
@@ -79,13 +83,20 @@ try{
  const s=await getDoc(doc(db,"feed_shares",t));if(!s.exists())throw 0;planId=s.data().planId;
  const p=await getDoc(doc(db,"feed_plans",planId));if(!p.exists()||!p.data().shareAtivo)throw 0;plano=p.data();plano.mes=plano.period||plano.mes;plano.clienteNome=plano.clientName||plano.clienteNome;
  const[a,m]=plano.mes.split("-");$("tit").textContent=plano.clienteNome+" — "+new Date(a,m-1,1).toLocaleDateString("pt-BR",{month:"long",year:"numeric"});
- $("main").style.display="block";
- onSnapshot(query(collection(db,"feed_plans",planId,"posts"),orderBy("ordem")),s=>{posts=s.docs.map(d=>({id:d.id,...d.data()}));desenhar()});
+ $("av").textContent=plano.clienteNome.replace(/^(Dr\.|Dra\.)\s*/i,"").trim().slice(0,1).toUpperCase();$("main").style.display="block";
+ onSnapshot(query(collection(db,"feed_plans",planId,"posts"),orderBy("ordem")),s=>{posts=s.docs.map(d=>({id:d.id,...d.data()}));acompanhar();desenhar()});
 }catch(e){$("tit").textContent="";$("erro").style.display="block"}
 
 window.aba=a=>{verAba=a;desenhar()};
-function desenhar(){$("vg").style.display=verAba==="g"?"grid":"none";$("vc").style.display=verAba==="c"?"grid":"none";
- $("vg").innerHTML=posts.map(p=>`<div class="cell" style="background-image:url('${thumb(p.midias?.[0])}')" onclick="abrir('${p.id}')"><span class="tag">${p.tipo==="reels"?"▶ Reels":p.tipo==="carrossel"?"❐ "+(p.midias||[]).length:""}</span></div>`).join("");
+const stat={},ulS={};
+function acompanhar(){posts.forEach(p=>{if(ulS[p.id])return;ulS[p.id]=onSnapshot(query(collection(db,"feed_plans",planId,"posts",p.id,"comentarios"),orderBy("criadoEm")),s=>{const l=s.docs.map(d=>d.data()).filter(x=>x.tipo!=="comentario").pop();stat[p.id]=l?l.tipo:"";desenhar()})})}
+window.aprovarTudo=async()=>{const pend=posts.filter(p=>stat[p.id]!=="aprovado");if(!pend.length)return alert("Todos os posts já estão aprovados.");
+ const nome=prompt("Seu nome, para registrar a aprovação:",localStorage.getItem("moveNome")||"");if(!nome||!nome.trim())return;
+ if(!confirm("Aprovar os "+pend.length+" posts pendentes?"))return;
+ try{for(const p of pend)await addDoc(collection(db,"feed_plans",planId,"posts",p.id,"comentarios"),{autor:nome.trim().slice(0,80),texto:"Aprovado (planejamento inteiro)",tipo:"aprovado",criadoEm:serverTimestamp()});
+  localStorage.setItem("moveNome",nome.trim());alert("Planejamento aprovado. Obrigado!")}catch(e){alert("Não foi possível enviar. Tente novamente.")}};
+function desenhar(){$("stats").textContent=posts.length+" publicações · "+posts.filter(p=>stat[p.id]==="aprovado").length+" aprovadas";$("vg").style.display=verAba==="g"?"grid":"none";$("vc").style.display=verAba==="c"?"grid":"none";
+ $("vg").innerHTML=posts.map(p=>`<div class="cell" style="background-image:url('${thumb(p.midias?.[0])}')" onclick="abrir('${p.id}')"><span class="tag">${p.tipo==="reels"?"▶ Reels":p.tipo==="carrossel"?"❐ "+(p.midias||[]).length:""}</span>${stat[p.id]==="aprovado"?'<span class="st ok">✓ aprovado</span>':stat[p.id]==="ajuste"?'<span class="st aj">ajuste</span>':""}</div>`).join("");
  const[a,m]=plano.mes.split("-").map(Number),ini=new Date(a,m-1,1).getDay(),dias=new Date(a,m,0).getDate();let h="";
  for(let i=0;i<ini;i++)h+="<div></div>";
  for(let d=1;d<=dias;d++){const k=`${plano.mes}-${String(d).padStart(2,"0")}`;h+=`<div class="day"><b>${d}</b>${posts.filter(p=>p.dataPrevista===k).map(p=>`<div class="chip" onclick="abrir('${p.id}')">${p.tipo==="reels"?"▶":p.tipo==="carrossel"?"❐":"■"} ${esc((p.legenda||"").slice(0,14))||"post"}</div>`).join("")}</div>`}
