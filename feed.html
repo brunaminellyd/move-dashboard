@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MOVE Feed</title>
+<style>
+:root{--roxo:#5B108F;--preto:#030303;--lilas:#D084FF;--off:#F1F1F1}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,sans-serif;background:var(--off);color:var(--preto)}
+header{background:var(--preto);color:#fff;padding:12px 20px;display:flex;gap:16px;align-items:center}
+header b{color:var(--lilas);font-size:18px}header a{color:#fff;margin-left:auto}
+#app{display:grid;grid-template-columns:260px 1fr;min-height:calc(100vh - 50px)}
+aside{background:var(--roxo);color:#fff;padding:14px}aside input,aside button{width:100%;margin:4px 0}
+.pl{padding:8px;border-radius:8px;cursor:pointer}.pl:hover,.pl.on{background:rgba(255,255,255,.2)}.pl small{display:block;opacity:.7}
+main{padding:20px}input,select,textarea,button{font:inherit;padding:8px;border-radius:8px;border:1px solid #ccc}
+button{background:var(--roxo);color:#fff;border:0;cursor:pointer}button.sec{background:#fff;color:var(--roxo);border:1px solid var(--roxo)}button.red{background:#c0392b}
+.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;max-width:520px}
+.cell{aspect-ratio:3/4;background:#ddd center/cover;position:relative;cursor:grab;border-radius:4px}
+.tag{position:absolute;top:6px;right:6px;background:rgba(0,0,0,.65);color:#fff;font-size:12px;padding:2px 6px;border-radius:6px}
+.st{position:absolute;bottom:6px;left:6px;font-size:11px;padding:2px 6px;border-radius:6px;color:#fff}
+.ok{background:#27ae60}.aj{background:#c0392b}.dt{position:absolute;bottom:6px;right:6px;color:#fff;font-size:11px;text-shadow:0 0 4px #000}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}.day{background:#fff;min-height:90px;padding:4px;border-radius:6px;font-size:12px}
+.chip{background:var(--lilas);border-radius:4px;padding:2px 4px;margin-top:3px;cursor:pointer;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:10px}
+.modal.on{display:flex}.box{background:#fff;border-radius:12px;padding:16px;width:min(560px,100%);max-height:94vh;overflow:auto}
+.box label{display:block;margin-top:10px;font-weight:600}.box input,.box select,.box textarea{width:100%}
+.mid{display:inline-block;position:relative;margin:4px}.mid img,.mid video{width:70px;height:90px;object-fit:cover;border-radius:6px}
+.mid i{position:absolute;top:-4px;right:-4px;background:#c0392b;color:#fff;border-radius:50%;width:18px;height:18px;text-align:center;font-size:12px;cursor:pointer;font-style:normal}
+.cm{background:var(--off);border-radius:8px;padding:6px 8px;margin:4px 0;font-size:14px}
+#msg{color:#c0392b;margin:6px 0}
+@media(max-width:800px){#app{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><b>MOVE Feed</b><span id="quem"></span><a href="index.html">← Voltar ao painel</a></header>
+<div id="login" style="padding:40px;display:none">Você precisa estar logado. <a href="index.html">Entrar pelo painel MOVE Operacional</a>, depois volte aqui.</div>
+<div id="app" style="display:none">
+<aside>
+ <b>Novo planejamento</b>
+ <input id="nCli" placeholder="Nome do cliente">
+ <input id="nMes" type="month">
+ <button onclick="novoPlano()">Criar</button>
+ <hr><div id="lista"></div>
+</aside>
+<main>
+ <div id="vazio">Escolha ou crie um planejamento.</div>
+ <div id="plano" style="display:none">
+  <h2 id="tit"></h2>
+  <div class="bar">
+   <button onclick="abrirPost()">+ Novo post</button><span id="cont"></span>
+   <button class="sec" onclick="aba('g')">Grade</button><button class="sec" onclick="aba('c')">Calendário</button>
+  </div>
+  <div class="bar" id="share"></div>
+  <div id="vg" class="grid"></div><div id="vc" class="cal" style="display:none"></div>
+ </div>
+</main>
+</div>
+
+<div class="modal" id="mp"><div class="box">
+ <h3 id="mt">Post</h3>
+ <label>Tipo</label><select id="pTipo"><option value="estatico">Estático (1 imagem)</option><option value="carrossel">Carrossel (até 10 imagens)</option><option value="reels">Reels (1 vídeo)</option></select>
+ <label>Arquivos</label><div id="pMid"></div><input type="file" id="pArq" multiple accept="image/*,video/*">
+ <label>Legenda</label><textarea id="pLeg" rows="5"></textarea>
+ <label>Data prevista</label><input type="date" id="pData">
+ <div id="msg"></div>
+ <div class="bar" style="margin-top:12px"><button onclick="salvarPost()" id="bSalvar">Salvar</button><button class="sec" onclick="fechar()">Fechar</button><button class="red" id="bDel" onclick="excluirPost()">Excluir</button></div>
+ <div id="cmBox"><h4>Comentários do cliente</h4><div id="cms"></div><input id="rTxt" placeholder="Responder como MOVE"><button onclick="responder()" style="margin-top:6px">Responder</button></div>
+</div></div>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import {getFirestore,collection,doc,addDoc,setDoc,updateDoc,deleteDoc,getDocs,onSnapshot,query,orderBy,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+/* ===== 1) COLE AQUI a firebaseConfig do seu index.html ===== */
+const firebaseConfig = {
+  apiKey: "AIzaSyCwnBQwHmfl5F_fm93rsAL7RDguYcsHs0o",
+  authDomain: "move-operacional.firebaseapp.com",
+  projectId: "move-operacional",
+  storageBucket: "move-operacional.firebasestorage.app",
+  messagingSenderId: "988960038443",
+  appId: "1:988960038443:web:1d28946abd5307974a146e"
+};
+/* ===== 2) DADOS DO CLOUDINARY ===== */
+const CLD = { cloud:"bmcglaf1", preset:"move_feed_unsigned", maxImgMB:10, maxVidMB:100 };
+
+const app=initializeApp(firebaseConfig), auth=getAuth(app), db=getFirestore(app);
+const $=id=>document.getElementById(id), esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let planos=[],cur=null,posts=[],stat={},ulP=null,ulC={},editId=null,midias=[],ulM=null,verAba="g";
+const thumb=m=>!m?"":m.tipo==="video"?m.url.replace("/upload/","/upload/so_0,f_jpg,q_auto,w_500/").replace(/\.\w+$/,".jpg"):m.url.replace("/upload/","/upload/f_auto,q_auto,w_500/");
+const slug=s=>s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+const nomeMes=m=>{const[a,b]=m.split("-");return new Date(a,b-1,1).toLocaleDateString("pt-BR",{month:"long",year:"numeric"})};
+
+onAuthStateChanged(auth,u=>{
+ $("login").style.display=u?"none":"block";$("app").style.display=u?"grid":"none";
+ if(u){$("quem").textContent=u.email||"";onSnapshot(query(collection(db,"feed_plans"),orderBy("criadoEm","desc")),s=>{planos=s.docs.map(d=>({id:d.id,...d.data()}));lista()})}
+});
+
+function lista(){$("lista").innerHTML=planos.map(p=>`<div class="pl ${cur&&cur.id===p.id?"on":""}" onclick="abrirPlano('${p.id}')">${esc(p.clienteNome)}<small>${nomeMes(p.mes)}</small></div>`).join("");
+ if(cur){const n=planos.find(p=>p.id===cur.id);if(n){cur=n;cab()}}}
+window.novoPlano=async()=>{const c=$("nCli").value.trim(),m=$("nMes").value;if(!c||!m)return alert("Informe cliente e mês.");
+ const r=await addDoc(collection(db,"feed_plans"),{clienteNome:c,mes:m,shareAtivo:false,shareToken:null,criadoEm:serverTimestamp()});$("nCli").value="";abrirPlano(r.id)};
+window.abrirPlano=id=>{cur=planos.find(p=>p.id===id);if(!cur)return;ulP&&ulP();Object.values(ulC).forEach(f=>f());ulC={};stat={};
+ $("vazio").style.display="none";$("plano").style.display="block";cab();lista();
+ ulP=onSnapshot(query(collection(db,"feed_plans",id,"posts"),orderBy("ordem")),s=>{posts=s.docs.map(d=>({id:d.id,...d.data()}));
+  posts.forEach(p=>{if(!ulC[p.id])ulC[p.id]=onSnapshot(query(collection(db,"feed_plans",id,"posts",p.id,"comentarios"),orderBy("criadoEm")),c=>{
+   const l=c.docs.map(x=>x.data()).filter(x=>x.tipo!=="comentario").pop();stat[p.id]=l?l.tipo:"";desenhar()})});desenhar()})};
+function cab(){$("tit").textContent=cur.clienteNome+" — "+nomeMes(cur.mes);
+ const l=cur.shareAtivo&&cur.shareToken?new URL("feed-cliente.html?t="+cur.shareToken,location.href).href:"";
+ $("share").innerHTML=l?`<input readonly value="${l}" style="width:340px" onclick="this.select()"><button onclick="navigator.clipboard.writeText('${l}');this.textContent='Copiado!'">Copiar link</button><button class="sec" onclick="gerarLink()">Gerar novo link</button><button class="red" onclick="desativar()">Desativar link</button>`
+  :`<button onclick="gerarLink()">Gerar link para o cliente</button>`;
+ $("cont").textContent=posts.length+"/20 posts"}
+window.gerarLink=async()=>{if(cur.shareToken)await deleteDoc(doc(db,"feed_shares",cur.shareToken));
+ const t=crypto.randomUUID().replace(/-/g,"");await setDoc(doc(db,"feed_shares",t),{planId:cur.id});await updateDoc(doc(db,"feed_plans",cur.id),{shareAtivo:true,shareToken:t})};
+window.desativar=async()=>{if(!confirm("O link atual deixará de funcionar. Continuar?"))return;
+ await deleteDoc(doc(db,"feed_shares",cur.shareToken));await updateDoc(doc(db,"feed_plans",cur.id),{shareAtivo:false,shareToken:null})};
+window.aba=a=>{verAba=a;desenhar()};
+
+function badge(p){return stat[p.id]==="ajuste"?'<span class="st aj">ajuste</span>':stat[p.id]==="aprovado"?'<span class="st ok">aprovado</span>':""}
+function desenhar(){if(!cur)return;cab();$("vg").style.display=verAba==="g"?"grid":"none";$("vc").style.display=verAba==="c"?"grid":"none";
+ $("vg").innerHTML=posts.map(p=>`<div class="cell" draggable="true" data-id="${p.id}" style="background-image:url('${thumb(p.midias?.[0])}')" onclick="abrirPost('${p.id}')">
+  <span class="tag">${p.tipo==="reels"?"▶ Reels":p.tipo==="carrossel"?"❐ "+(p.midias||[]).length:"Estático"}</span>${badge(p)}<span class="dt">${p.dataPrevista?p.dataPrevista.slice(8)+"/"+p.dataPrevista.slice(5,7):""}</span></div>`).join("");
+ document.querySelectorAll(".cell").forEach(c=>{c.ondragstart=e=>e.dataTransfer.setData("id",c.dataset.id);c.ondragover=e=>e.preventDefault();c.ondrop=e=>{e.preventDefault();mover(e.dataTransfer.getData("id"),c.dataset.id)}});
+ const[a,m]=cur.mes.split("-").map(Number),ini=new Date(a,m-1,1).getDay(),dias=new Date(a,m,0).getDate();let h="";
+ for(let i=0;i<ini;i++)h+="<div></div>";
+ for(let d=1;d<=dias;d++){const k=`${cur.mes}-${String(d).padStart(2,"0")}`;h+=`<div class="day"><b>${d}</b>${posts.filter(p=>p.dataPrevista===k).map(p=>`<div class="chip" onclick="abrirPost('${p.id}')">${p.tipo==="reels"?"▶":p.tipo==="carrossel"?"❐":"■"} ${esc((p.legenda||"").slice(0,18))||"post"}</div>`).join("")}</div>`}
+ $("vc").innerHTML=h}
+async function mover(de,para){if(de===para)return;const l=posts.filter(p=>p.id!==de),i=l.findIndex(p=>p.id===para),mv=posts.find(p=>p.id===de);l.splice(i,0,mv);
+ await Promise.all(l.map((p,n)=>updateDoc(doc(db,"feed_plans",cur.id,"posts",p.id),{ordem:n})))}
+
+/* ---- modal de post ---- */
+window.abrirPost=id=>{editId=id||null;const p=posts.find(x=>x.id===id);
+ if(!p&&posts.length>=20)return alert("Limite de 20 posts por planejamento.");
+ midias=p?[...(p.midias||[])]:[];$("mt").textContent=p?"Editar post":"Novo post";$("pTipo").value=p?p.tipo:"estatico";$("pLeg").value=p?p.legenda||"":"";
+ $("pData").value=p?p.dataPrevista||"":"";$("pData").min=cur.mes+"-01";$("pData").max=cur.mes+"-31";$("pArq").value="";$("msg").textContent="";
+ $("bDel").style.display=$("cmBox").style.display=p?"":"none";ulM&&ulM();
+ if(p)ulM=onSnapshot(query(collection(db,"feed_plans",cur.id,"posts",p.id,"comentarios"),orderBy("criadoEm")),s=>{
+  $("cms").innerHTML=s.docs.map(d=>d.data()).map(c=>`<div class="cm"><b>${esc(c.autor)}</b> ${c.tipo==="ajuste"?"🔴 pediu ajuste":c.tipo==="aprovado"?"🟢 aprovou":""}<br>${esc(c.texto)}</div>`).join("")||"Sem comentários."});
+ mids();$("mp").classList.add("on")};
+function mids(){$("pMid").innerHTML=midias.map((m,i)=>`<span class="mid">${m.tipo==="video"?`<video src="${m.url}"></video>`:`<img src="${thumb(m)}">`}<i onclick="tirar(${i})">×</i></span>`).join("")}
+window.tirar=i=>{midias.splice(i,1);mids()};
+window.fechar=()=>{ulM&&ulM();ulM=null;$("mp").classList.remove("on")};
+async function comprimir(f){if(!f.type.startsWith("image/")||f.type==="image/gif")return f;const b=await createImageBitmap(f),s=Math.min(1,1080/b.width),c=document.createElement("canvas");
+ c.width=b.width*s;c.height=b.height*s;c.getContext("2d").drawImage(b,0,0,c.width,c.height);return new Promise(r=>c.toBlob(r,"image/jpeg",.85))}
+function enviar(arq,onP){return new Promise((ok,err)=>{const vid=arq.type.startsWith("video/");
+ if(arq.size>(vid?CLD.maxVidMB:CLD.maxImgMB)*1048576*(vid?1:3))return err(new Error("Arquivo muito grande: "+arq.name));
+ const fd=new FormData();fd.append("file",arq,arq.name||"img.jpg");fd.append("upload_preset",CLD.preset);fd.append("folder",`move-feed/${slug(cur.clienteNome)}/${cur.mes}`);
+ const x=new XMLHttpRequest();x.open("POST",`https://api.cloudinary.com/v1_1/${CLD.cloud}/${vid?"video":"image"}/upload`);
+ x.upload.onprogress=e=>e.lengthComputable&&onP(Math.round(e.loaded/e.total*100));
+ x.onload=()=>{const r=JSON.parse(x.responseText||"{}");x.status<300?ok({url:r.secure_url,publicId:r.public_id,tipo:vid?"video":"image"}):err(new Error(r.error?.message||"Falha no envio"))};
+ x.onerror=()=>err(new Error("Erro de rede"));x.send(fd)})}
+window.salvarPost=async()=>{const tipo=$("pTipo").value,novos=[...$("pArq").files],msg=$("msg");msg.textContent="";
+ try{
+  const max=tipo==="carrossel"?10:1;if(midias.length+novos.length>max)throw new Error(`Este tipo aceita no máximo ${max} arquivo(s).`);
+  if(tipo==="reels"&&[...novos].some(f=>!f.type.startsWith("video/")))throw new Error("Reels precisa ser vídeo.");
+  if(tipo!=="reels"&&[...novos].some(f=>!f.type.startsWith("image/")))throw new Error("Estático e carrossel precisam ser imagens.");
+  if(!midias.length&&!novos.length)throw new Error("Adicione ao menos um arquivo.");
+  $("bSalvar").disabled=true;
+  for(let i=0;i<novos.length;i++){const f=await comprimir(novos[i]);midias.push(await enviar(f,p=>msg.textContent=`Enviando ${i+1}/${novos.length}: ${p}%`))}
+  const d={tipo,midias,legenda:$("pLeg").value,dataPrevista:$("pData").value||null};
+  if(editId)await updateDoc(doc(db,"feed_plans",cur.id,"posts",editId),d);
+  else await addDoc(collection(db,"feed_plans",cur.id,"posts"),{...d,ordem:posts.length,criadoEm:serverTimestamp()});
+  fechar();
+ }catch(e){msg.textContent=e.message}$("bSalvar").disabled=false};
+window.excluirPost=async()=>{if(!confirm("Excluir este post e seus comentários?"))return;const r=collection(db,"feed_plans",cur.id,"posts",editId,"comentarios");
+ for(const d of (await getDocs(r)).docs)await deleteDoc(d.ref);delete ulC[editId];await deleteDoc(doc(db,"feed_plans",cur.id,"posts",editId));fechar()};
+window.responder=async()=>{const t=$("rTxt").value.trim();if(!t)return;
+ await addDoc(collection(db,"feed_plans",cur.id,"posts",editId,"comentarios"),{autor:"MOVE",texto:t,tipo:"comentario",criadoEm:serverTimestamp()});$("rTxt").value=""};
+</script>
+</body>
+</html>

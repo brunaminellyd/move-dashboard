@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Planejamento de conteúdo — MOVE</title>
+<style>
+:root{--roxo:#5B108F;--preto:#030303;--lilas:#D084FF;--off:#F1F1F1}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,sans-serif;background:var(--off);color:var(--preto)}
+header{background:var(--preto);color:#fff;padding:14px 18px}header b{color:var(--lilas)}header h1{margin:4px 0 0;font-size:18px}
+main{max-width:560px;margin:0 auto;padding:14px}
+.bar{display:flex;gap:8px;margin-bottom:12px}button,input,textarea{font:inherit;padding:9px;border-radius:8px;border:1px solid #ccc}
+button{background:var(--roxo);color:#fff;border:0;cursor:pointer}button.sec{background:#fff;color:var(--roxo);border:1px solid var(--roxo)}button.red{background:#c0392b}button.grn{background:#27ae60}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}
+.cell{aspect-ratio:3/4;background:#ddd center/cover;position:relative;cursor:pointer}
+.tag{position:absolute;top:6px;right:6px;background:rgba(0,0,0,.65);color:#fff;font-size:12px;padding:2px 6px;border-radius:6px}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;font-size:11px}.day{background:#fff;min-height:70px;padding:3px;border-radius:5px}
+.chip{background:var(--lilas);border-radius:4px;padding:2px 3px;margin-top:2px;cursor:pointer;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;padding:8px}
+.modal.on{display:flex}.box{background:#fff;border-radius:12px;width:min(520px,100%);max-height:96vh;overflow:auto}
+.vis{position:relative;background:#000}.vis img,.vis video{width:100%;max-height:60vh;object-fit:contain;display:block}
+.nav{position:absolute;top:45%;background:rgba(0,0,0,.5);color:#fff;border-radius:50%;width:34px;height:34px;padding:0}.nav.l{left:8px}.nav.r{right:8px}
+.corpo{padding:14px}.leg{white-space:pre-wrap}.cm{background:var(--off);border-radius:8px;padding:6px 8px;margin:4px 0;font-size:14px}
+.corpo input,.corpo textarea{width:100%;margin:4px 0}.row{display:flex;gap:6px;flex-wrap:wrap}
+#erro{padding:40px;text-align:center;display:none}
+</style>
+</head>
+<body>
+<header><b>MOVE Marketing</b><h1 id="tit">Carregando…</h1></header>
+<div id="erro">Este link não está disponível. Peça um novo link à equipe MOVE.</div>
+<main id="main" style="display:none">
+ <div class="bar"><button class="sec" onclick="aba('g')">Grade</button><button class="sec" onclick="aba('c')">Calendário</button></div>
+ <div id="vg" class="grid"></div><div id="vc" class="cal" style="display:none"></div>
+</main>
+<div class="modal" id="m"><div class="box">
+ <div class="vis" id="vis"></div>
+ <div class="corpo">
+  <div id="inf" style="color:#666;font-size:13px"></div><p class="leg" id="leg"></p>
+  <h4>Comentários</h4><div id="cms"></div>
+  <input id="nome" placeholder="Seu nome"><textarea id="txt" rows="3" placeholder="Escreva seu comentário ou o que precisa ser ajustado"></textarea>
+  <div id="msg" style="color:#c0392b"></div>
+  <div class="row"><button class="grn" onclick="enviar('aprovado')">✓ Aprovar</button><button class="red" onclick="enviar('ajuste')">Solicitar ajuste</button><button onclick="enviar('comentario')">Comentar</button><button class="sec" onclick="fechar()">Fechar</button></div>
+ </div>
+</div></div>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {getFirestore,collection,doc,getDoc,addDoc,onSnapshot,query,orderBy,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+/* COLE AQUI a mesma firebaseConfig do feed.html */
+const firebaseConfig = {
+  apiKey: "AIzaSyCwnBQwHmfl5F_fm93rsAL7RDguYcsHs0o",
+  authDomain: "move-operacional.firebaseapp.com",
+  projectId: "move-operacional",
+  storageBucket: "move-operacional.firebasestorage.app",
+  messagingSenderId: "988960038443",
+  appId: "1:988960038443:web:1d28946abd5307974a146e"
+};
+
+const db=getFirestore(initializeApp(firebaseConfig));
+const $=id=>document.getElementById(id),esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const thumb=m=>!m?"":m.tipo==="video"?m.url.replace("/upload/","/upload/so_0,f_jpg,q_auto,w_500/").replace(/\.\w+$/,".jpg"):m.url.replace("/upload/","/upload/f_auto,q_auto,w_500/");
+const grande=m=>m.url.replace("/upload/","/upload/f_auto,q_auto,w_1080/");
+let plano=null,planId=null,posts=[],atual=null,idx=0,ulC=null,verAba="g";
+$("nome").value=localStorage.getItem("moveNome")||"";
+
+try{
+ const t=new URLSearchParams(location.search).get("t");if(!t)throw 0;
+ const s=await getDoc(doc(db,"feed_shares",t));if(!s.exists())throw 0;planId=s.data().planId;
+ const p=await getDoc(doc(db,"feed_plans",planId));if(!p.exists()||!p.data().shareAtivo)throw 0;plano=p.data();
+ const[a,m]=plano.mes.split("-");$("tit").textContent=plano.clienteNome+" — "+new Date(a,m-1,1).toLocaleDateString("pt-BR",{month:"long",year:"numeric"});
+ $("main").style.display="block";
+ onSnapshot(query(collection(db,"feed_plans",planId,"posts"),orderBy("ordem")),s=>{posts=s.docs.map(d=>({id:d.id,...d.data()}));desenhar()});
+}catch(e){$("tit").textContent="";$("erro").style.display="block"}
+
+window.aba=a=>{verAba=a;desenhar()};
+function desenhar(){$("vg").style.display=verAba==="g"?"grid":"none";$("vc").style.display=verAba==="c"?"grid":"none";
+ $("vg").innerHTML=posts.map(p=>`<div class="cell" style="background-image:url('${thumb(p.midias?.[0])}')" onclick="abrir('${p.id}')"><span class="tag">${p.tipo==="reels"?"▶ Reels":p.tipo==="carrossel"?"❐ "+(p.midias||[]).length:""}</span></div>`).join("");
+ const[a,m]=plano.mes.split("-").map(Number),ini=new Date(a,m-1,1).getDay(),dias=new Date(a,m,0).getDate();let h="";
+ for(let i=0;i<ini;i++)h+="<div></div>";
+ for(let d=1;d<=dias;d++){const k=`${plano.mes}-${String(d).padStart(2,"0")}`;h+=`<div class="day"><b>${d}</b>${posts.filter(p=>p.dataPrevista===k).map(p=>`<div class="chip" onclick="abrir('${p.id}')">${p.tipo==="reels"?"▶":p.tipo==="carrossel"?"❐":"■"} ${esc((p.legenda||"").slice(0,14))||"post"}</div>`).join("")}</div>`}
+ $("vc").innerHTML=h}
+window.abrir=id=>{atual=posts.find(p=>p.id===id);idx=0;slide();
+ $("inf").textContent=(atual.tipo==="reels"?"Reels":atual.tipo==="carrossel"?"Carrossel":"Post estático")+(atual.dataPrevista?" • publicação prevista: "+atual.dataPrevista.split("-").reverse().join("/"):"");
+ $("leg").textContent=atual.legenda||"";$("msg").textContent="";$("txt").value="";ulC&&ulC();
+ ulC=onSnapshot(query(collection(db,"feed_plans",planId,"posts",id,"comentarios"),orderBy("criadoEm")),s=>{
+  $("cms").innerHTML=s.docs.map(d=>d.data()).map(c=>`<div class="cm"><b>${esc(c.autor)}</b> ${c.tipo==="ajuste"?"🔴 solicitou ajuste":c.tipo==="aprovado"?"🟢 aprovou":""}<br>${esc(c.texto)}</div>`).join("")||"<small>Nenhum comentário ainda.</small>"});
+ $("m").classList.add("on")};
+function slide(){const ms=atual.midias||[],m=ms[idx];if(!m)return;
+ $("vis").innerHTML=(m.tipo==="video"?`<video src="${m.url}" controls playsinline></video>`:`<img src="${grande(m)}">`)+
+  (ms.length>1?`<button class="nav l" onclick="go(-1)">‹</button><button class="nav r" onclick="go(1)">›</button>`:"")}
+window.go=n=>{const t=atual.midias.length;idx=(idx+n+t)%t;slide()};
+window.fechar=()=>{ulC&&ulC();ulC=null;$("vis").innerHTML="";$("m").classList.remove("on")};
+window.enviar=async tipo=>{const nome=$("nome").value.trim(),txt=$("txt").value.trim(),msg=$("msg");
+ if(!nome)return msg.textContent="Informe seu nome.";
+ if(tipo!=="aprovado"&&!txt)return msg.textContent="Escreva o comentário.";
+ try{await addDoc(collection(db,"feed_plans",planId,"posts",atual.id,"comentarios"),{autor:nome.slice(0,80),texto:(txt||"Aprovado").slice(0,1000),tipo,criadoEm:serverTimestamp()});
+  localStorage.setItem("moveNome",nome);$("txt").value="";msg.textContent="";
+ }catch(e){msg.textContent="Não foi possível enviar. Tente novamente."}};
+</script>
+</body>
+</html>
