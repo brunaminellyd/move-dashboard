@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Planejamento de conteúdo — MOVE</title>
+<link rel="icon" type="image/png" href="./favicon-move.png?v=2">
 <style>
 :root{--roxo:#5B108F;--preto:#030303;--lilas:#D084FF;--off:#F1F1F1}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,sans-serif;background:var(--off);color:var(--preto)}
@@ -29,7 +30,7 @@ button{background:var(--roxo);color:#fff;border:0;cursor:pointer}button.sec{back
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,600&family=Jost:wght@400;500&display=swap');
 body{font-family:'Jost',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
 header{padding:20px 22px}header b{font-family:'Cormorant Garamond',serif;font-size:26px;letter-spacing:.08em;font-style:normal}
-header h1{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;text-transform:capitalize;margin-top:6px}
+header h1{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;margin-top:6px}
 button{font-family:inherit;font-weight:500;border-radius:12px;padding:11px 20px}
 .cell{border-radius:10px;box-shadow:0 2px 20px rgba(45,8,72,.1)}.grid{gap:6px}.day{border-radius:10px}
 .box{border-radius:14px;box-shadow:0 32px 80px rgba(0,0,0,.3)}.cm{border-radius:8px}
@@ -37,6 +38,12 @@ button{font-family:inherit;font-weight:500;border-radius:12px;padding:11px 20px}
 #stats{color:rgba(255,255,255,.7);font-size:13px;margin-top:2px}.perfil h1{margin:0!important}
 .st{position:absolute;bottom:6px;left:6px;font-size:11px;padding:2px 8px;border-radius:20px;color:#fff}.ok{background:#1E9E6A}.aj{background:#C0392B}
 .apr{width:100%;margin-bottom:12px;background:#1E9E6A}
+.lst{display:grid;grid-template-columns:1fr!important;gap:8px}.li{display:flex;gap:14px;background:#fff;border:1px solid #E4D9EB;border-radius:12px;padding:12px 14px;cursor:pointer}.ld{min-width:84px;font-weight:600;color:#5B108F;font-size:13px}.lt{font-size:13.5px}.lt span{color:#6B647A}
+.dtc{color:#6B647A;font-size:11.5px}button{min-height:42px;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+button.red{background:#fff;color:#C0392B;border:1.5px solid rgba(192,57,43,.4)}button.red:hover{background:rgba(192,57,43,.08);box-shadow:none}
+.x,.nav,.mid i{min-height:0}
+.acao{border:1px solid #E4D9EB;border-radius:12px;padding:14px;margin-top:12px;background:#FBF6FE}.acao-t{font-weight:600;font-size:14px;margin-bottom:4px}.acao label{display:block;font-size:12px;color:#6B647A;margin-top:8px;font-weight:500}
+button.red{border-color:#C0392B}.row button{flex:1}
 </style>
 </head>
 <body>
@@ -51,9 +58,9 @@ button{font-family:inherit;font-weight:500;border-radius:12px;padding:11px 20px}
  <div class="corpo">
   <div id="inf" style="color:#666;font-size:13px"></div><p class="leg" id="leg"></p>
   <h4>Comentários</h4><div id="cms"></div>
-  <input id="nome" placeholder="Seu nome"><textarea id="txt" rows="3" placeholder="Escreva seu comentário ou o que precisa ser ajustado"></textarea>
+  <div class="acao"><div class="acao-t">Sua resposta sobre esta publicação</div><label for="nome">Seu nome</label><input id="nome" placeholder="Ex.: Dr. André"><label for="txt">Comentário ou ajuste desejado</label><textarea id="txt" rows="3" placeholder="Escreva aqui o que você gostaria de ajustar"></textarea>
   <div id="msg" style="color:#c0392b"></div>
-  <div class="row"><button class="grn" onclick="enviar('aprovado')">✓ Aprovar</button><button class="red" onclick="enviar('ajuste')">Solicitar ajuste</button><button onclick="enviar('comentario')">Comentar</button></div>
+  <div class="row"><button class="grn" onclick="enviar('aprovado')">✓ Aprovar esta publicação</button><button class="red" onclick="enviar('ajuste')">Solicitar ajuste</button><button class="sec" onclick="enviar('comentario')">Comentar</button></div></div>
  </div>
 </div></div>
 
@@ -81,14 +88,24 @@ $("nome").value=localStorage.getItem("moveNome")||"";
 try{
  const t=new URLSearchParams(location.search).get("t");if(!t)throw 0;
  const s=await getDoc(doc(db,"feed_shares",t));if(!s.exists())throw 0;planId=s.data().planId;
- const p=await getDoc(doc(db,"feed_plans",planId));if(!p.exists()||!p.data().shareAtivo)throw 0;plano=p.data();plano.mes=plano.period||plano.mes;plano.clienteNome=plano.clientName||plano.clienteNome;
- const[a,m]=plano.mes.split("-");$("tit").textContent=plano.clienteNome+" — "+new Date(a,m-1,1).toLocaleDateString("pt-BR",{month:"long",year:"numeric"});
+ const p=await getDoc(doc(db,"feed_plans",planId));if(!p.exists()||!p.data().shareAtivo)throw 0;plano=p.data();plano.mes=plano.period||plano.mes||"2026-01";plano.inicio=plano.inicio||plano.mes+"-01";plano.fim=plano.fim||fimMes(plano.mes);plano.clienteNome=plano.clientName||plano.clienteNome;
+ $("tit").textContent=plano.clienteNome+" — "+per(plano);
  $("av").textContent=plano.clienteNome.replace(/^(Dr\.|Dra\.)\s*/i,"").trim().slice(0,1).toUpperCase();$("main").style.display="block";
  onSnapshot(query(collection(db,"feed_plans",planId,"posts"),orderBy("ordem")),s=>{posts=s.docs.map(d=>({id:d.id,...d.data()}));acompanhar();desenhar()});
 }catch(e){$("tit").textContent="";$("erro").style.display="block"}
 
 window.aba=a=>{verAba=a;desenhar()};
+function per(p){const a=p.inicio,b=p.fim,f=(s,y)=>new Date(s+"T12:00:00").toLocaleDateString("pt-BR",y?{day:"numeric",month:"short",year:"numeric"}:{day:"numeric",month:"short"}).replace(/\./g,"");
+ if(a.slice(0,7)===b.slice(0,7))return new Date(a+"T12:00:00").toLocaleDateString("pt-BR",{month:"long",year:"numeric"});
+ return f(a,a.slice(0,4)!==b.slice(0,4))+" a "+f(b,true)}
+function fimMes(ym){const[y,m]=ym.split("-").map(Number);return ym+"-"+String(new Date(y,m,0).getDate()).padStart(2,"0")}
+const iso=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
 const stat={},ulS={};
+const dtc=c=>c.criadoEm&&c.criadoEm.toDate?c.criadoEm.toDate().toLocaleString("pt-BR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"}):"agora";
+function listaHTML(){const l=[...posts].sort((x,y)=>(x.dataPrevista||"9").localeCompare(y.dataPrevista||"9"));
+ return l.map(p=>{const dt=p.dataPrevista?new Date(p.dataPrevista+"T12:00:00").toLocaleDateString("pt-BR",{weekday:"short",day:"2-digit",month:"2-digit"}):"Sem data";
+  return `<div class="li" onclick="abrir('${p.id}')"><div class="ld">${dt}</div><div class="lt">${p.tipo==="reels"?"▶ Reels":p.tipo==="carrossel"?"❐ Carrossel":"■ Estático"}<br><span>${esc((p.legenda||"Sem legenda").slice(0,90))}</span></div></div>`}).join("")||"<p>Nenhuma publicação ainda.</p>"}
+matchMedia("(max-width:700px)").addEventListener("change",()=>plano&&desenhar());
 function acompanhar(){posts.forEach(p=>{if(ulS[p.id])return;ulS[p.id]=onSnapshot(query(collection(db,"feed_plans",planId,"posts",p.id,"comentarios"),orderBy("criadoEm")),s=>{const l=s.docs.map(d=>d.data()).filter(x=>x.tipo!=="comentario").pop();stat[p.id]=l?l.tipo:"";desenhar()})})}
 window.aprovarTudo=async()=>{const pend=posts.filter(p=>stat[p.id]!=="aprovado");if(!pend.length)return alert("Todos os posts já estão aprovados.");
  const nome=prompt("Seu nome, para registrar a aprovação:",localStorage.getItem("moveNome")||"");if(!nome||!nome.trim())return;
@@ -97,15 +114,17 @@ window.aprovarTudo=async()=>{const pend=posts.filter(p=>stat[p.id]!=="aprovado")
   localStorage.setItem("moveNome",nome.trim());alert("Planejamento aprovado. Obrigado!")}catch(e){alert("Não foi possível enviar. Tente novamente.")}};
 function desenhar(){$("stats").textContent=posts.length+" publicações · "+posts.filter(p=>stat[p.id]==="aprovado").length+" aprovadas";$("vg").style.display=verAba==="g"?"grid":"none";$("vc").style.display=verAba==="c"?"grid":"none";
  $("vg").innerHTML=posts.map(p=>`<div class="cell" style="background-image:url('${thumb(p.midias?.[0])}')" onclick="abrir('${p.id}')"><span class="tag">${p.tipo==="reels"?"▶ Reels":p.tipo==="carrossel"?"❐ "+(p.midias||[]).length:""}</span>${stat[p.id]==="aprovado"?'<span class="st ok">✓ aprovado</span>':stat[p.id]==="ajuste"?'<span class="st aj">ajuste</span>':""}</div>`).join("");
- const[a,m]=plano.mes.split("-").map(Number),ini=new Date(a,m-1,1).getDay(),dias=new Date(a,m,0).getDate();let h="";
- for(let i=0;i<ini;i++)h+="<div></div>";
- for(let d=1;d<=dias;d++){const k=`${plano.mes}-${String(d).padStart(2,"0")}`;h+=`<div class="day"><b>${d}</b>${posts.filter(p=>p.dataPrevista===k).map(p=>`<div class="chip" onclick="abrir('${p.id}')">${p.tipo==="reels"?"▶":p.tipo==="carrossel"?"❐":"■"} ${esc((p.legenda||"").slice(0,14))||"post"}</div>`).join("")}</div>`}
- $("vc").innerHTML=h}
+ const di=new Date(plano.inicio+"T12:00:00"),df=new Date(plano.fim+"T12:00:00");
+ let h=["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"].map(d=>`<div class="wd">${d}</div>`).join("");
+ for(let i=0;i<di.getDay();i++)h+="<div></div>";
+ for(let d=new Date(di);d<=df;d.setDate(d.getDate()+1)){const k=iso(d),t=(d.getDate()===1||k===plano.inicio)?d.getDate()+" "+d.toLocaleDateString("pt-BR",{month:"short"}).replace(".",""):d.getDate();
+  h+=`<div class="day"><b>${t}</b>${posts.filter(p=>p.dataPrevista===k).map(p=>`<div class="chip" onclick="abrir('${p.id}')">${p.tipo==="reels"?"▶":p.tipo==="carrossel"?"❐":"■"} ${esc((p.legenda||"").slice(0,18))||"post"}</div>`).join("")}</div>`}
+ const mob=matchMedia("(max-width:700px)").matches;$("vc").className=mob?"lst":"cal";$("vc").innerHTML=mob?listaHTML():h}
 window.abrir=id=>{atual=posts.find(p=>p.id===id);idx=0;slide();
  $("inf").textContent=(atual.tipo==="reels"?"Reels":atual.tipo==="carrossel"?"Carrossel":"Post estático")+(atual.dataPrevista?" • publicação prevista: "+atual.dataPrevista.split("-").reverse().join("/"):"");
  $("leg").textContent=atual.legenda||"";$("msg").textContent="";$("txt").value="";ulC&&ulC();
  ulC=onSnapshot(query(collection(db,"feed_plans",planId,"posts",id,"comentarios"),orderBy("criadoEm")),s=>{
-  $("cms").innerHTML=s.docs.map(d=>d.data()).map(c=>`<div class="cm"><b>${esc(c.autor)}</b> ${c.tipo==="ajuste"?"🔴 solicitou ajuste":c.tipo==="aprovado"?"🟢 aprovou":""}<br>${esc(c.texto)}</div>`).join("")||"<small>Nenhum comentário ainda.</small>"});
+  $("cms").innerHTML=s.docs.map(d=>d.data()).map(c=>`<div class="cm"><b>${esc(c.autor)}</b> ${c.tipo==="ajuste"?"🔴 solicitou ajuste":c.tipo==="aprovado"?"🟢 aprovou":""}<small class="dtc"> · ${dtc(c)}</small><br>${esc(c.texto)}</div>`).join("")||"<small>Nenhum comentário ainda.</small>"});
  $("m").classList.add("on")};
 function slide(){const ms=atual.midias||[],m=ms[idx];if(!m)return;
  $("vis").innerHTML=(m.tipo==="video"?`<video src="${m.url}" controls playsinline></video>`:`<img src="${grande(m)}">`)+

@@ -446,31 +446,13 @@ body.auth-pending #auth-gate,body.auth-logged-out #auth-gate{display:flex}
 .auth-error{min-height:22px;color:var(--er);font-size:12px;margin:5px 0 12px}
 .auth-wait{color:#F1F1F1;font:14px var(--font-b)}
 .auth-foot{color:var(--tm);font-size:11px;margin-top:18px;line-height:1.5}
-.feed-intro{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:20px}
-.feed-step{background:#fff;border:1px solid var(--bdr);border-radius:12px;padding:18px}
-.feed-step b{display:block;color:var(--violet);font-size:12px;letter-spacing:.08em;margin-bottom:7px}
-.feed-step span{font-size:12px;color:var(--tm);line-height:1.5}
-.feed-toolbar{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin:22px 0 14px}
-.feed-status{font-size:12px;color:var(--tm);min-height:20px}
-.feed-form{display:none;margin-bottom:18px}
-.feed-form.on{display:block}
-.feed-plans{display:grid;grid-template-columns:repeat(auto-fill,minmax(245px,1fr));gap:14px}
-.feed-plan{background:#fff;border:1px solid var(--bdr);border-radius:12px;padding:18px;box-shadow:var(--sh);cursor:pointer;text-align:left;color:inherit;transition:var(--tr);width:100%}
-.feed-plan:hover,.feed-plan.selected{border-color:var(--violet-light);box-shadow:var(--sh-lg);transform:translateY(-1px)}
-.feed-plan.selected{outline:2px solid rgba(91,16,143,.12)}
-.feed-plan-client{font-size:11px;color:var(--violet);font-weight:600;letter-spacing:.07em;text-transform:uppercase;margin-bottom:8px}
-.feed-plan-title{font-family:var(--font-d);font-size:22px;line-height:1.2;font-weight:600;margin-bottom:8px}
-.feed-plan-meta{font-size:12px;color:var(--tm)}
-.feed-detail{margin-top:18px}
-.feed-empty{padding:30px 18px;text-align:center;color:var(--tm);background:#fff;border:1px dashed var(--bdrh);border-radius:12px;font-size:13px}
-.feed-notice{padding:12px 14px;border-radius:9px;background:var(--violet-pale);color:var(--ts);font-size:12px;line-height:1.6;margin:12px 0}
 .auth-logout{width:100%;margin-top:12px;background:transparent;border:1px solid rgba(255,255,255,.13);color:rgba(238,232,248,.65);border-radius:8px;padding:8px 10px;font:12px var(--font-b);cursor:pointer}
 .auth-logout:hover{color:#fff;background:rgba(255,255,255,.07)}
-@media(max-width:700px){.feed-intro{grid-template-columns:1fr}.auth-card{padding:28px 22px}}
+@media(max-width:700px){.auth-card{padding:28px 22px}}
 </style>
 <style id="move-ux">
 /* Contraste e legibilidade */
-.s-sub{color:rgba(238,232,248,.62)!important}.s-sec{color:rgba(238,232,248,.5)!important;font-size:10.5px!important}
+.s-sub{color:rgba(238,232,248,.62)!important}.s-sec{color:rgba(238,232,248,.72)!important;font-size:11.5px!important;font-weight:500}
 .s-foot-txt{color:rgba(238,232,248,.62)!important;font-size:11px!important}.s-foot-txt em{color:rgba(208,132,255,.85)!important}
 .mc-v,.pr-stat-n,.ph-l .pt,.modal-title{font-variant-numeric:lining-nums;font-feature-settings:"lnum" 1}
 .tbl th{font-size:11.5px!important;color:var(--ts)!important}.tbl td{font-size:13.5px}
@@ -608,31 +590,6 @@ body.auth-pending #auth-gate,body.auth-logged-out #auth-gate{display:flex}
   <div class="g2" id="rep-ins"></div>
 </section>
 
-<!-- ═══ MOVE FEED — ETAPA 1: PLANEJAMENTOS ═ -->
-<section class="view" id="v-move-feed">
-  <div class="ph">
-    <div class="ph-l"><div class="pt">MOVE <em>Feed</em></div><div class="ps">Planejamento visual de conteúdos para aprovação dos clientes</div></div>
-    <div class="ph-r"><button class="btn btn-p" id="feed-new-plan">＋ Novo planejamento</button></div>
-  </div>
-  <div class="feed-notice">Os planejamentos são salvos em uma coleção própria do Firestore, separada dos dados do painel. Antes de publicar esta versão, atualize as regras de segurança do Firestore conforme o arquivo de regras fornecido.</div>
-  <form class="card feed-form" id="feed-plan-form">
-    <div class="card-h">Criar planejamento</div>
-    <div class="card-sub">Escolha um cliente e o mês de referência. Você poderá criar planejamentos separados para cada período.</div>
-    <div class="fg2">
-      <div class="field"><label for="feed-client">Cliente *</label><select id="feed-client" required><option value="">Selecione um cliente</option></select></div>
-      <div class="field"><label for="feed-period">Mês do planejamento *</label><input id="feed-period" type="month" required></div>
-    </div>
-    <div class="ph-r"><button class="btn btn-o btn-sm" id="feed-cancel" type="button">Cancelar</button><button class="btn btn-p btn-sm" id="feed-save-plan" type="submit">Salvar planejamento</button></div>
-  </form>
-  <div class="feed-toolbar"><div><div class="card-h" style="margin:0">Planejamentos</div><div class="feed-status" id="feed-status" aria-live="polite">Abra esta página para carregar os planejamentos.</div></div><button class="btn btn-o btn-sm" id="feed-refresh">↻ Atualizar</button></div>
-  <div class="feed-plans" id="feed-plans"></div>
-  <div class="card feed-detail" id="feed-detail" style="display:none"></div>
-  <div class="feed-intro">
-    <div class="feed-step"><b>01 · PLANEJAMENTO</b><span>Selecionar cliente e criar calendário independente.</span></div>
-    <div class="feed-step"><b>02 · PUBLICAÇÕES</b><span>Adicionar posts, carrosséis de até 10 slides e reels.</span></div>
-    <div class="feed-step"><b>03 · COMPARTILHAMENTO</b><span>Preparar link de visualização e comentários com regras seguras.</span></div>
-  </div>
-</section>
 
 </main>
 </div><!-- #app -->
@@ -772,10 +729,6 @@ const S={
   lastCloudSyncAt:'',
   modal:null, editId:null,
 };
-let FEED_PLANS=[];
-let FEED_LOADING=false;
-let FEED_LOADED=false;
-let FEED_SELECTED_PLAN='';
 
 /* ════════════════════════════════════════════
    LOCAL STORAGE
@@ -905,7 +858,6 @@ async function startCloudStateListener(){
           else if(active&&active.id==='v-conteudos') renderContents();
           else if(active&&active.id==='v-relatorios') renderRel();
           else if(active&&active.id==='v-pendencias') renderPend();
-          else if(active&&active.id==='v-move-feed') populateFeedClients();
           updateBadges();
         }
       }
@@ -1292,7 +1244,7 @@ function renderDash(){
       tooltip:c.name+'\n'+faltam+' conteúdos pendentes\nResponsável: '+responsavel+'\nSituação: '+status
     };
   });
-  svgBar('ch-bar',chartData,'#7C4DCE');
+  svgBar('ch-bar',chartData,'#5B108F');
   updateBadges();
 }
 
@@ -2197,104 +2149,7 @@ async function pullExportLogsCloud(){
 /* ════════════════════════════════════════════
    NAVIGATION
 ════════════════════════════════════════════ */
-const REND={dashboard:renderDash,clientes:renderClients,pendencias:renderPend,relatorios:renderRel,'move-feed':renderMoveFeed};
-function feedPeriodLabel(value){
-  const m=/^(\d{4})-(\d{2})$/.exec(String(value||''));
-  if(!m) return 'Período não informado';
-  const label=new Intl.DateTimeFormat('pt-BR',{month:'long',year:'numeric'}).format(new Date(Number(m[1]),Number(m[2])-1,2));
-  return label.charAt(0).toUpperCase()+label.slice(1);
-}
-function feedStatus(message,type){
-  const el=document.getElementById('feed-status');
-  if(el){ el.textContent=message; el.style.color=type==='error'?'var(--er)':type==='warning'?'var(--wa)':'var(--tm)'; }
-}
-function renderFeedPlans(){
-  const list=document.getElementById('feed-plans');
-  const detail=document.getElementById('feed-detail');
-  if(!list||!detail) return;
-  if(!FEED_PLANS.length){
-    list.innerHTML='<div class="feed-empty" style="grid-column:1/-1">Nenhum planejamento criado ainda. Clique em “Novo planejamento” para começar.</div>';
-    detail.style.display='none';
-    return;
-  }
-  list.innerHTML=FEED_PLANS.map(p=>'<button type="button" class="feed-plan'+(String(p.id)===String(FEED_SELECTED_PLAN)?' selected':'')+'" data-feed-plan="'+esc(p.id)+'">'
-    +'<div class="feed-plan-client">'+esc(p.clientName||'Cliente')+'</div>'
-    +'<div class="feed-plan-title">'+esc(feedPeriodLabel(p.period))+'</div>'
-    +'<div class="feed-plan-meta">Criado em '+esc(p.createdAt&&p.createdAt.toDate?p.createdAt.toDate().toLocaleDateString('pt-BR'):'—')+'</div>'
-    +'</button>').join('');
-  const chosen=FEED_PLANS.find(p=>String(p.id)===String(FEED_SELECTED_PLAN));
-  if(!chosen){ detail.style.display='none'; return; }
-  detail.style.display='block';
-  detail.innerHTML='<div class="card-h">'+esc(chosen.clientName||'Cliente')+' · '+esc(feedPeriodLabel(chosen.period))+'</div>'
-    +'<div class="card-sub">Planejamento selecionado</div>'
-    +'<p style="font-size:13px;color:var(--ts);line-height:1.7">Este calendário está criado e pronto para receber publicações na próxima etapa do MOVE Feed.</p>';
-}
-function populateFeedClients(){
-  const select=document.getElementById('feed-client');
-  if(!select) return;
-  const previous=select.value;
-  select.innerHTML='<option value="">Selecione um cliente</option>'+S.clients.slice().sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''),'pt-BR')).map(c=>'<option value="'+esc(c.id)+'">'+esc(c.name)+'</option>').join('');
-  if(S.clients.some(c=>String(c.id)===String(previous))) select.value=previous;
-  const submit=document.getElementById('feed-save-plan');
-  if(submit) submit.disabled=!S.clients.length;
-}
-async function loadFeedPlans(force){
-  if(FEED_LOADING||(!force&&FEED_LOADED)) return;
-  const list=document.getElementById('feed-plans');
-  if(!hasAuthenticatedSession()){ feedStatus('Entre na conta da equipe para acessar os planejamentos.','error'); return; }
-  if(!S.firebaseCfg||!window.firebase){ feedStatus('Não foi possível conectar ao Firebase. Recarregue a página e tente novamente.','error'); return; }
-  FEED_LOADING=true;
-  feedStatus('Carregando planejamentos…');
-  if(list) list.innerHTML='<div class="feed-empty" style="grid-column:1/-1">Carregando…</div>';
-  try{
-    const fb=await initFirebaseClient();
-    const snap=await fb.db.collection('feed_plans').orderBy('updatedAt','desc').get();
-    FEED_PLANS=snap.docs.map(doc=>({id:doc.id,...(doc.data()||{})}));
-    FEED_LOADED=true;
-    if(!FEED_PLANS.some(p=>String(p.id)===String(FEED_SELECTED_PLAN))) FEED_SELECTED_PLAN='';
-    feedStatus(FEED_PLANS.length+' planejamento'+(FEED_PLANS.length===1?'':'s')+' · sincronizado com o Firebase.');
-    renderFeedPlans();
-  }catch(err){
-    FEED_LOADED=false;
-    FEED_PLANS=[];
-    const denied=err.code==='permission-denied';
-    feedStatus(denied?'Acesso bloqueado pelas regras do Firestore. Atualize as regras seguras antes de usar o Feed.':'Não foi possível carregar os planejamentos. Verifique a conexão e as regras do Firestore.','error');
-    if(list) list.innerHTML='<div class="feed-empty" style="grid-column:1/-1">Os dados não foram alterados. Corrija as regras do Firestore e clique em Atualizar.</div>';
-    console.error('Falha ao carregar planejamentos do MOVE Feed:',err);
-  }finally{ FEED_LOADING=false; }
-}
-function renderMoveFeed(){
-  populateFeedClients();
-  const period=document.getElementById('feed-period');
-  if(period&&!period.value) period.value=new Date().toISOString().slice(0,7);
-  loadFeedPlans(false);
-}
-async function createFeedPlan(event){
-  event.preventDefault();
-  const clientId=document.getElementById('feed-client').value;
-  const period=document.getElementById('feed-period').value;
-  const client=S.clients.find(c=>String(c.id)===String(clientId));
-  const button=document.getElementById('feed-save-plan');
-  if(!client||!/^\d{4}-\d{2}$/.test(period)){ feedStatus('Selecione um cliente e um mês válido.','error'); return; }
-  if(!hasAuthenticatedSession()){ feedStatus('Sua sessão expirou. Entre novamente para salvar.','error'); return; }
-  button.disabled=true; button.textContent='Salvando…';
-  try{
-    const fb=await initFirebaseClient();
-    const ref=fb.db.collection('feed_plans').doc();
-    const now=firebase.firestore.FieldValue.serverTimestamp();
-    await ref.set({clientId:String(client.id),clientName:String(client.name),period,status:'rascunho',createdAt:now,updatedAt:now,createdBy:fb.auth.currentUser.uid,schemaVersion:1});
-    FEED_SELECTED_PLAN=ref.id;
-    FEED_LOADED=false;
-    document.getElementById('feed-plan-form').classList.remove('on');
-    document.getElementById('feed-plan-form').reset();
-    await loadFeedPlans(true);
-    toast('Planejamento criado e salvo no Firebase.');
-  }catch(err){
-    const denied=err.code==='permission-denied';
-    feedStatus(denied?'O Firebase bloqueou a gravação. Confirme que as regras seguras já foram publicadas.':'Não foi possível salvar. Nenhum planejamento foi confirmado; tente novamente.','error');
-    console.error('Falha ao salvar planejamento do MOVE Feed:',err);
-  }finally{ button.disabled=false; button.textContent='Salvar planejamento'; populateFeedClients(); }
-}
+const REND={dashboard:renderDash,clientes:renderClients,pendencias:renderPend,relatorios:renderRel};
 function navigate(v){
   document.querySelectorAll('.view').forEach(e=>e.classList.remove('on'));
   document.querySelectorAll('.nb').forEach(e=>e.classList.remove('on'));
@@ -2326,19 +2181,6 @@ document.addEventListener('click',e=>{
   // A sessão da equipe usa Firebase Authentication.
   if(t.id==='btn-logout'){ if(window.firebase&&firebase.apps.length) firebase.app().auth().signOut().catch(()=>toast('Não foi possível sair da conta','er')); return; }
 
-  // Top buttons
-  if(t.id==='feed-new-plan'){
-    populateFeedClients();
-    const form=document.getElementById('feed-plan-form');
-    form.classList.add('on');
-    const period=document.getElementById('feed-period');
-    if(period&&!period.value) period.value=new Date().toISOString().slice(0,7);
-    return;
-  }
-  if(t.id==='feed-cancel'){ document.getElementById('feed-plan-form').classList.remove('on'); return; }
-  if(t.id==='feed-refresh'){ FEED_LOADED=false; loadFeedPlans(true); return; }
-  const selectedFeedPlan=t.closest('[data-feed-plan]');
-  if(selectedFeedPlan){ location.href='feed.html?plano='+encodeURIComponent(selectedFeedPlan.dataset.feedPlan); return; }
   if(t.id==='btn-new-cli')  { openModal('new-c'); return; }
   if(t.id==='btn-new-cnt')  { openModal('new-k'); return; }
   if(t.id==='btn-pdf')      { exportPDF(); return; }
@@ -2434,8 +2276,6 @@ document.addEventListener('click',e=>{
   if(ck){ const it=S.contents.find(x=>x.id===parseInt(ck.dataset.ck)); if(it){ it.status=ck.dataset.next; save(); renderContents(); renderDash(); toast('Status: '+(SK[ck.dataset.next]?.l||ck.dataset.next)); } return; }
 
 });
-
-document.getElementById('feed-plan-form').addEventListener('submit',createFeedPlan);
 
 // Search + filters
 document.addEventListener('input',e=>{

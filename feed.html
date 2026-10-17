@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>MOVE Feed</title>
+<link rel="icon" type="image/png" href="./favicon-move.png?v=2">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Jost:wght@300;400;500;600&display=swap');
 :root{--violet:#5B108F;--vl:#D084FF;--vd:#43096F;--vp:#F7EBFF;--bdr:#E4D9EB;--tm:#6B647A;--ok:#1E9E6A;--er:#C0392B;--r:12px;--rs:8px;--sh:0 2px 20px rgba(45,8,72,.07);--tr:all .28s cubic-bezier(.4,0,.2,1);--fd:'Cormorant Garamond',Georgia,serif;--fb:'Jost',system-ui,sans-serif}
@@ -19,14 +20,14 @@ a.nb:hover{background:rgba(255,255,255,.07);color:#fff}.nb.on{background:rgba(20
 .nf{padding:0 4px}aside select,aside input{width:100%;margin-bottom:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);color:#fff;border-radius:var(--rs);padding:10px 12px;font:inherit;font-size:13px;color-scheme:dark}
 aside option{color:#030303}aside button{width:100%}
 #lista{flex:1;overflow-y:auto;padding:0 4px}.pl{padding:10px 12px;border-radius:12px;cursor:pointer;font-size:13.5px;color:rgba(238,232,248,.75);transition:var(--tr)}
-.pl:hover{background:rgba(255,255,255,.07)}.pl.on{background:rgba(208,132,255,.16);color:#fff}.pl small{display:block;opacity:.55;font-size:11.5px;text-transform:capitalize}
+.pl:hover{background:rgba(255,255,255,.07)}.pl.on{background:rgba(208,132,255,.16);color:#fff}.pl small{display:block;opacity:.55;font-size:11.5px}
 .foot{padding:14px 12px 0;border-top:1px solid rgba(255,255,255,.08);font-size:11px;color:rgba(238,232,248,.4);line-height:1.5}.foot em{font-family:var(--fd);font-size:12px;color:rgba(208,132,255,.55)}#quem{margin-top:4px;word-break:break-all}
 main{background:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.7);border-radius:24px;padding:34px 38px;overflow-y:auto;box-shadow:0 20px 44px rgba(30,58,123,.1)}
 .pt{font-family:var(--fd);font-size:38px;font-weight:600;line-height:1.1}.pt em{font-style:italic;color:var(--violet)}.ps{color:var(--tm);font-size:13px;margin:6px 0 22px}
 .empty{padding:34px 18px;text-align:center;color:var(--tm);background:#fff;border:1px dashed #D7B9E7;border-radius:var(--r);font-size:13px}
 .top{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;margin-bottom:18px}
 .kick{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--violet)}
-#tit{font-family:var(--fd);font-size:36px;font-weight:600;line-height:1.15;margin:4px 0 0;text-transform:capitalize}
+#tit{font-family:var(--fd);font-size:36px;font-weight:600;line-height:1.15;margin:4px 0 0}
 button{font-family:var(--fb);font-size:13px;font-weight:500;padding:11px 22px;border-radius:var(--r);border:0;cursor:pointer;background:var(--violet);color:#fff;transition:var(--tr);letter-spacing:.02em}
 button:hover{background:var(--vd);transform:translateY(-1px);box-shadow:0 8px 22px rgba(91,16,143,.28)}
 button.sec2,button.sec{background:transparent;color:var(--violet);border:1.5px solid rgba(91,16,143,.25)}button.sec:hover{background:var(--vp);box-shadow:none}
@@ -55,6 +56,18 @@ input:focus,select:focus,textarea:focus{border-color:var(--violet);box-shadow:0 
 #toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);background:#030303;color:#fff;padding:12px 20px;border-radius:12px;font-size:13.5px;opacity:0;pointer-events:none;transition:var(--tr);z-index:50;box-shadow:0 10px 30px rgba(0,0,0,.3)}#toast.on{opacity:1;transform:translate(-50%,0)}
 .prog{height:8px;background:rgba(91,16,143,.12);border-radius:99px;overflow:hidden;max-width:560px;margin:2px 0 18px}.prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,#5B108F,#D084FF);transition:width .5s}
 button.sec.on{background:var(--vp);border-color:var(--violet)}.cnt{text-align:right;font-size:12px;color:var(--tm);margin-top:4px}
+.lst{display:grid;grid-template-columns:1fr!important;gap:8px}.li{display:flex;gap:14px;background:#fff;border:1px solid #E4D9EB;border-radius:12px;padding:12px 14px;cursor:pointer}.ld{min-width:84px;font-weight:600;color:#5B108F;font-size:13px}.lt{font-size:13.5px}.lt span{color:#6B647A}
+.dtc{color:#6B647A;font-size:11.5px}button{min-height:42px;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+button.red{background:#fff;color:#C0392B;border:1.5px solid rgba(192,57,43,.4)}button.red:hover{background:rgba(192,57,43,.08);box-shadow:none}
+.x,.nav,.mid i{min-height:0}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.step{background:#fff;border:1px solid var(--bdr);border-radius:12px;padding:16px}.step b{display:block;color:var(--violet);font-size:12px;letter-spacing:.08em;margin-bottom:6px}.step span{font-size:13px;color:var(--tm);line-height:1.5}
+.recg{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}.rc{background:#fff;border:1px solid var(--bdr);border-radius:12px;padding:16px;cursor:pointer;transition:var(--tr)}.rc:hover{border-color:var(--vl);transform:translateY(-2px)}
+.rc small{display:block;color:var(--violet);font-weight:600;font-size:11px;letter-spacing:.07em;text-transform:uppercase}.rc b{font-family:var(--fd);font-size:22px}
+.lnk{background:none;border:0;color:var(--violet);text-decoration:underline;min-height:0;padding:4px 6px;font-size:12.5px}.lnk:hover{background:none;box-shadow:none;transform:none;color:var(--vd)}
+#pBig{position:relative}.nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.55);color:#fff;border-radius:50%;width:40px;height:40px;padding:0;font-size:22px}.nav:hover{background:rgba(0,0,0,.8);transform:translateY(-50%)}.nav.l{left:8px}.nav.r{right:8px}
+.cnt2{position:absolute;bottom:8px;right:10px;background:rgba(0,0,0,.6);color:#fff;font-size:12px;padding:2px 10px;border-radius:10px}
+@media(max-width:700px){.steps{grid-template-columns:1fr}}
+.nfl{display:block;font-size:11px;color:rgba(238,232,248,.65);margin:2px 2px 4px}.lb{font-size:12.5px;color:var(--tm)}.bar input[type=date]{padding:8px 10px}
 </style>
 </head>
 <body>
@@ -67,20 +80,20 @@ button.sec.on{background:var(--vp);border-color:var(--violet)}.cnt{text-align:ri
  <div class="sec">Conteúdo</div>
  <div class="nb on"><span>▦</span>MOVE Feed</div>
  <div class="sec">Novo planejamento</div>
- <div class="nf"><select id="nCli"><option value="">Carregando clientes…</option></select><input id="nMes" type="month"><button onclick="novoPlano()">＋ Criar planejamento</button></div>
+ <div class="nf"><select id="nCli"><option value="">Carregando clientes…</option></select><label class="nfl">Início do planejamento</label><input id="nIni" type="date" onchange="sugerirFim()"><label class="nfl">Fim (último post)</label><input id="nFim" type="date"><button onclick="novoPlano()">＋ Criar planejamento</button></div>
  <div class="sec">Planejamentos</div>
  <div id="lista"></div>
  <div class="foot">MOVE Marketing<br><em>Painel da equipe</em><div id="quem"></div></div>
 </aside>
 <main>
- <div id="vazio"><div class="pt">MOVE <em>Feed</em></div><div class="ps">Planejamento visual de conteúdos para aprovação dos clientes</div><div class="empty">Escolha um planejamento na lista ao lado ou crie um novo.</div></div>
+ <div id="vazio"><div class="pt">MOVE <em>Feed</em></div><div class="ps">Planejamento visual de conteúdos para aprovação dos clientes</div><div id="rec"></div><div class="kick" style="margin:28px 0 10px">Como funciona</div><div class="steps"><div class="step"><b>01 · CRIE</b><span>Escolha o cliente e o mês no menu lateral.</span></div><div class="step"><b>02 · MONTE</b><span>Adicione posts, carrosséis e reels com legenda e data.</span></div><div class="step"><b>03 · COMPARTILHE</b><span>Gere o link e acompanhe aprovações e ajustes.</span></div></div></div>
  <div id="plano" style="display:none">
   <div class="top"><div><div class="kick">MOVE Feed</div><h2 id="tit"></h2></div><div class="bar" style="margin:0"><button class="sec" onclick="duplicarPlano()">Duplicar para o próximo mês</button><button class="del" onclick="excluirPlano()">Excluir planejamento</button></div></div>
   <div class="bar">
-   <button onclick="abrirPost()">＋ Novo post</button><span id="cont"></span>
-   <button class="sec" onclick="aba('g')">Grade</button><button class="sec" onclick="aba('c')">Calendário</button><button class="sec" id="bFiltro" onclick="filtrar()">Só com ajuste</button>
+   <button onclick="abrirPost()">＋ Novo post</button><span id="cont"></span><button class="lnk" onclick="alterarLimite()" title="Limite definido pelo pacote do cliente. Clique para alterar.">alterar limite</button>
+   <button class="sec on" data-aba="g" onclick="aba('g')">Grade</button><button class="sec" data-aba="c" onclick="aba('c')">Calendário</button><button class="sec" id="bFiltro" onclick="filtrar()">Só com ajuste</button>
   </div>
-  <div class="bar" id="share"></div><div class="prog"><i id="progI"></i></div>
+  <div class="bar"><span class="lb">Período</span><input type="date" id="eIni" onchange="salvarPeriodo()"><span class="lb">até</span><input type="date" id="eFim" onchange="salvarPeriodo()"></div><div class="bar" id="share"></div><div class="prog"><i id="progI"></i></div>
   <div id="vg" class="grid"></div><div id="vc" class="cal" style="display:none"></div>
  </div>
 </main>
@@ -127,60 +140,83 @@ onAuthStateChanged(auth,u=>{
   getDoc(doc(db,"app_state","current")).then(s=>{clientes=((s.data()||{}).clients||[]).slice().sort((a,b)=>String(a.name).localeCompare(String(b.name),"pt-BR"));
    $("nCli").innerHTML='<option value="">Selecione o cliente</option>'+clientes.map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join("")}).catch(()=>{$("nCli").innerHTML='<option value="">Não foi possível carregar os clientes</option>'});
   const ms=x=>{const t=x.updatedAt||x.createdAt||x.criadoEm;return t&&t.toMillis?t.toMillis():0};
-  onSnapshot(collection(db,"feed_plans"),s=>{planos=s.docs.map(d=>{const x=d.data();return{id:d.id,...x,clienteNome:x.clientName||x.clienteNome||"Cliente",mes:x.period||x.mes||"2026-01"}}).sort((a,b)=>ms(b)-ms(a));lista();
+  onSnapshot(collection(db,"feed_plans"),s=>{planos=s.docs.map(d=>{const x=d.data();return{id:d.id,...x,clienteNome:x.clientName||x.clienteNome||"Cliente",mes:x.period||x.mes||"2026-01",inicio:x.inicio||(x.period||x.mes||"2026-01")+"-01",fim:x.fim||fimMes(x.period||x.mes||"2026-01")}}).sort((a,b)=>ms(b)-ms(a));lista();
    const q=new URLSearchParams(location.search).get("plano");if(q&&!aberto&&planos.some(p=>p.id===q)){aberto=1;abrirPlano(q)}})}
 });
 
-function lista(){$("lista").innerHTML=planos.map(p=>`<div class="pl ${cur&&cur.id===p.id?"on":""}" onclick="abrirPlano('${p.id}')">${esc(p.clienteNome)}<small>${nomeMes(p.mes)}</small></div>`).join("");
+function lista(){recentes();$("lista").innerHTML=planos.map(p=>`<div class="pl ${cur&&cur.id===p.id?"on":""}" onclick="abrirPlano('${p.id}')">${esc(p.clienteNome)}<small>${per(p)}</small></div>`).join("");
  if(cur){const n=planos.find(p=>p.id===cur.id);if(n){cur=n;cab()}}}
-window.novoPlano=async()=>{const c=clientes.find(x=>String(x.id)===$("nCli").value),m=$("nMes").value;if(!c||!m)return toast("Escolha o cliente e o mês.");
+window.sugerirFim=()=>{const a=$("nIni").value;if(a&&!$("nFim").value){const d=new Date(a+"T12:00:00");d.setDate(d.getDate()+29);$("nFim").value=iso(d)}};
+window.salvarPeriodo=async()=>{const a=$("eIni").value,b=$("eFim").value;if(!a||!b||b<a)return toast("O fim precisa ser igual ou depois do início.");
+ await updateDoc(doc(db,"feed_plans",cur.id),{inicio:a,fim:b,period:a.slice(0,7),updatedAt:serverTimestamp()});toast("Período atualizado.")};
+window.novoPlano=async()=>{const c=clientes.find(x=>String(x.id)===$("nCli").value),a=$("nIni").value,b=$("nFim").value;
+ if(!c||!a||!b)return toast("Escolha o cliente e as datas de início e fim.");if(b<a)return toast("O fim precisa ser igual ou depois do início.");
+ if((new Date(b)-new Date(a))/864e5>92)return toast("O período máximo é de cerca de 3 meses.");
  const now=serverTimestamp();
- const r=await addDoc(collection(db,"feed_plans"),{clientId:String(c.id),clientName:String(c.name),period:m,status:"rascunho",createdAt:now,updatedAt:now,createdBy:auth.currentUser.uid,schemaVersion:1,shareAtivo:false,shareToken:null});
- $("nCli").value="";setTimeout(()=>abrirPlano(r.id),400)};
+ const r=await addDoc(collection(db,"feed_plans"),{clientId:String(c.id),clientName:String(c.name),period:a.slice(0,7),inicio:a,fim:b,status:"rascunho",createdAt:now,updatedAt:now,createdBy:auth.currentUser.uid,schemaVersion:1,shareAtivo:false,shareToken:null});
+ $("nCli").value="";$("nIni").value="";$("nFim").value="";setTimeout(()=>abrirPlano(r.id),400)};
 window.abrirPlano=id=>{cur=planos.find(p=>p.id===id);if(!cur)return;ulP&&ulP();Object.values(ulC).forEach(f=>f());ulC={};stat={};
  $("vazio").style.display="none";$("plano").style.display="block";cab();lista();
  ulP=onSnapshot(query(collection(db,"feed_plans",id,"posts"),orderBy("ordem")),s=>{posts=s.docs.map(d=>({id:d.id,...d.data()}));
   posts.forEach(p=>{if(!ulC[p.id])ulC[p.id]=onSnapshot(query(collection(db,"feed_plans",id,"posts",p.id,"comentarios"),orderBy("criadoEm")),c=>{
    const l=c.docs.map(x=>x.data()).filter(x=>x.tipo!=="comentario").pop();stat[p.id]=l?l.tipo:"";desenhar()})});desenhar()})};
-function cab(){$("tit").textContent=cur.clienteNome+" — "+nomeMes(cur.mes);
+function cab(){$("tit").textContent=cur.clienteNome+" — "+per(cur);
  const l=cur.shareAtivo&&cur.shareToken?new URL("feed-cliente.html?t="+cur.shareToken,location.href).href:"";
  $("share").innerHTML=l?`<input readonly value="${l}" style="width:340px" onclick="this.select()"><button onclick="navigator.clipboard.writeText('${l}');this.textContent='Copiado!'">Copiar link</button><button class="sec" onclick="gerarLink()">Gerar novo link</button><button class="red" onclick="desativar()">Desativar link</button>`
   :`<button onclick="gerarLink()">Gerar link para o cliente</button>`;
  const ap=posts.filter(p=>stat[p.id]==="aprovado").length,aj=posts.filter(p=>stat[p.id]==="ajuste").length;
- $("cont").textContent=posts.length+"/20 posts · "+ap+" aprovados · "+aj+" com ajuste";$("progI").style.width=(posts.length?ap/posts.length*100:0)+"%"}
+ $("eIni").value=cur.inicio;$("eFim").value=cur.fim;$("cont").textContent=posts.length+"/"+lim()+" posts · "+ap+" aprovados · "+aj+" com ajuste";$("progI").style.width=(posts.length?ap/posts.length*100:0)+"%"}
 window.gerarLink=async()=>{if(cur.shareToken)await deleteDoc(doc(db,"feed_shares",cur.shareToken));
  const t=crypto.randomUUID().replace(/-/g,"");await setDoc(doc(db,"feed_shares",t),{planId:cur.id});await updateDoc(doc(db,"feed_plans",cur.id),{shareAtivo:true,shareToken:t})};
 window.desativar=async()=>{if(!confirm("O link atual deixará de funcionar. Continuar?"))return;
  await deleteDoc(doc(db,"feed_shares",cur.shareToken));await updateDoc(doc(db,"feed_plans",cur.id),{shareAtivo:false,shareToken:null})};
-window.aba=a=>{verAba=a;desenhar()};
+window.aba=a=>{verAba=a;document.querySelectorAll("[data-aba]").forEach(b=>b.classList.toggle("on",b.dataset.aba===a));desenhar()};
 
 function badge(p){return stat[p.id]==="ajuste"?'<span class="st aj">ajuste</span>':stat[p.id]==="aprovado"?'<span class="st ok">aprovado</span>':""}
 function desenhar(){if(!cur)return;cab();$("vg").style.display=verAba==="g"?"grid":"none";$("vc").style.display=verAba==="c"?"grid":"none";
  $("vg").innerHTML=posts.filter(p=>!filtroAj||stat[p.id]==="ajuste").map(p=>`<div class="cell" draggable="true" data-id="${p.id}" style="background-image:url('${thumb(p.midias?.[0])}')" onclick="abrirPost('${p.id}')">
   <span class="tag">${p.tipo==="reels"?"▶ Reels":p.tipo==="carrossel"?"❐ "+(p.midias||[]).length:"Estático"}</span>${badge(p)}<span class="dt">${p.dataPrevista?p.dataPrevista.slice(8)+"/"+p.dataPrevista.slice(5,7):""}</span></div>`).join("");
  document.querySelectorAll(".cell").forEach(c=>{c.ondragstart=e=>e.dataTransfer.setData("id",c.dataset.id);c.ondragover=e=>e.preventDefault();c.ondrop=e=>{e.preventDefault();mover(e.dataTransfer.getData("id"),c.dataset.id)}});
- const[a,m]=cur.mes.split("-").map(Number),ini=new Date(a,m-1,1).getDay(),dias=new Date(a,m,0).getDate();let h=["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"].map(d=>`<div class="wd">${d}</div>`).join("");
- for(let i=0;i<ini;i++)h+="<div></div>";
- for(let d=1;d<=dias;d++){const k=`${cur.mes}-${String(d).padStart(2,"0")}`;h+=`<div class="day"><b>${d}</b>${posts.filter(p=>p.dataPrevista===k).map(p=>`<div class="chip" onclick="abrirPost('${p.id}')">${p.tipo==="reels"?"▶":p.tipo==="carrossel"?"❐":"■"} ${esc((p.legenda||"").slice(0,18))||"post"}</div>`).join("")}</div>`}
- $("vc").innerHTML=h}
+ const di=new Date(cur.inicio+"T12:00:00"),df=new Date(cur.fim+"T12:00:00");
+ let h=["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"].map(d=>`<div class="wd">${d}</div>`).join("");
+ for(let i=0;i<di.getDay();i++)h+="<div></div>";
+ for(let d=new Date(di);d<=df;d.setDate(d.getDate()+1)){const k=iso(d),t=(d.getDate()===1||k===cur.inicio)?d.getDate()+" "+d.toLocaleDateString("pt-BR",{month:"short"}).replace(".",""):d.getDate();
+  h+=`<div class="day"><b>${t}</b>${posts.filter(p=>p.dataPrevista===k).map(p=>`<div class="chip" onclick="abrirPost('${p.id}')">${p.tipo==="reels"?"▶":p.tipo==="carrossel"?"❐":"■"} ${esc((p.legenda||"").slice(0,18))||"post"}</div>`).join("")}</div>`}
+ const mob=matchMedia("(max-width:700px)").matches;$("vc").className=mob?"lst":"cal";$("vc").innerHTML=mob?listaHTML():h}
 async function mover(de,para){if(de===para)return;const l=posts.filter(p=>p.id!==de),i=l.findIndex(p=>p.id===para),mv=posts.find(p=>p.id===de);l.splice(i,0,mv);
  await Promise.all(l.map((p,n)=>updateDoc(doc(db,"feed_plans",cur.id,"posts",p.id),{ordem:n})))}
 
+function per(p){const a=p.inicio,b=p.fim,f=(s,y)=>new Date(s+"T12:00:00").toLocaleDateString("pt-BR",y?{day:"numeric",month:"short",year:"numeric"}:{day:"numeric",month:"short"}).replace(/\./g,"");
+ if(a.slice(0,7)===b.slice(0,7))return new Date(a+"T12:00:00").toLocaleDateString("pt-BR",{month:"long",year:"numeric"});
+ return f(a,a.slice(0,4)!==b.slice(0,4))+" a "+f(b,true)}
+function fimMes(ym){const[y,m]=ym.split("-").map(Number);return ym+"-"+String(new Date(y,m,0).getDate()).padStart(2,"0")}
+const iso=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+function lim(){return cur.limite||((clientes.find(c=>String(c.id)===String(cur.clientId))||{}).pkg)||20}
+function origemLim(){return cur.limite?"definido manualmente":((clientes.find(c=>String(c.id)===String(cur.clientId))||{}).pkg)?"pacote contratado do cliente":"limite padrão"}
+window.alterarLimite=async()=>{const v=prompt("Limite de posts deste planejamento.\nPor padrão usamos o pacote do cliente (ou 20, se não houver).",lim());if(v===null)return;const n=parseInt(v,10);
+ if(!(n>=1&&n<=100))return toast("Informe um número de 1 a 100.");await updateDoc(doc(db,"feed_plans",cur.id),{limite:n,updatedAt:serverTimestamp()});toast("Limite atualizado.")};
+const dtc=c=>c.criadoEm&&c.criadoEm.toDate?c.criadoEm.toDate().toLocaleString("pt-BR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"}):"agora";
+function recentes(){$("rec").innerHTML=planos.length?'<div class="kick" style="margin:6px 0 10px">Planejamentos recentes</div><div class="recg">'+planos.slice(0,6).map(p=>`<div class="rc" onclick="abrirPlano('${p.id}')"><small>${esc(p.clienteNome)}</small><b>${per(p)}</b></div>`).join("")+"</div>":'<div class="empty"><button onclick="document.getElementById(\'nCli\').focus()">＋ Criar primeiro planejamento</button><div style="margin-top:10px">Escolha um cliente e um mês no menu lateral e clique em Criar planejamento.</div></div>'}
+function listaHTML(){const l=[...posts].sort((x,y)=>(x.dataPrevista||"9").localeCompare(y.dataPrevista||"9"));
+ return l.map(p=>{const dt=p.dataPrevista?new Date(p.dataPrevista+"T12:00:00").toLocaleDateString("pt-BR",{weekday:"short",day:"2-digit",month:"2-digit"}):"Sem data";
+  return `<div class="li" onclick="abrirPost('${p.id}')"><div class="ld">${dt}</div><div class="lt">${p.tipo==="reels"?"▶ Reels":p.tipo==="carrossel"?"❐ Carrossel":"■ Estático"}<br><span>${esc((p.legenda||"Sem legenda").slice(0,90))}</span></div></div>`}).join("")||'<div class="empty">Nenhum post ainda.</div>'}
+matchMedia("(max-width:700px)").addEventListener("change",()=>desenhar());
+window.passar=n=>{if(midias.length<2)return;bigIdx=(bigIdx+n+midias.length)%midias.length;mids()};
 let filtroAj=false;
 function toast(m){let t=$("toast");if(!t){t=document.createElement("div");t.id="toast";document.body.appendChild(t)}t.textContent=m;t.className="on";clearTimeout(t._t);t._t=setTimeout(()=>t.className="",3400)}
 window.filtrar=()=>{filtroAj=!filtroAj;$("bFiltro").classList.toggle("on",filtroAj);desenhar()};
 window.contar=()=>{const n=$("pLeg").value.length;$("pCnt").textContent=n+" / 2200";$("pCnt").style.color=n>2200?"#C0392B":""};
 window.duplicarPlano=async()=>{
- const[a,m]=cur.mes.split("-").map(Number),d=new Date(a,m,1),novo=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0"),max=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();
- if(!confirm("Criar "+nomeMes(novo)+" para "+cur.clienteNome+", copiando tipo, legenda e data de cada post (sem as imagens)?"))return;
+ const dia=864e5,ini=new Date(cur.inicio+"T12:00:00"),fim=new Date(cur.fim+"T12:00:00"),n=Math.round((fim-ini)/dia)+1,ni=new Date(+fim+dia),nf=new Date(+ni+(n-1)*dia),desl=Math.round((ni-ini)/dia),novo={inicio:iso(ni),fim:iso(nf)};
+ if(!confirm("Criar o próximo período ("+per(novo)+") para "+cur.clienteNome+", copiando tipo, legenda e data de cada post (sem as imagens)?"))return;
  try{const now=serverTimestamp();
-  const r=await addDoc(collection(db,"feed_plans"),{clientId:cur.clientId||null,clientName:cur.clienteNome,period:novo,status:"rascunho",createdAt:now,updatedAt:now,createdBy:auth.currentUser.uid,schemaVersion:1,shareAtivo:false,shareToken:null});
-  for(const p of posts){const dt=p.dataPrevista?novo+"-"+String(Math.min(+p.dataPrevista.slice(8),max)).padStart(2,"0"):null;
+  const r=await addDoc(collection(db,"feed_plans"),{clientId:cur.clientId||null,clientName:cur.clienteNome,period:novo.inicio.slice(0,7),inicio:novo.inicio,fim:novo.fim,status:"rascunho",createdAt:now,updatedAt:now,createdBy:auth.currentUser.uid,schemaVersion:1,shareAtivo:false,shareToken:null});
+  for(const p of posts){const dt=p.dataPrevista?iso(new Date(+new Date(p.dataPrevista+"T12:00:00")+desl*dia)):null;
    await addDoc(collection(db,"feed_plans",r.id,"posts"),{tipo:p.tipo,legenda:p.legenda||"",dataPrevista:dt,ordem:p.ordem,midias:[],criadoEm:serverTimestamp()})}
   toast("Planejamento duplicado.");setTimeout(()=>abrirPlano(r.id),500);
  }catch(e){toast("Não foi possível duplicar: "+e.message)}};
 window.excluirPlano=async()=>{
- if(!confirm("Excluir o planejamento de "+cur.clienteNome+" ("+nomeMes(cur.mes)+") com todos os posts e comentários? Não dá para desfazer."))return;
+ if(!confirm("Excluir o planejamento de "+cur.clienteNome+" ("+per(cur)+") com todos os posts e comentários? Não dá para desfazer."))return;
  const id=cur.id,tk=cur.shareToken;ulP&&ulP();ulP=null;Object.values(ulC).forEach(f=>f());ulC={};
  try{
   for(const p of (await getDocs(collection(db,"feed_plans",id,"posts"))).docs){
@@ -192,21 +228,22 @@ window.excluirPlano=async()=>{
  }catch(e){toast("Não foi possível excluir: "+e.message)}};
 /* ---- modal de post ---- */
 window.abrirPost=id=>{editId=id||null;const p=posts.find(x=>x.id===id);
- if(!p&&posts.length>=20)return toast("Limite de 20 posts por planejamento.");
+ if(!p&&posts.length>=lim())return toast('Limite de '+lim()+' posts atingido ('+origemLim()+'). Use "alterar limite" se precisar de mais.');
  midias=p?[...(p.midias||[])]:[];bigIdx=0;$("mt").textContent=p?"Editar post":"Novo post";$("pTipo").value=p?p.tipo:"estatico";$("pLeg").value=p?p.legenda||"":"";contar();
- $("pData").value=p?p.dataPrevista||"":"";$("pData").min=cur.mes+"-01";$("pData").max=cur.mes+"-31";$("pArq").value="";$("msg").textContent="";
+ $("pData").value=p?p.dataPrevista||"":"";$("pData").min=cur.inicio;$("pData").max=cur.fim;$("pArq").value="";$("msg").textContent="";
  $("bDel").style.display=$("cmBox").style.display=p?"":"none";ulM&&ulM();
  if(p)ulM=onSnapshot(query(collection(db,"feed_plans",cur.id,"posts",p.id,"comentarios"),orderBy("criadoEm")),s=>{
-  $("cms").innerHTML=s.docs.map(d=>d.data()).map(c=>`<div class="cm"><b>${esc(c.autor)}</b> ${c.tipo==="ajuste"?"🔴 pediu ajuste":c.tipo==="aprovado"?"🟢 aprovou":""}<br>${esc(c.texto)}</div>`).join("")||"Sem comentários."});
+  $("cms").innerHTML=s.docs.map(d=>d.data()).map(c=>`<div class="cm"><b>${esc(c.autor)}</b> ${c.tipo==="ajuste"?"🔴 pediu ajuste":c.tipo==="aprovado"?"🟢 aprovou":""}<small class="dtc"> · ${dtc(c)}</small><br>${esc(c.texto)}</div>`).join("")||"Sem comentários."});
  mids();$("mp").classList.add("on")};
 const gr=m=>m.url.replace("/upload/","/upload/f_auto,q_auto,w_1080/");
 function mids(){if(bigIdx>=midias.length)bigIdx=Math.max(0,midias.length-1);const b=midias[bigIdx];
  $("pBig").innerHTML=b?(b.tipo==="video"?`<video src="${b.url}" controls playsinline></video>`:`<img src="${gr(b)}">`):"<small>Nenhum arquivo ainda.</small>";
+ if(midias.length>1)$("pBig").insertAdjacentHTML("beforeend",`<button class="nav l" onclick="passar(-1)">‹</button><button class="nav r" onclick="passar(1)">›</button><span class="cnt2">${bigIdx+1}/${midias.length}</span>`);
  $("pMid").innerHTML=midias.map((m,i)=>`<span class="mid ${i===bigIdx?"sel":""}" onclick="ver(${i})">${m.tipo==="video"?`<video src="${m.url}"></video>`:`<img src="${thumb(m)}">`}<i onclick="event.stopPropagation();tirar(${i})">×</i></span>`).join("")}
 window.ver=i=>{bigIdx=i;mids()};
 window.tirar=i=>{midias.splice(i,1);mids()};
 window.fechar=()=>{ulM&&ulM();ulM=null;$("mp").classList.remove("on")};
-document.addEventListener("keydown",e=>{if(e.key==="Escape")fechar()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")fechar();if($("mp").classList.contains("on")&&!/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)){if(e.key==="ArrowRight")passar(1);if(e.key==="ArrowLeft")passar(-1)}});
 $("mp").addEventListener("click",e=>{if(e.target.id==="mp")fechar()});
 async function comprimir(f){if(!f.type.startsWith("image/")||f.type==="image/gif")return f;const b=await createImageBitmap(f),s=Math.min(1,1080/b.width),c=document.createElement("canvas");
  c.width=b.width*s;c.height=b.height*s;c.getContext("2d").drawImage(b,0,0,c.width,c.height);return new Promise(r=>c.toBlob(r,"image/jpeg",.85))}
