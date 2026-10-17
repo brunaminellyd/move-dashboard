@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -105,7 +105,6 @@ button,input,select,textarea{font-family:inherit}
 .btn-p{background:var(--violet);color:#fff}.btn-p:hover{background:var(--violet-dark);transform:translateY(-1px);box-shadow:0 8px 22px rgba(123,79,203,.28)}
 .btn-o{background:transparent;color:var(--tm);border:1.5px solid var(--bdr)}.btn-o:hover{background:#fff;color:var(--t);border-color:var(--bdrh)}
 .btn-wa{background:var(--wab);color:var(--wa);border:1px solid rgba(196,122,26,.25)}.btn-wa:hover{background:rgba(196,122,26,.16)}
-.btn-ok{background:var(--okb);color:var(--ok);border:1px solid rgba(30,158,106,.22)}.btn-ok:hover{background:rgba(30,158,106,.16)}
 .btn-g{background:transparent;color:var(--violet);border:1.5px solid rgba(123,79,203,.25)}.btn-g:hover{background:var(--violet-pale)}
 .btn-sm{padding:8px 16px;font-size:12px;border-radius:var(--r-sm)}
 
@@ -307,7 +306,6 @@ button,input,select,textarea{font-family:inherit}
 .field-hint{font-size:11px;color:var(--tm);margin-top:6px;line-height:1.5}
 .fg2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .modal-foot{display:flex;gap:10px;justify-content:flex-end;margin-top:26px;padding-top:20px;border-top:1px solid var(--div)}
-.lote-preview{background:var(--card2);border:1px solid var(--bdr);border-radius:var(--r-sm);padding:12px 14px;max-height:160px;overflow-y:auto;margin-top:10px}
 
 /* ── Confirm ── */
 #cfm{display:none;position:fixed;inset:0;background:rgba(26,16,40,.55);z-index:300;align-items:center;justify-content:center;backdrop-filter:blur(6px)}
@@ -323,9 +321,6 @@ button,input,select,textarea{font-family:inherit}
 #toast.ok{color:var(--ok);border-color:rgba(30,158,106,.3);background:#F0FAF5}
 #toast.wa{color:var(--wa);border-color:rgba(196,122,26,.3);background:#FFF8EE}
 #toast.er{color:var(--er);border-color:rgba(192,57,43,.3);background:#FFF1F0}
-.lote-line{display:flex;align-items:center;gap:10px;padding:5px 0;font-size:12.5px;color:var(--ts);border-bottom:1px solid var(--div)}
-.lote-line:last-child{border-bottom:none}
-.lote-num{font-size:11px;color:var(--tm);min-width:22px;flex-shrink:0;font-weight:500}
 
 /* ── Print area ── */
 #print-area{display:none}
@@ -435,9 +430,49 @@ button,input,select,textarea{font-family:inherit}
   .pr-ir:last-child{border-bottom:none}
   .pr-ir strong{color:#1A1028;font-weight:500}
 }
+
+/* ── Login Firebase + etapa inicial MOVE Feed ── */
+body.auth-pending #app, body.auth-pending #mob-bar,
+body.auth-logged-out #app, body.auth-logged-out #mob-bar{display:none!important}
+#auth-gate{display:none;position:fixed;inset:0;z-index:300;background:linear-gradient(135deg,#1A1130,#35205E);align-items:center;justify-content:center;padding:24px}
+body.auth-pending #auth-gate,body.auth-logged-out #auth-gate{display:flex}
+.auth-card{width:min(100%,430px);background:#fff;border-radius:20px;padding:36px;box-shadow:0 24px 80px rgba(0,0,0,.28)}
+.auth-brand{font-family:var(--font-d);font-size:34px;font-weight:700;color:#1A1028;letter-spacing:.08em}
+.auth-brand span{color:var(--violet);font-style:italic}
+.auth-subtitle{color:var(--tm);font-size:13px;margin:5px 0 24px}
+.auth-card .field-label{display:block;color:var(--ts);font-size:12px;margin:0 0 5px}
+.auth-field{display:block;width:100%;margin:0 0 14px;padding:12px 14px;border:1px solid var(--bdr);border-radius:10px;font-size:14px;color:var(--t);background:#fff}
+.auth-field:focus{outline:2px solid rgba(123,79,203,.25);border-color:var(--violet)}
+.auth-error{min-height:22px;color:var(--er);font-size:12px;margin:5px 0 12px}
+.auth-wait{color:#EEE8F8;font:14px var(--font-b)}
+.auth-foot{color:var(--tm);font-size:11px;margin-top:18px;line-height:1.5}
+.feed-intro{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:20px}
+.feed-step{background:#fff;border:1px solid var(--bdr);border-radius:12px;padding:18px}
+.feed-step b{display:block;color:var(--violet);font-size:12px;letter-spacing:.08em;margin-bottom:7px}
+.feed-step span{font-size:12px;color:var(--tm);line-height:1.5}
+.auth-logout{width:100%;margin-top:12px;background:transparent;border:1px solid rgba(255,255,255,.13);color:rgba(238,232,248,.65);border-radius:8px;padding:8px 10px;font:12px var(--font-b);cursor:pointer}
+.auth-logout:hover{color:#fff;background:rgba(255,255,255,.07)}
+@media(max-width:700px){.feed-intro{grid-template-columns:1fr}.auth-card{padding:28px 22px}}
 </style>
 </head>
-<body>
+<body class="auth-pending">
+<div id="auth-gate" aria-live="polite">
+  <div class="auth-card" id="auth-card">
+    <div class="auth-brand">MO<span>VE</span></div>
+    <div class="auth-subtitle">Central Operacional · acesso da equipe</div>
+    <div id="auth-wait" class="auth-wait">Verificando acesso…</div>
+    <form id="login-form" style="display:none">
+      <label for="login-email" class="field-label">E-mail</label>
+      <input class="auth-field" id="login-email" type="email" autocomplete="username" required>
+      <label for="login-password" class="field-label">Senha</label>
+      <input class="auth-field" id="login-password" type="password" autocomplete="current-password" required>
+      <div id="login-error" class="auth-error" role="alert"></div>
+      <button class="btn btn-p" id="login-submit" type="submit" style="width:100%;justify-content:center">Entrar</button>
+      <button type="button" id="login-reset" class="btn btn-o" style="width:100%;justify-content:center;margin-top:9px">Esqueci minha senha</button>
+      <div class="auth-foot">Use a conta criada pela equipe no Firebase Authentication. O cadastro de novos usuários não é feito por esta tela.</div>
+    </form>
+  </div>
+</div>
 
 <!-- Mobile bar -->
 <header id="mob-bar">
@@ -467,8 +502,10 @@ button,input,select,textarea{font-family:inherit}
     <div class="s-sec">Acompanhamento</div>
     <button class="nb" data-v="pendencias"><span class="nb-ico">◬</span>Pendências<span class="nb-badge" id="nb-pend">0</span></button>
     <button class="nb" data-v="relatorios"><span class="nb-ico">⬡</span>Relatórios</button>
+    <div class="s-sec">Conteúdo</div>
+    <button class="nb" data-v="move-feed"><span class="nb-ico">▦</span>MOVE Feed</button>
   </nav>
-  <div class="s-foot"><div class="s-foot-txt">MOVE Marketing<br><em>Painel da equipe</em></div></div>
+  <div class="s-foot"><div class="s-foot-txt">MOVE Marketing<br><em>Painel da equipe</em></div><button class="auth-logout" id="btn-logout" type="button">Sair da conta</button></div>
 </aside>
 
 <!-- MAIN -->
@@ -478,11 +515,6 @@ button,input,select,textarea{font-family:inherit}
 <section class="view on" id="v-dashboard">
   <div class="ph">
     <div class="ph-l"><div class="pt" id="d-greet"></div><div class="ps" id="d-date"></div></div>
-    <div class="ph-r"><button class="btn btn-o btn-sm" id="btn-share">⬆ Compartilhar</button></div>
-  </div>
-  <div id="share-banner" style="display:none;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.3);border-radius:10px;padding:10px 14px;margin-bottom:16px;display:none;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
-    <div style="font-size:12px;color:var(--pl)">👁 Painel compartilhado · <span id="share-dt" style="opacity:.7"></span></div>
-    <button class="btn btn-p btn-sm" id="btn-own">Usar meus dados</button>
   </div>
   <div class="mg" id="m1"></div>
   <div class="mg" id="m2"></div>
@@ -537,7 +569,6 @@ button,input,select,textarea{font-family:inherit}
     <div class="ph-l"><div class="pt">Relatório <em>Executivo</em></div><div class="ps" id="rep-per"></div></div>
     <div class="ph-r">
       <button class="btn btn-o btn-sm" id="btn-reset">↺ Redefinir dados</button>
-      <button class="btn btn-ok btn-sm" id="btn-save-exp">☁ Exportar e salvar</button>
       <button class="btn btn-p" id="btn-pdf">⬇ Exportar PDF</button>
     </div>
   </div>
@@ -546,6 +577,23 @@ button,input,select,textarea{font-family:inherit}
   <div class="card" style="margin-bottom:14px;padding:0;overflow:hidden" id="rep-tbl"></div>
   <div class="card" style="margin-bottom:14px" id="rep-history"></div>
   <div class="g2" id="rep-ins"></div>
+</section>
+
+<!-- ═══ MOVE FEED — ETAPA 1 ═══════════════ -->
+<section class="view" id="v-move-feed">
+  <div class="ph">
+    <div class="ph-l"><div class="pt">MOVE <em>Feed</em></div><div class="ps">Planejamento visual de conteúdos para aprovação dos clientes</div></div>
+  </div>
+  <div class="card">
+    <div class="card-h">Primeira etapa: módulo integrado ao painel</div>
+    <div class="card-sub">A navegação já está separada do dashboard operacional. Nesta etapa, nenhuma publicação ou arquivo é gravado ainda.</div>
+    <p style="font-size:13px;color:var(--ts);line-height:1.7">Este espaço será usado para criar planejamentos por cliente, organizar posts e carrosséis, definir datas e preparar um link de visualização. Os dados do MOVE Feed deverão ficar em coleções próprias, sem misturar com <code>app_state/current</code> ou <code>export_logs</code>.</p>
+    <div class="feed-intro">
+      <div class="feed-step"><b>01 · PLANEJAMENTO</b><span>Selecionar um cliente e criar um calendário independente.</span></div>
+      <div class="feed-step"><b>02 · PUBLICAÇÕES</b><span>Adicionar posts estáticos, carrosséis de até 10 slides e reels.</span></div>
+      <div class="feed-step"><b>03 · COMPARTILHAMENTO</b><span>Preparar link para visualizar e comentar, com permissão definida no Firebase.</span></div>
+    </div>
+  </div>
 </section>
 
 </main>
@@ -586,6 +634,7 @@ button,input,select,textarea{font-family:inherit}
 <script src="https://www.gstatic.com/firebasejs/12.7.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/12.7.0/firebase-storage-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.7.0/firebase-auth-compat.js"></script>
 
 <script>
 'use strict';
@@ -727,10 +776,12 @@ let CLOUD_SAVE_TIMER=null;
 let CLOUD_SAVING=false;
 let CLOUD_APPLYING=false;
 let CLOUD_BOOTSTRAPPED=false;
+let CLOUD_BOOTSTRAP_IN_PROGRESS=false;
 let CLOUD_UNSUB=null;
 
+function hasAuthenticatedSession(){ return !!(FBX&&FBX.auth&&FBX.auth.currentUser); }
 function queueCloudStateSave(){
-  if(CLOUD_APPLYING||CLOUD_SAVING||!S.firebaseCfg) return;
+  if(CLOUD_APPLYING||CLOUD_SAVING||!S.firebaseCfg||!hasAuthenticatedSession()||!CLOUD_BOOTSTRAPPED||CLOUD_BOOTSTRAP_IN_PROGRESS) return;
   clearTimeout(CLOUD_SAVE_TIMER);
   CLOUD_SAVE_TIMER=setTimeout(()=>{ saveCloudStateNow(); },500);
 }
@@ -760,7 +811,7 @@ function applyCloudState(payload){
   }
 }
 async function saveCloudStateNow(){
-  if(CLOUD_APPLYING||CLOUD_SAVING||!S.firebaseCfg||!window.firebase) return;
+  if(CLOUD_APPLYING||CLOUD_SAVING||!S.firebaseCfg||!window.firebase||!hasAuthenticatedSession()) return false;
   CLOUD_SAVING=true;
   try{
     const fb=await initFirebaseClient();
@@ -768,32 +819,33 @@ async function saveCloudStateNow(){
     await fb.db.collection(CLOUD_STATE_COLLECTION).doc(CLOUD_STATE_DOC).set(payload,{merge:true});
     S.lastCloudSyncAt=payload.updatedAtIso;
     try{ localStorage.setItem(LS,JSON.stringify({clients:S.clients,contents:S.contents,nextId:S.nextId,exportLogs:S.exportLogs,firebaseCfg:S.firebaseCfg,lastCloudSyncAt:S.lastCloudSyncAt})); }catch(e){}
+    return true;
   }catch(e){
     S.firebaseReady=false;
+    console.error('Falha ao salvar estado no Firestore:',e);
+    return false;
   }finally{
     CLOUD_SAVING=false;
   }
 }
 async function loadCloudStateOnce(){
-  if(!S.firebaseCfg||!window.firebase) return false;
+  if(!S.firebaseCfg||!window.firebase||!hasAuthenticatedSession()) return 'error';
   try{
     const fb=await initFirebaseClient();
     const doc=await fb.db.collection(CLOUD_STATE_COLLECTION).doc(CLOUD_STATE_DOC).get();
-    if(!doc.exists) return false;
+    if(!doc.exists) return 'missing';
     const v=doc.data()||{};
-    if(v.updatedAtIso&&S.lastCloudSyncAt&&new Date(v.updatedAtIso)<new Date(S.lastCloudSyncAt)){
-      queueCloudStateSave();
-      return false;
-    }
-    return applyCloudState(v);
+    if(v.updatedAtIso&&S.lastCloudSyncAt&&new Date(v.updatedAtIso)<new Date(S.lastCloudSyncAt)) return 'local-newer';
+    return applyCloudState(v)?'loaded':'invalid';
   }catch(e){
     S.firebaseReady=false;
-    return false;
+    console.error('Falha ao carregar estado do Firestore:',e);
+    return 'error';
   }
 }
 async function startCloudStateListener(){
   if(CLOUD_UNSUB){ CLOUD_UNSUB(); CLOUD_UNSUB=null; }
-  if(!S.firebaseCfg||!window.firebase) return;
+  if(!S.firebaseCfg||!window.firebase||!hasAuthenticatedSession()) return false;
   try{
     const fb=await initFirebaseClient();
     CLOUD_UNSUB=fb.db.collection(CLOUD_STATE_COLLECTION).doc(CLOUD_STATE_DOC).onSnapshot(snap=>{
@@ -814,25 +866,38 @@ async function startCloudStateListener(){
           updateBadges();
         }
       }
-    },()=>{
+    },err=>{
       S.firebaseReady=false;
+      console.error('Falha no listener do Firestore:',err);
+      toast('A sincronização com o Firestore foi interrompida.','er');
     });
+    return true;
   }catch(e){
     S.firebaseReady=false;
+    console.error('Falha ao iniciar listener do Firestore:',e);
+    return false;
   }
 }
 async function bootstrapCloudState(){
-  if(CLOUD_BOOTSTRAPPED) return;
-  CLOUD_BOOTSTRAPPED=true;
-  if(!S.firebaseCfg) return;
-
-  const hasCloudData=await loadCloudStateOnce();
-
-  if(!hasCloudData){
-    await saveCloudStateNow();
+  if(CLOUD_BOOTSTRAPPED) return true;
+  if(CLOUD_BOOTSTRAP_IN_PROGRESS||!S.firebaseCfg||!hasAuthenticatedSession()) return false;
+  CLOUD_BOOTSTRAP_IN_PROGRESS=true;
+  try{
+    const state=await loadCloudStateOnce();
+    if(state==='missing'||state==='local-newer'){
+      const saved=await saveCloudStateNow();
+      if(!saved){ toast('Não consegui salvar os dados na nuvem. Confira as regras do Firestore.','er'); return false; }
+    }else if(state!=='loaded'){
+      toast('Não foi possível confirmar os dados na nuvem. Nenhum dado será sobrescrito.','wa');
+      return false;
+    }
+    const listening=await startCloudStateListener();
+    if(!listening){ toast('Não consegui iniciar a sincronização do Firestore.','er'); return false; }
+    CLOUD_BOOTSTRAPPED=true;
+    return true;
+  }finally{
+    CLOUD_BOOTSTRAP_IN_PROGRESS=false;
   }
-
-  await startCloudStateListener();
 }
 
 /* ════════════════════════════════════════════
@@ -1290,7 +1355,6 @@ function renderClients(){
         +'<td><span class="gmn-pill" data-gmn-cycle="'+c.id+'" data-next-gmn="'+nextGmn+'" style="background:'+gmnCfg.b+';color:'+gmnCfg.c+'" title="Clique para ciclar">'+gmnCfg.l+'</span></td>'
         +'<td><div class="'+obsCls+'" data-edit="obs" data-id="'+c.id+'">'+obsHtml+'</div></td>'
         +'<td style="white-space:nowrap">'
-          +'<button class="ico" style="color:var(--wa)" data-gp="'+c.id+'" title="Gerar posts do pacote">⚡</button>'
           +'<button class="ico" data-ec="'+c.id+'" title="Editar tudo">✏</button>'
           +'<button class="ico del" data-dc="'+c.id+'" title="Excluir">✕</button>'
         +'</td>'
@@ -1799,66 +1863,6 @@ function openModal(mode,tid){
         +'<div class="field-hint">'+(it&&isDataImage(it.proof)?'Este conteúdo já possui uma imagem anexada no arquivo.':'Escolha uma imagem para salvar dentro do próprio HTML.')+'</div>'
       +'</div>';
   }
-  else if(mode==='lote'){
-    MT.textContent='⚡ Cadastro em lote';
-    MS.textContent='Criar todos';
-    MB.innerHTML=
-      '<div style="font-size:12px;color:var(--ts);margin-bottom:14px;line-height:1.6">Selecione o cliente e cole os títulos — <strong style="color:var(--t)">um por linha</strong>. Cada linha vira um conteúdo separado.</div>'
-      +'<div class="fg2">'
-        +'<div class="field"><label>Cliente *</label><select id="fcli">'+selClients()+'</select></div>'
-        +'<div class="field"><label>Responsável</label><select id="fresp">'+selTeam()+'</select></div>'
-      +'</div>'
-      +'<div class="fg2">'
-        +'<div class="field"><label>Tipo</label><select id="ftype">'+selType()+'</select></div>'
-        +'<div class="field"><label>Prioridade</label><select id="fpr">'+selPR()+'</select></div>'
-      +'</div>'
-      +'<div class="fg2">'
-        +'<div class="field"><label>Status inicial</label><select id="fst">'+selSK('producao')+'</select></div>'
-        +'<div class="field"><label>Prazo padrão</label><input id="fdl" placeholder="Ex: 31/05"></div>'
-      +'</div>'
-      +'<div class="field"><label>Títulos * (um por linha)</label>'
-        +'<textarea id="ftits" style="min-height:110px" placeholder="Story — Dica da semana&#10;Reels — Bastidores&#10;Carrossel — 5 dicas&#10;Post — Frase do mês"></textarea>'
-        +'<div class="field-hint" id="lote-hint">Digite os títulos acima</div>'
-      +'</div>'
-      +'<div id="lote-prev" style="display:none"><div style="font-size:10px;font-weight:700;color:var(--tm);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">Preview</div><div class="lote-preview" id="lote-lines"></div></div>';
-
-    setTimeout(()=>{
-      const ta=document.getElementById('ftits'); if(!ta) return;
-      ta.addEventListener('input',()=>{
-        const lines=ta.value.split('\n').map(l=>l.trim()).filter(Boolean);
-        const hint=document.getElementById('lote-hint');
-        const prev=document.getElementById('lote-prev');
-        const llines=document.getElementById('lote-lines');
-        if(hint) hint.textContent=lines.length?lines.length+' conteúdo'+(lines.length>1?'s':'')+' serão criados':'Digite os títulos acima';
-        if(prev) prev.style.display=lines.length?'block':'none';
-        if(llines) llines.innerHTML=lines.slice(0,8).map((l,i)=>'<div class="lote-line"><span class="lote-num">'+(i+1)+'</span><span>'+esc(l)+'</span></div>').join('')+(lines.length>8?'<div class="lote-line" style="color:var(--tm)">… e mais '+(lines.length-8)+'</div>':'');
-      });
-    },60);
-  }
-  else if(mode==='gerar-p'){
-    const c=S.clients.find(x=>x.id===tid);
-    if(!c){ toast('Cliente não encontrado','er'); return; }
-    const fal=Math.max((c.pkg||0)-(c.feitos||0),0);
-    MT.textContent='Gerar posts — '+c.name;
-    MS.textContent='Criar '+(fal||c.pkg||12)+' posts';
-    MB.innerHTML=
-      '<div style="background:var(--adim);border-radius:9px;padding:11px 13px;margin-bottom:14px;font-size:12px">'
-        +'<div style="font-weight:700;color:var(--t)">'+esc(c.name)+'</div>'
-        +'<div style="color:var(--tm);margin-top:3px">Pacote: <strong style="color:var(--p)">'+(c.pkg||0)+' posts</strong> · Feitos: <strong style="color:var(--ok)">'+(c.feitos||0)+'</strong> · Faltam: <strong style="color:var(--wa)">'+fal+'</strong></div>'
-      +'</div>'
-      +'<div class="fg2">'
-        +'<div class="field"><label>Responsável</label><select id="fresp">'+selTeam(c.resp)+'</select></div>'
-        +'<div class="field"><label>Tipo padrão</label><select id="ftype">'+selType()+'</select></div>'
-      +'</div>'
-      +'<div class="fg2">'
-        +'<div class="field"><label>Prioridade</label><select id="fpr">'+selPR()+'</select></div>'
-        +'<div class="field"><label>Status inicial</label><select id="fst">'+selSK('producao')+'</select></div>'
-      +'</div>'
-      +'<div class="fg2">'
-        +'<div class="field"><label>Prazo padrão</label><input id="fdl" placeholder="Ex: 31/05"></div>'
-        +'<div class="field"><label>Prefixo dos títulos</label><input id="fpfx" value="'+esc(c.name.split(' ')[0])+' — "><div class="field-hint">Gera: "Prefixo Post 1", "Post 2"…</div></div>'
-      +'</div>';
-  }
   else if(mode==='log-manual'){
     const today=new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
     MT.innerHTML='Registrar <em>relatório manual</em>';
@@ -1879,7 +1883,7 @@ function openModal(mode,tid){
     MT.textContent='Configuração Firebase';
     MS.textContent='Salvar conexão';
     MB.innerHTML=
-      '<div style="font-size:12px;color:var(--ts);margin-bottom:12px;line-height:1.6">Preencha as chaves do app web Firebase para salvar os snapshots diários no Storage e no Firestore.</div>'
+      '<div style="font-size:12px;color:var(--ts);margin-bottom:12px;line-height:1.6">Preencha as chaves do app web Firebase para conectar e sincronizar os dados da operação com o Firestore.</div>'
       +'<div class="fg2">'
         +'<div class="field"><label>apiKey</label><input id="fb-apiKey" value="'+esc(fc.apiKey||'')+'"></div>'
         +'<div class="field"><label>authDomain</label><input id="fb-authDomain" value="'+esc(fc.authDomain||'')+'" placeholder="seu-projeto.firebaseapp.com"></div>'
@@ -1891,37 +1895,6 @@ function openModal(mode,tid){
       +'<div class="field"><label>appId</label><input id="fb-appId" value="'+esc(fc.appId||'')+'"></div>'
       +'<div class="field-hint">Cole exatamente do seu projeto Firebase (Configuração do app Web). A equipe poderá visualizar os anexos no histórico.</div>';
   }
-  else if(mode==='share'){
-    MT.textContent='⬆ Compartilhar painel';
-    MS.style.display='none';
-    MB.innerHTML=
-      '<div style="font-size:12px;color:var(--ts);margin-bottom:14px;line-height:1.6">Copie o link abaixo e envie para a equipe. Quem abrir verá os dados do painel em modo leitura.</div>'
-      +'<div style="background:#1a1832;border:1px solid var(--bdr);border-radius:9px;padding:11px 13px;margin-bottom:13px">'
-        +'<div style="font-size:9px;color:var(--tm);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px">Link gerado</div>'
-        +'<div style="font-size:11px;color:var(--pl);word-break:break-all;line-height:1.5" id="share-url-txt">Gerando...</div>'
-      +'</div>'
-      +'<div style="display:flex;gap:8px;flex-wrap:wrap">'
-        +'<button class="btn btn-p btn-sm" id="btn-copy-url" style="flex:1">⧉ Copiar link</button>'
-        +'<button class="btn btn-o btn-sm" id="btn-dl-snap" style="flex:1">⬇ Baixar snapshot HTML</button>'
-      +'</div>'
-      +'<div style="margin-top:15px;padding-top:12px;border-top:1px solid var(--div);font-size:11px;color:var(--tm);line-height:1.6"><strong style="color:var(--ts)">Como funciona:</strong><br>• Quem receber o link abre o mesmo arquivo HTML e vê os dados<br>• É só visualização — não afeta os dados de ninguém<br>• Para atualizar a equipe, gere um novo link</div>';
-
-    const payload={clients:S.clients,contents:S.contents,sharedAt:new Date().toISOString()};
-    const url=window.location.href.split('#')[0]+'#share='+btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
-    setTimeout(()=>{
-      const uel=document.getElementById('share-url-txt');
-      if(uel) uel.textContent=url.length>100?url.substring(0,100)+'…':url;
-      const cbtn=document.getElementById('btn-copy-url');
-      if(cbtn) cbtn.addEventListener('click',()=>{
-        if(navigator.clipboard&&navigator.clipboard.writeText){
-          navigator.clipboard.writeText(url).then(()=>{ cbtn.textContent='✓ Copiado!'; cbtn.style.background='var(--ok)'; cbtn.style.color='#fff'; });
-        } else { const r=document.createRange(); const el2=document.getElementById('share-url-txt'); if(el2){ r.selectNode(el2); window.getSelection().removeAllRanges(); window.getSelection().addRange(r); } cbtn.textContent='Selecione e copie ↑'; }
-      });
-      const dbtn=document.getElementById('btn-dl-snap');
-      if(dbtn) dbtn.addEventListener('click',()=>downloadSnap());
-    },60);
-  }
-
   ov.classList.add('on');
   setTimeout(()=>{ const inp=MB.querySelector('input:not([type="number"])'); if(inp) inp.focus(); },80);
 }
@@ -1975,36 +1948,7 @@ async function saveModal(){
     save();
     closeModal();
     renderRel();
-    toast('Firebase salvo. Teste em “Exportar e salvar” ✓');
-  }
-  else if(m==='lote'){
-    const cli=document.getElementById('fcli').value;
-    const resp=document.getElementById('fresp').value;
-    const type=document.getElementById('ftype').value;
-    const priority=document.getElementById('fpr').value;
-    const status=document.getElementById('fst').value;
-    const dl=(document.getElementById('fdl').value||'').trim();
-    const raw=document.getElementById('ftits').value||'';
-    const lines=raw.split('\n').map(l=>l.trim()).filter(Boolean);
-    if(!lines.length){ toast('Digite ao menos um título','er'); return; }
-    lines.forEach(t=>S.contents.push({id:gid(),title:t,client:cli,type,resp,deadline:dl,status,priority}));
-    save(); closeModal(); renderContents(); renderDash();
-    toast(lines.length+' conteúdo'+(lines.length>1?'s':'')+' criados para '+cli+' ✓');
-  }
-  else if(m==='gerar-p'){
-    const c=S.clients.find(x=>x.id===S.editId);
-    if(!c){ toast('Cliente não encontrado','er'); return; }
-    const fal=Math.max((c.pkg||0)-(c.feitos||0),0);
-    const qtd=fal||c.pkg||12;
-    const resp=document.getElementById('fresp').value;
-    const type=document.getElementById('ftype').value;
-    const priority=document.getElementById('fpr').value;
-    const status=document.getElementById('fst').value;
-    const dl=(document.getElementById('fdl').value||'').trim();
-    const pfx=(document.getElementById('fpfx').value||c.name.split(' ')[0]+' — ');
-    for(let i=1;i<=qtd;i++) S.contents.push({id:gid(),title:pfx+'Post '+i,client:c.name,type,resp,deadline:dl,status,priority});
-    save(); closeModal(); renderContents(); renderDash();
-    toast(qtd+' posts gerados para '+c.name+' ✓');
+    toast('Configuração Firebase salva ✓');
   }
   else if(m==='log-manual'){
     const name=(document.getElementById('flog-name').value||'').trim();
@@ -2040,7 +1984,7 @@ async function saveModal(){
 }
 
 /* ════════════════════════════════════════════
-   PDF / SNAPSHOT
+   RELATÓRIO PDF
 ════════════════════════════════════════════ */
 function exportPDF(){
   const now=new Date();
@@ -2128,52 +2072,6 @@ function exportPDF(){
   },200);
 }
 
-function buildSnapshotDoc(){
-  const now=new Date();
-  const ds=now.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
-  const totCli=S.clients.length;
-  const totPkg=S.clients.reduce((sum,c)=>sum+(Number(c.pkg)||0),0);
-  const totFeitos=S.clients.reduce((sum,c)=>sum+(Number(c.feitos)||0),0);
-  const pct=totPkg?Math.round(totFeitos/totPkg*100):0;
-  const atrasados=S.clients.filter(c=>c.status==='atrasado').length;
-  const cliR=S.clients.map(c=>{
-    const sc=SC[c.status]||{l:c.status||'—'};
-    const f=Number(c.feitos)||0,p=Number(c.pkg)||0,fal=p-f;
-    const pkgTxt=c.pkgTipo?esc(c.pkgTipo):String(p);
-    const falTxt=p>0?(fal>0?String(fal):fal===0?'✓':'+'+Math.abs(fal)):'—';
-    const falColor=p>0?(fal>0?'#C47A1A':'#1E9E6A'):'#6B647A';
-    const owner=pendenciaValue(c);
-    const ownerCfg=owner?RPEND[owner]:null;
-    const ownerCell=ownerCfg?'<span class="owner" style="background:'+ownerCfg.b+';color:'+ownerCfg.c+'">'+ownerCfg.l+'</span>':'—';
-    const commentCell=c.obs?esc(c.obs).replace(/\n/g,'<br>'):'—';
-    return '<tr><td>'+esc(c.name)+'</td><td>'+pkgTxt+'</td><td style="color:'+falColor+';font-weight:700">'+falTxt+'</td><td>'+ownerCell+'</td><td>'+esc(sc.l)+'</td><td>'+commentCell+'</td></tr>';
-  }).join('');
-  const cntR=S.contents.map(c=>{
-    const sc=SK[c.status]||{l:c.status||'—'};
-    return '<tr><td>'+esc(c.title)+'</td><td>'+esc(c.client)+'</td><td>'+esc(c.type)+'</td><td>'+esc(c.resp)+'</td><td>'+esc(c.deadline)+'</td><td>'+esc(sc.l)+'</td></tr>';
-  }).join('');
-  const html='<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MOVE — Painel '+ds+'</title>'
-    +'<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:Plus Jakarta Sans,Segoe UI,sans-serif;background:#eef2ff;color:#17203a;padding:0}.hdr{background:linear-gradient(135deg,#315db8,#4f7ae0);padding:24px 36px;display:flex;align-items:center;justify-content:space-between}.logo-m{width:42px;height:42px;background:rgba(255,255,255,.2);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#fff}.brand{font-size:20px;font-weight:800;color:#fff}.sub{font-size:9px;color:rgba(255,255,255,.7);letter-spacing:.1em;text-transform:uppercase}.hdr-r{text-align:right;color:rgba(255,255,255,.86);font-size:12px}.hdr-t{font-size:18px;font-weight:700;color:#fff}.banner{background:#dbe8ff;border-left:4px solid #315db8;padding:10px 18px;font-size:12px;color:#315db8}.wrap{padding:26px 36px;max-width:1100px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}.stat{background:#fff;border:1px solid #d7e1f5;border-radius:14px;padding:16px;text-align:center}.stat-n{font-size:34px;font-weight:800;color:#315db8}.stat-l{font-size:11px;color:#5b6b94;margin-top:3px}.sec-t{font-size:12px;font-weight:700;color:#17203a;border-left:4px solid #315db8;padding-left:9px;margin:20px 0 12px;text-transform:uppercase;letter-spacing:.05em}.pb{background:#dbe8ff;border-radius:99px;height:9px;overflow:hidden;margin:7px 0}.pbf{height:100%;background:#315db8;border-radius:99px}table{width:100%;border-collapse:collapse;font-size:12px;background:#fff;border:1px solid #d7e1f5;border-radius:10px;overflow:hidden;margin-bottom:14px}th{background:#edf3ff;padding:8px 12px;text-align:left;font-size:9px;font-weight:700;color:#5e6d96;text-transform:uppercase}td{padding:8px 12px;border-bottom:1px solid #edf3ff}tr:last-child td{border-bottom:none}.ftr{margin-top:24px;padding:13px 36px;border-top:1px solid #d7e1f5;font-size:10px;color:#7d8bb0;display:flex;justify-content:space-between} .owner{display:inline-block;padding:3px 9px;border-radius:99px;font-size:10px;font-weight:700}</style>'
-    +'</head><body>'
-    +'<div class="hdr"><div style="display:flex;align-items:center;gap:12px"><div class="logo-m">M</div><div><div class="brand">MOVE Marketing</div><div class="sub">Central Operacional</div></div></div><div class="hdr-r"><div class="hdr-t">Painel Operacional</div><div>'+ds+'</div></div></div>'
-    +'<div class="banner">Snapshot gerado em '+ds+' — visualização somente leitura</div>'
-    +'<div class="wrap">'
-    +'<div class="stats"><div class="stat"><div class="stat-n">'+totPkg+'</div><div class="stat-l">Pacote contratado</div></div><div class="stat"><div class="stat-n" style="color:#1e9e6a">'+totFeitos+'</div><div class="stat-l">Conteúdos feitos</div></div><div class="stat"><div class="stat-n">'+totCli+'</div><div class="stat-l">Clientes</div></div><div class="stat"><div class="stat-n" style="color:#c0392b">'+atrasados+'</div><div class="stat-l">Atrasados</div></div></div>'
-    +'<div class="sec-t">Progresso do pacote</div><div style="display:flex;justify-content:space-between;font-size:11px;color:#5b6b94;margin-bottom:4px"><span>'+totFeitos+' de '+totPkg+' conteúdos feitos</span><span style="font-weight:700;color:#315db8">'+pct+'%</span></div><div class="pb"><div class="pbf" style="width:'+Math.min(pct,100)+'%"></div></div>'
-    +'<div class="sec-t">Clientes</div><table><thead><tr><th>Cliente</th><th>Pacote</th><th>Faltam</th><th>Responsável pela pendência</th><th>Status</th><th>Comentários</th></tr></thead><tbody>'+cliR+'</tbody></table>'
-    +'<div class="sec-t">Conteúdos</div><table><thead><tr><th>Título</th><th>Cliente</th><th>Tipo</th><th>Responsável</th><th>Prazo</th><th>Status</th></tr></thead><tbody>'+cntR+'</tbody></table>'
-    +'</div><div class="ftr"><span>MOVE Marketing</span><span>'+ds+'</span></div>'
-    +'</body></html>';
-  return {now,ds,html,pub:totFeitos,tot:totPkg,pct,filename:'MOVE_Painel_'+now.toISOString().slice(0,10)+'.html'};
-}
-
-function triggerBlobDownload(blob,filename){
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);
-  a.download=filename;
-  a.click();
-  URL.revokeObjectURL(a.href);
-}
 function addExportLog(log){
   S.exportLogs=[log,...S.exportLogs].slice(0,120);
   save();
@@ -2188,7 +2086,7 @@ function renderExportHistory(){
     const ts=dt.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
     const typeIcon=r.type==='pdf'?'📄':r.location==='firebase'?'☁':'⬇';
     const typeColor=r.type==='pdf'?'var(--violet)':r.location==='firebase'?'var(--ok)':'var(--in)';
-    const locationLbl=r.location==='firebase'?'Salvo na nuvem':r.location==='pdf-impressão'?'PDF impresso':r.location==='local'?'Snapshot local':esc(r.location||'—');
+    const locationLbl=r.location==='firebase'?'Salvo na nuvem':r.location==='pdf-impressão'?'PDF impresso':r.location==='local'?'Arquivo local':esc(r.location||'—');
     return '<div class="export-log">'
       +'<div style="display:flex;gap:14px;align-items:flex-start;flex:1;min-width:0">'
         +'<div style="font-size:22px;line-height:1;color:'+typeColor+';flex-shrink:0">'+typeIcon+'</div>'
@@ -2205,13 +2103,13 @@ function renderExportHistory(){
   }).join('');
 
   el.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px">'
-    +'<div><div class="card-h" style="margin-bottom:2px">Registros <em style="font-family:var(--font-d);font-style:italic;color:var(--violet)">exportados</em></div>'
-    +'<div class="card-sub" style="margin:0">Histórico dos relatórios enviados — diário</div></div>'
+    +'<div><div class="card-h" style="margin-bottom:2px">Registros <em style="font-family:var(--font-d);font-style:italic;color:var(--violet)">operacionais</em></div>'
+    +'<div class="card-sub" style="margin:0">Histórico dos relatórios e registros manuais</div></div>'
     +'<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">'
       +'<button class="btn btn-g btn-sm" id="btn-add-log">+ Registrar manual</button>'
     +'</div>'
   +'</div>'
-    +(rows||'<div class="export-log-empty">Nenhum registro salvo ainda. Os exports diários aparecem aqui automaticamente.</div>');
+    +(rows||'<div class="export-log-empty">Nenhum registro operacional salvo ainda.</div>');
 
   if(S.firebaseCfg&&!FB_FETCHING) pullExportLogsCloud();
 }
@@ -2221,27 +2119,13 @@ async function initFirebaseClient(){
   if(!S.firebaseCfg) throw new Error('Configure o Firebase primeiro.');
   if(!window.firebase) throw new Error('SDK do Firebase não carregou.');
   const app=firebase.apps.length?firebase.app():firebase.initializeApp(S.firebaseCfg);
-  FBX={app,db:app.firestore(),storage:app.storage()};
+  FBX={app,db:app.firestore(),storage:app.storage(),auth:app.auth()};
   S.firebaseReady=true;
-  try{ localStorage.setItem(LS,JSON.stringify({clients:S.clients,contents:S.contents,nextId:S.nextId,exportLogs:S.exportLogs,firebaseCfg:S.firebaseCfg,lastCloudSyncAt:S.lastCloudSyncAt})); }catch(e){}
   return FBX;
-}
-async function saveExportCloud(doc){
-  // Storage do Firebase não está disponível no plano gratuito.
-  // Em vez de upload, registra apenas a metadata no Firestore.
-  const fb=await initFirebaseClient();
-  await fb.db.collection('export_logs').add({
-    createdAt:firebase.firestore.FieldValue.serverTimestamp(),
-    createdAtIso:doc.now.toISOString(),
-    filename:doc.filename,
-    totals:{conteudos:doc.tot,publicados:doc.pub,taxa:doc.pct},
-    source:'move-dashboard-web',
-  });
-  return {url:null,path:null};
 }
 let FB_FETCHING=false;
 async function pullExportLogsCloud(){
-  if(FB_FETCHING || !S.firebaseCfg) return;
+  if(FB_FETCHING || !S.firebaseCfg || !hasAuthenticatedSession()) return;
   FB_FETCHING=true;
   try{
     const fb=await initFirebaseClient();
@@ -2251,7 +2135,7 @@ async function pullExportLogsCloud(){
       return {
         id:d.id,
         createdAt:v.createdAtIso||new Date().toISOString(),
-        filename:v.filename||'Snapshot',
+        filename:v.filename||'Registro',
         location:'firebase',
         downloadUrl:v.downloadUrl||'',
       };
@@ -2267,49 +2151,11 @@ async function pullExportLogsCloud(){
     FB_FETCHING=false;
   }
 }
-async function saveDailyExport(){
-  const doc=buildSnapshotDoc();
-  triggerBlobDownload(new Blob([doc.html],{type:'text/html;charset=utf-8'}),doc.filename);
-  const reg={id:Date.now(),createdAt:doc.now.toISOString(),filename:doc.filename,location:'local'};
-  addExportLog(reg);
-  toast('Snapshot baixado localmente ✓');
-  if(S.firebaseCfg) saveExportCloud(doc).catch(err=>{ S.firebaseReady=false; console.warn('Registro opcional do snapshot na nuvem falhou:',err); });
-}
-function downloadSnap(){
-  const doc=buildSnapshotDoc();
-  triggerBlobDownload(new Blob([doc.html],{type:'text/html;charset=utf-8'}),doc.filename);
-  addExportLog({id:Date.now(),createdAt:doc.now.toISOString(),filename:doc.filename,location:'local'});
-  toast('Snapshot baixado ✓');
-}
-
-function checkShare(){
-  const hash=window.location.hash;
-  if(!hash.startsWith('#share=')) return false;
-  try{
-    const data=JSON.parse(decodeURIComponent(escape(atob(hash.slice(7)))));
-    if(data.clients&&data.contents){
-      S.clients=data.clients; S.contents=data.contents;
-      const dt=data.sharedAt?new Date(data.sharedAt).toLocaleString('pt-BR'):'—';
-      document.getElementById('share-dt').textContent='dados de '+dt;
-      const b=document.getElementById('share-banner'); if(b) b.style.display='flex';
-      return true;
-    }
-  }catch(e){}
-  return false;
-}
-async function exitShareAndRestoreOwn(){
-  window.location.hash='';
-  const b=document.getElementById('share-banner'); if(b) b.style.display='none';
-  load();
-  await bootstrapCloudState();
-  renderDash();
-  toast('Exibindo seus dados locais ✓');
-}
-
 /* ════════════════════════════════════════════
    NAVIGATION
 ════════════════════════════════════════════ */
-const REND={dashboard:renderDash,clientes:renderClients,pendencias:renderPend,relatorios:renderRel};
+const REND={dashboard:renderDash,clientes:renderClients,pendencias:renderPend,relatorios:renderRel,'move-feed':renderMoveFeed};
+function renderMoveFeed(){ /* Etapa inicial: tela estrutural, sem gravações */ }
 function navigate(v){
   document.querySelectorAll('.view').forEach(e=>e.classList.remove('on'));
   document.querySelectorAll('.nb').forEach(e=>e.classList.remove('on'));
@@ -2338,26 +2184,25 @@ document.addEventListener('click',e=>{
   // Sidebar nav
   const nb=t.closest('.nb'); if(nb&&nb.dataset.v){ navigate(nb.dataset.v); return; }
 
+  // A sessão da equipe usa Firebase Authentication.
+  if(t.id==='btn-logout'){ if(window.firebase&&firebase.apps.length) firebase.app().auth().signOut().catch(()=>toast('Não foi possível sair da conta','er')); return; }
+
   // Top buttons
   if(t.id==='btn-new-cli')  { openModal('new-c'); return; }
   if(t.id==='btn-new-cnt')  { openModal('new-k'); return; }
-  if(t.id==='btn-lote')     { openModal('lote'); return; }
   if(t.id==='btn-pdf')      { exportPDF(); return; }
   if(t.id==='btn-fb')       { openModal('fbcfg'); return; }
-  if(t.id==='btn-save-exp') { saveDailyExport(); return; }
   if(t.id==='btn-add-log')  { openModal('log-manual'); return; }
   // Excluir registro de exportação
   const dlog=t.closest('[data-del-log]');
   if(dlog){
     const id=dlog.dataset.delLog;
-    confirm2('🗑️','Excluir este registro?','Não pode ser desfeito (mas o arquivo no Firebase Storage continua se houver).','Excluir',()=>{
+    confirm2('🗑️','Excluir este registro?','Não é possível desfazer esta ação.','Excluir',()=>{
       S.exportLogs=S.exportLogs.filter(x=>String(x.id)!==String(id));
       save(); renderExportHistory(); toast('Registro removido','wa');
     });
     return;
   }
-  if(t.id==='btn-share')    { openModal('share'); return; }
-  if(t.id==='btn-own')      { exitShareAndRestoreOwn(); return; }
   if(t.id==='btn-reset')    { confirm2('⚠️','Redefinir dados?','Restaura os dados de exemplo originais.','Redefinir',()=>{ reset(true); renderDash(); }); return; }
 
   // Modal
@@ -2381,9 +2226,6 @@ document.addEventListener('click',e=>{
   // Kanban add btn
   const kc=t.closest('[data-kc]');
   if(kc){ openModal('new-k'); setTimeout(()=>{ const s=document.getElementById('fst'); if(s) s.value=kc.dataset.kc; },60); return; }
-
-  // Generate package posts
-  const gp=t.closest('[data-gp]'); if(gp){ openModal('gerar-p',parseInt(gp.dataset.gp)); return; }
 
   // Edit client
   const ec=t.closest('[data-ec]'); if(ec){ openModal('edit-c',parseInt(ec.dataset.ec)); return; }
@@ -2459,12 +2301,75 @@ document.addEventListener('keydown',e=>{
 /* ════════════════════════════════════════════
    INIT
 ════════════════════════════════════════════ */
-load();
+// Exibe o painel somente depois que o Firebase confirmar uma sessão autenticada.
+let APP_AUTHENTICATED=false;
+function clearAuthenticatedSessionData(){
+  if(CLOUD_UNSUB){ CLOUD_UNSUB(); CLOUD_UNSUB=null; }
+  clearTimeout(CLOUD_SAVE_TIMER);
+  CLOUD_BOOTSTRAPPED=false;
+  CLOUD_BOOTSTRAP_IN_PROGRESS=false;
+  CLOUD_SAVING=false;
+  S.clients=[]; S.contents=[]; S.exportLogs=[]; S.lastCloudSyncAt=''; S.firebaseReady=false;
+  try{ localStorage.removeItem(LS); }catch(e){}
+}
 (async()=>{
-  const isShare=checkShare();
-  if(!isShare) await bootstrapCloudState();
-  renderDash();
+  const wait=document.getElementById('auth-wait');
+  const form=document.getElementById('login-form');
+  const showLogin=(message='')=>{
+    document.body.className='auth-logged-out';
+    wait.style.display='none'; form.style.display='block';
+    document.getElementById('login-error').textContent=message;
+  };
+  try{
+    const fb=await initFirebaseClient();
+    fb.auth.onAuthStateChanged(async user=>{
+      if(!user){
+        if(APP_AUTHENTICATED) clearAuthenticatedSessionData();
+        APP_AUTHENTICATED=false;
+        showLogin();
+        return;
+      }
+      if(APP_AUTHENTICATED) return;
+      APP_AUTHENTICATED=true;
+      document.body.className='';
+      document.getElementById('auth-gate').style.display='none';
+      wait.style.display='none'; form.style.display='none';
+      load();
+      await bootstrapCloudState();
+      renderDash();
+    },()=>showLogin('Não foi possível verificar o acesso. Confira a conexão e tente novamente.'));
+  }catch(err){
+    showLogin('Falha ao conectar ao Firebase. Verifique a configuração e recarregue a página.');
+    console.error('Firebase Authentication:',err);
+  }
 })();
+
+document.getElementById('login-form').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const email=document.getElementById('login-email').value.trim();
+  const password=document.getElementById('login-password').value;
+  const button=document.getElementById('login-submit');
+  const error=document.getElementById('login-error');
+  error.textContent=''; button.disabled=true; button.textContent='Entrando…';
+  try{ await firebase.app().auth().signInWithEmailAndPassword(email,password); }
+  catch(err){
+    const messages={
+      'auth/invalid-credential':'E-mail ou senha incorretos.',
+      'auth/user-not-found':'E-mail ou senha incorretos.',
+      'auth/wrong-password':'E-mail ou senha incorretos.',
+      'auth/too-many-requests':'Muitas tentativas. Aguarde um pouco e tente novamente.',
+      'auth/unauthorized-domain':'Este endereço ainda não está autorizado no Firebase Authentication.'
+    };
+    error.textContent=messages[err.code]||'Não foi possível entrar. Confira os dados e tente novamente.';
+  }finally{ button.disabled=false; button.textContent='Entrar'; }
+});
+document.getElementById('login-reset').addEventListener('click',async()=>{
+  const email=document.getElementById('login-email').value.trim();
+  const error=document.getElementById('login-error');
+  if(!email){ error.textContent='Informe seu e-mail acima para receber o link de redefinição.'; return; }
+  try{ await firebase.app().auth().sendPasswordResetEmail(email); error.style.color='var(--ok)'; error.textContent='Se o e-mail estiver cadastrado, você receberá as instruções de redefinição.'; }
+  catch(err){ error.style.color='var(--er)'; error.textContent='Não foi possível enviar o e-mail agora. Tente novamente.'; }
+});
 </script>
 </body>
 </html>
