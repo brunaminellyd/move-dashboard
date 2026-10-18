@@ -109,13 +109,18 @@ button{border-radius:99px;padding:0 24px}.x,.nav{border-radius:50%;padding:0}.ln
 #pBig .sl img,#pBig .sl video{width:100%;height:100%;max-width:none;max-height:none;object-fit:contain;margin:0}
 @media(max-width:600px){.sl{height:52vh}}
 </style>
+<style id="move-avisos">
+.pc-bell{position:relative}.pc-bell i{display:none;position:absolute;top:8px;right:9px;width:9px;height:9px;border-radius:50%;background:#C0392B;border:2px solid #fff}
+.nw{float:right;background:#C0392B;color:#fff;font-size:11px;font-weight:600;line-height:1.5;border-radius:99px;padding:0 8px}
+.rc{position:relative}.rc .nw{position:absolute;top:14px;right:14px;float:none}
+</style>
 </head>
 <body>
 <div id="login" style="padding:40px;display:none">Você precisa estar logado. <a href="index.html">Entrar pelo painel MOVE Operacional</a>, depois volte aqui.</div>
 <div id="app" style="display:none">
 <aside>
  <div class="s-logo"><div class="s-brand">MO<em>VE</em></div><div class="s-sub">Central Operacional</div></div>
- <div class="pc"><div class="pc-av" id="acc-av">M</div><div class="pc-i" id="quem"></div><a class="pc-bell" href="index.html#pendencias" aria-label="Ver pendências"><svg viewBox="0 0 24 24"><path d="M6 17V11a6 6 0 0 1 12 0v6l1.5 2h-15zM10 21h4"/></svg></a></div>
+ <div class="pc"><div class="pc-av" id="acc-av">M</div><div class="pc-i" id="quem"></div><a class="pc-bell" href="index.html#pendencias" aria-label="Ver pendências"><svg viewBox="0 0 24 24"><path d="M6 17V11a6 6 0 0 1 12 0v6l1.5 2h-15zM10 21h4"/></svg><i id="acc-dot"></i></a></div>
  <nav class="s-nav">
   <div class="s-sec">Operação</div>
   <a class="nb" href="index.html#dashboard"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg> Dashboard</a>
@@ -194,15 +199,15 @@ const nomeMes=m=>{const[a,b]=m.split("-");return new Date(a,b-1,1).toLocaleDateS
 onAuthStateChanged(auth,u=>{
  $("login").style.display=u?"none":"block";$("app").style.display=u?"grid":"none";
  if(u){$("quem").textContent=u.email||"";$("acc-av").textContent=((u.email||"M")[0]||"M").toUpperCase();
-  getDoc(doc(db,"app_state","current")).then(s=>{clientes=((s.data()||{}).clients||[]).slice().sort((a,b)=>String(a.name).localeCompare(String(b.name),"pt-BR"));
+  getDoc(doc(db,"app_state","current")).then(s=>{const dd=s.data()||{};const pend=(dd.contents||[]).filter(c=>["atrasado","sem_material","aguardando_aprovacao"].includes(c.status)).length+(dd.clients||[]).filter(c=>c.status==="sem_dados").length;$("acc-dot").style.display=pend>0?"block":"none";clientes=((s.data()||{}).clients||[]).slice().sort((a,b)=>String(a.name).localeCompare(String(b.name),"pt-BR"));
    $("nCli").innerHTML='<option value="">Selecione o cliente</option>'+clientes.map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join("")}).catch(()=>{$("nCli").innerHTML='<option value="">Não foi possível carregar os clientes</option>'});
   const ms=x=>{const t=x.updatedAt||x.createdAt||x.criadoEm;return t&&t.toMillis?t.toMillis():0};
   onSnapshot(collection(db,"feed_plans"),s=>{planos=s.docs.map(d=>{const x=d.data();return{id:d.id,...x,clienteNome:x.clientName||x.clienteNome||"Cliente",mes:x.period||x.mes||"2026-01",inicio:x.inicio||(x.period||x.mes||"2026-01")+"-01",fim:x.fim||fimMes(x.period||x.mes||"2026-01")}}).sort((a,b)=>ms(b)-ms(a));lista();
    const q=new URLSearchParams(location.search).get("plano");if(q&&!aberto&&planos.some(p=>p.id===q)){aberto=1;abrirPlano(q)}})}
 });
 
-function lista(){recentes();$("lista").innerHTML=planos.map(p=>`<div class="pl ${cur&&cur.id===p.id?"on":""}" onclick="abrirPlano('${p.id}')">${esc(p.clienteNome)}<small>${per(p)}</small></div>`).join("");
- if(cur){const n=planos.find(p=>p.id===cur.id);if(n){cur=n;cab()}}}
+function lista(){recentes();$("lista").innerHTML=planos.map(p=>`<div class="pl ${cur&&cur.id===p.id?"on":""}" onclick="abrirPlano('${p.id}')">${esc(p.clienteNome)}${p.novos>0?`<b class="nw" title="Comentários novos">${p.novos}</b>`:""}<small>${per(p)}</small></div>`).join("");
+ if(cur){const n=planos.find(p=>p.id===cur.id);if(n){cur=n;cab();if(n.novos>0)updateDoc(doc(db,"feed_plans",n.id),{novos:0}).catch(()=>{})}}}
 window.sugerirFim=()=>{const a=$("nIni").value;if(a&&!$("nFim").value){const d=new Date(a+"T12:00:00");d.setDate(d.getDate()+29);$("nFim").value=iso(d)}};
 window.salvarPeriodo=async()=>{const a=$("eIni").value,b=$("eFim").value;if(!a||!b||b<a)return toast("O fim precisa ser igual ou depois do início.");
  await updateDoc(doc(db,"feed_plans",cur.id),{inicio:a,fim:b,period:a.slice(0,7),updatedAt:serverTimestamp()});toast("Período atualizado.")};
@@ -253,7 +258,7 @@ function origemLim(){return cur.limite?"definido manualmente":((clientes.find(c=
 window.alterarLimite=async()=>{const v=prompt("Limite de posts deste planejamento.\nPor padrão usamos o pacote do cliente (ou 20, se não houver).",lim());if(v===null)return;const n=parseInt(v,10);
  if(!(n>=1&&n<=100))return toast("Informe um número de 1 a 100.");await updateDoc(doc(db,"feed_plans",cur.id),{limite:n,updatedAt:serverTimestamp()});toast("Limite atualizado.")};
 const dtc=c=>c.criadoEm&&c.criadoEm.toDate?c.criadoEm.toDate().toLocaleString("pt-BR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"}):"agora";
-function recentes(){$("rec").innerHTML=planos.length?'<div class="kick" style="margin:6px 0 10px">Planejamentos recentes</div><div class="recg">'+planos.slice(0,6).map(p=>`<div class="rc" onclick="abrirPlano('${p.id}')"><small>${esc(p.clienteNome)}</small><b>${per(p)}</b></div>`).join("")+"</div>":'<div class="empty"><button onclick="document.getElementById(\'nCli\').focus()">＋ Criar primeiro planejamento</button><div style="margin-top:10px">Escolha um cliente e um mês no menu lateral e clique em Criar planejamento.</div></div>'}
+function recentes(){$("rec").innerHTML=planos.length?'<div class="kick" style="margin:6px 0 10px">Planejamentos recentes</div><div class="recg">'+planos.slice(0,6).map(p=>`<div class="rc" onclick="abrirPlano('${p.id}')"><small>${esc(p.clienteNome)}</small><b>${per(p)}</b>${p.novos>0?`<span class="nw" title="Comentários novos">${p.novos}</span>`:""}</div>`).join("")+"</div>":'<div class="empty"><button onclick="document.getElementById(\'nCli\').focus()">＋ Criar primeiro planejamento</button><div style="margin-top:10px">Escolha um cliente e um mês no menu lateral e clique em Criar planejamento.</div></div>'}
 function listaHTML(){const l=[...posts].sort((x,y)=>(x.dataPrevista||"9").localeCompare(y.dataPrevista||"9"));
  return l.map(p=>{const dt=p.dataPrevista?new Date(p.dataPrevista+"T12:00:00").toLocaleDateString("pt-BR",{weekday:"short",day:"2-digit",month:"2-digit"}):"Sem data";
   return `<div class="li" onclick="abrirPost('${p.id}')"><div class="ld">${dt}</div><div class="lt">${p.tipo==="reels"?"▶ Reels":p.tipo==="carrossel"?"❐ Carrossel":"■ Estático"}<br><span>${esc((p.legenda||"Sem legenda").slice(0,90))}</span></div></div>`}).join("")||'<div class="empty">Nenhum post ainda.</div>'}

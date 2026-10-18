@@ -546,7 +546,7 @@ body{background:radial-gradient(900px 600px at 8% 10%,rgba(208,132,255,.5),trans
     <button class="nb" data-v="pendencias"><span class="nb-ico"><svg viewBox="0 0 24 24"><path d="M12 3.5 22 20H2z"/><path d="M12 10v4.5M12 17.4v.1"/></svg></span>Pendências<span class="nb-badge" id="nb-pend">0</span></button>
     <button class="nb" data-v="relatorios"><span class="nb-ico"><svg viewBox="0 0 24 24"><path d="M6 3h8l5 5v13H6z"/><path d="M14 3v5h5M9.5 13h6M9.5 17h6"/></svg></span>Relatórios</button>
     <div class="s-sec">Conteúdo</div>
-    <button class="nb" data-v="move-feed"><span class="nb-ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="9" cy="9" r="1.8"/><path d="m21 15-5-5L5 21"/></svg></span>MOVE Feed</button>
+    <button class="nb" data-v="move-feed"><span class="nb-ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="9" cy="9" r="1.8"/><path d="m21 15-5-5L5 21"/></svg></span>MOVE Feed<span class="nb-badge" id="nb-feed" style="display:none" title="Comentários novos de clientes">0</span></button>
   </nav>
   <div class="s-foot"><div class="s-sec">Conta</div><button class="nb" id="btn-logout" type="button"><span class="nb-ico"><svg viewBox="0 0 24 24"><path d="M9 4H5v16h4M16 8l4 4-4 4M20 12H9"/></svg></span>Sair</button></div>
 </aside>
@@ -870,6 +870,20 @@ async function loadCloudStateOnce(){
     return 'error';
   }
 }
+window.updDot=function(){ var d=document.getElementById('acc-dot'); if(d) d.style.display=((window.__pend||0)>0||(window.__feedNovos||0)>0)?'block':'none'; };
+let FEED_UNSUB=null;
+async function watchFeed(){
+  if(FEED_UNSUB){ FEED_UNSUB(); FEED_UNSUB=null; }
+  try{
+    const fb=await initFirebaseClient();
+    FEED_UNSUB=fb.db.collection('feed_plans').onSnapshot(snap=>{
+      let n=0; snap.forEach(d=>{ n+=(d.data().novos||0); });
+      window.__feedNovos=n;
+      const el=document.getElementById('nb-feed'); if(el){ el.textContent=n; el.style.display=n>0?'inline-flex':'none'; }
+      if(window.updDot) window.updDot();
+    },()=>{});
+  }catch(e){}
+}
 async function startCloudStateListener(){
   if(CLOUD_UNSUB){ CLOUD_UNSUB(); CLOUD_UNSUB=null; }
   if(!S.firebaseCfg||!window.firebase||!hasAuthenticatedSession()) return false;
@@ -962,7 +976,7 @@ function updateBadges(){
   const atc=S.clients.filter(c=>c.status==='atrasado').length;
   function sb(id,v){ const el=document.getElementById(id); if(el){ el.textContent=v; el.style.display=v>0?'inline-flex':'none'; } }
   sb('nb-pend',pend); sb('nb-cnt',at); sb('nb-cli',atc);
-  (function(){ var d=document.getElementById('acc-dot'); if(d) d.style.display=pend>0?'block':'none'; })();
+  window.__pend=pend; if(window.updDot) window.updDot();
   const mob=document.getElementById('mob-badge'); if(mob){ mob.textContent=pend; mob.style.display=pend>0?'inline-flex':'none'; }
 }
 
@@ -2201,7 +2215,7 @@ document.addEventListener('click',e=>{
   const t=e.target;
 
   // Sidebar nav
-  if(t.closest('#acc-bell')){ navigate('pendencias'); return; }
+  if(t.closest('#acc-bell')){ if((window.__pend||0)===0&&(window.__feedNovos||0)>0){ location.href='feed.html'; } else navigate('pendencias'); return; }
   const nb=t.closest('.nb'); if(nb&&nb.dataset.v){ if(nb.dataset.v==='move-feed'){ location.href='feed.html'; return; } navigate(nb.dataset.v); return; }
 
   // A sessão da equipe usa Firebase Authentication.
@@ -2363,6 +2377,7 @@ function clearAuthenticatedSessionData(){
       load();
       await bootstrapCloudState();
       renderDash();
+      watchFeed();
     },()=>showLogin('Não foi possível verificar o acesso. Confira a conexão e tente novamente.'));
   }catch(err){
     const detail=err.code||err.message||'erro desconhecido';
