@@ -69,25 +69,78 @@ button.red{background:#fff;color:#C0392B;border:1.5px solid rgba(192,57,43,.4)}b
 @media(max-width:700px){.steps{grid-template-columns:1fr}}
 .nfl{display:block;font-size:11px;color:rgba(238,232,248,.65);margin:2px 2px 4px}.lb{font-size:12.5px;color:var(--tm)}.bar input[type=date]{padding:8px 10px}
 </style>
+<style id="move-ux">
+/* MOVE UI v2: translúcido, arejado e arredondado */
+body{padding:16px;background:radial-gradient(900px 600px at 8% 10%,rgba(208,132,255,.5),transparent 60%),radial-gradient(800px 600px at 95% 85%,rgba(91,16,143,.3),transparent 60%),linear-gradient(135deg,#E4D6F5,#EFE8F8 50%,#F1F1F1) fixed}
+#app{grid-template-columns:260px 1fr;gap:0;height:calc(100vh - 32px);border-radius:36px;overflow:hidden;background:rgba(255,255,255,.38);-webkit-backdrop-filter:blur(26px) saturate(1.3);backdrop-filter:blur(26px) saturate(1.3);border:1px solid rgba(255,255,255,.7);box-shadow:0 30px 80px rgba(91,16,143,.18)}
+aside{background:transparent;color:#3B3141;border-radius:0;padding:0;border-right:1px solid rgba(91,16,143,.10);overflow-y:auto}
+.s-logo{padding:28px 28px 14px}.s-brand{font-family:var(--fd);font-size:30px;font-weight:700;letter-spacing:.08em;line-height:1;color:#030303}.s-brand em{font-style:italic;color:var(--violet)}
+.s-sub{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--tm);margin-top:6px}
+.pc{display:flex;align-items:center;gap:12px;margin:0 16px 6px;padding:12px 12px 12px 14px;border-radius:22px;background:rgba(255,255,255,.72);box-shadow:0 6px 20px rgba(91,16,143,.08)}
+.pc-av{flex:none;width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#5B108F,#D084FF);color:#fff;display:grid;place-items:center;font-family:var(--fd);font-size:19px;font-weight:600}
+#quem,.pc-i{flex:1;min-width:0;margin:0;font-size:13px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;word-break:normal}
+.pc-bell{flex:none;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.7);color:#5B108F;display:grid;place-items:center;text-decoration:none;transition:var(--tr)}.pc-bell:hover{background:#fff;transform:translateY(-2px)}
+.pc-bell svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.s-nav{flex:1;padding:4px 16px}.s-sec{font-size:11px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--tm);padding:0 14px;margin:18px 0 6px}
+.nb,button.nb{display:flex;align-items:center;justify-content:flex-start;gap:14px;width:100%;min-height:0;padding:12px 16px;border-radius:18px;border:0;background:transparent;color:#3B3141;font:500 14.5px var(--fb);text-decoration:none;cursor:pointer;transition:var(--tr)}
+.nb:hover,button.nb:hover{background:rgba(255,255,255,.7);color:#030303;transform:none;box-shadow:none}.nb.on,.nb.on:hover{background:#030303;color:#fff;cursor:default}
+.nb svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.s-foot{padding:6px 16px 22px;border-top:1px solid rgba(91,16,143,.10)}.s-foot .s-sec{margin-top:12px}
+main{background:transparent;border:0;border-radius:0;box-shadow:none;padding:clamp(24px,2.6vw,44px)}
+.ph{margin-bottom:24px}.pt{font-size:clamp(34px,3.2vw,48px)}.ps{margin:6px 0 0}
+.fw{display:grid;grid-template-columns:clamp(270px,24vw,360px) 1fr;gap:clamp(14px,1.4vw,24px);align-items:start}
+.fcard,.fr{background:rgba(255,255,255,.9);border:1px solid rgba(255,255,255,.75);border-radius:28px;box-shadow:0 10px 40px rgba(91,16,143,.09);padding:clamp(20px,1.8vw,30px);min-width:0}
+.fl{display:flex;flex-direction:column;max-height:calc(100vh - 190px);position:sticky;top:0}
+.fh{margin:0;font-size:16px;font-weight:600}.sb{margin:3px 0 14px;font-size:13px;color:var(--tm)}
+.nf select,.nf input{width:100%;margin-bottom:8px;background:#fff;border:1.5px solid var(--bdr);color:#030303;color-scheme:light;border-radius:14px;padding:11px 14px;font:inherit;font-size:14px}.nf button{width:100%;margin-top:4px}.nfl{display:block;color:var(--tm);font-size:12px;margin:4px 2px}
+#lista{flex:1;overflow-y:auto;padding:0}.pl{padding:11px 14px;border-radius:16px;color:#3B3141}.pl:hover{background:rgba(91,16,143,.06)}.pl.on{background:#F7EBFF;color:#43096F}.pl small{opacity:.7}
+.top .kick{display:none}
+button{border-radius:99px;padding:0 24px}.x,.nav{border-radius:50%;padding:0}.lnk{padding:4px 6px}
+.cell{border-radius:16px}.box{border-radius:28px}.rc,.step,.day,.li{border-radius:20px}
+@media(min-width:1700px){#app{grid-template-columns:272px 1fr}}
+@media(max-width:1000px){.fw{grid-template-columns:1fr}.fl{position:static;max-height:none}}
+@media(max-width:768px){body{padding:8px}#app{grid-template-columns:1fr;height:auto;border-radius:26px;overflow:visible}aside{border-right:0;border-bottom:1px solid rgba(91,16,143,.10);overflow:visible}
+ .s-nav{display:flex;overflow-x:auto;gap:6px;padding:4px 12px}.s-nav .s-sec,.s-foot .s-sec{display:none}.nb,button.nb{width:auto;white-space:nowrap;padding:10px 14px}.s-foot{padding:0 12px 14px;border:0}main{padding:18px 14px}}
+</style>
+<style id="move-slide">
+#pBig{position:relative;overflow:hidden;background:#111;border-radius:14px}
+.trk{display:flex;transition:transform .45s cubic-bezier(.4,0,.2,1);will-change:transform}
+.sl{flex:0 0 100%;height:min(60vh,520px);display:flex;align-items:center;justify-content:center}
+#pBig .sl img,#pBig .sl video{width:100%;height:100%;max-width:none;max-height:none;object-fit:contain;margin:0}
+@media(max-width:600px){.sl{height:52vh}}
+</style>
 </head>
 <body>
 <div id="login" style="padding:40px;display:none">Você precisa estar logado. <a href="index.html">Entrar pelo painel MOVE Operacional</a>, depois volte aqui.</div>
 <div id="app" style="display:none">
 <aside>
- <div class="brand">MO<em>VE</em></div><div class="sub">CENTRAL OPERACIONAL</div>
- <div class="sec">Operação</div>
- <a class="nb" href="index.html"><span>◈</span>Voltar ao painel</a>
- <div class="sec">Conteúdo</div>
- <div class="nb on"><span>▦</span>MOVE Feed</div>
- <div class="sec">Novo planejamento</div>
- <div class="nf"><select id="nCli"><option value="">Carregando clientes…</option></select><label class="nfl">Início do planejamento</label><input id="nIni" type="date" onchange="sugerirFim()"><label class="nfl">Fim (último post)</label><input id="nFim" type="date"><button onclick="novoPlano()">＋ Criar planejamento</button></div>
- <div class="sec">Planejamentos</div>
- <div id="lista"></div>
- <div class="foot">MOVE Marketing<br><em>Painel da equipe</em><div id="quem"></div></div>
+ <div class="s-logo"><div class="s-brand">MO<em>VE</em></div><div class="s-sub">Central Operacional</div></div>
+ <div class="pc"><div class="pc-av" id="acc-av">M</div><div class="pc-i" id="quem"></div><a class="pc-bell" href="index.html#pendencias" aria-label="Ver pendências"><svg viewBox="0 0 24 24"><path d="M6 17V11a6 6 0 0 1 12 0v6l1.5 2h-15zM10 21h4"/></svg></a></div>
+ <nav class="s-nav">
+  <div class="s-sec">Operação</div>
+  <a class="nb" href="index.html#dashboard"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg> Dashboard</a>
+  <a class="nb" href="index.html#clientes"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.4-5.5 6.5-5.5s5.9 1.9 6.5 5.5"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.8c2 .7 3.2 2.4 3.5 5.2"/></svg> Clientes</a>
+  <div class="s-sec">Acompanhamento</div>
+  <a class="nb" href="index.html#pendencias"><svg viewBox="0 0 24 24"><path d="M12 3.5 22 20H2z"/><path d="M12 10v4.5M12 17.4v.1"/></svg> Pendências</a>
+  <a class="nb" href="index.html#relatorios"><svg viewBox="0 0 24 24"><path d="M6 3h8l5 5v13H6z"/><path d="M14 3v5h5M9.5 13h6M9.5 17h6"/></svg> Relatórios</a>
+  <div class="s-sec">Conteúdo</div>
+  <span class="nb on"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="9" cy="9" r="1.8"/><path d="m21 15-5-5L5 21"/></svg> MOVE Feed</span>
+ </nav>
+ <div class="s-foot"><div class="s-sec">Conta</div><button class="nb" type="button" onclick="sair()"><svg viewBox="0 0 24 24"><path d="M9 4H5v16h4M16 8l4 4-4 4M20 12H9"/></svg> Sair</button></div>
 </aside>
 <main>
- <div id="vazio"><div class="pt">MOVE <em>Feed</em></div><div class="ps">Planejamento visual de conteúdos para aprovação dos clientes</div><div id="rec"></div><div class="kick" style="margin:28px 0 10px">Como funciona</div><div class="steps"><div class="step"><b>01 · CRIE</b><span>Escolha o cliente e o mês no menu lateral.</span></div><div class="step"><b>02 · MONTE</b><span>Adicione posts, carrosséis e reels com legenda e data.</span></div><div class="step"><b>03 · COMPARTILHE</b><span>Gere o link e acompanhe aprovações e ajustes.</span></div></div></div>
- <div id="plano" style="display:none">
+ <div class="ph"><div class="pt">MOVE <em>Feed</em></div><div class="ps">Planejamento visual de conteúdos para aprovação dos clientes</div></div>
+ <div class="fw">
+  <section class="fcard fl">
+   <h2 class="fh">Novo planejamento</h2><p class="sb">Escolha o cliente e o período.</p>
+   <div class="nf"><label class="nfl">Cliente</label><select id="nCli"><option value="">Carregando clientes…</option></select><label class="nfl">Início do planejamento</label><input id="nIni" type="date" onchange="sugerirFim()"><label class="nfl">Fim (último post)</label><input id="nFim" type="date"><button onclick="novoPlano()">＋ Criar planejamento</button></div>
+   <h2 class="fh" style="margin-top:24px">Planejamentos</h2><p class="sb">Clique em um para abrir.</p>
+   <div id="lista"></div>
+  </section>
+  <section class="fr">
+<div id="vazio"><div id="rec"></div><div class="kick" style="margin:28px 0 10px">Como funciona</div><div class="steps"><div class="step"><b>01 · CRIE</b><span>Escolha o cliente e o mês no menu lateral.</span></div><div class="step"><b>02 · MONTE</b><span>Adicione posts, carrosséis e reels com legenda e data.</span></div><div class="step"><b>03 · COMPARTILHE</b><span>Gere o link e acompanhe aprovações e ajustes.</span></div></div></div>
+ 
+<div id="plano" style="display:none">
   <div class="top"><div><div class="kick">MOVE Feed</div><h2 id="tit"></h2></div><div class="bar" style="margin:0"><button class="sec" onclick="duplicarPlano()">Duplicar para o próximo mês</button><button class="del" onclick="excluirPlano()">Excluir planejamento</button></div></div>
   <div class="bar">
    <button onclick="abrirPost()">＋ Novo post</button><span id="cont"></span><button class="lnk" onclick="alterarLimite()" title="Limite definido pelo pacote do cliente. Clique para alterar.">alterar limite</button>
@@ -96,8 +149,12 @@ button.red{background:#fff;color:#C0392B;border:1.5px solid rgba(192,57,43,.4)}b
   <div class="bar"><span class="lb">Período</span><input type="date" id="eIni" onchange="salvarPeriodo()"><span class="lb">até</span><input type="date" id="eFim" onchange="salvarPeriodo()"></div><div class="bar" id="share"></div><div class="prog"><i id="progI"></i></div>
   <div id="vg" class="grid"></div><div id="vc" class="cal" style="display:none"></div>
  </div>
+
+  </section>
+ </div>
 </main>
 </div>
+
 
 <div class="modal" id="mp"><div class="box">
  <div class="mh"><h3 id="mt">Post</h3><button class="x" onclick="fechar()" aria-label="Fechar">×</button></div>
@@ -112,7 +169,7 @@ button.red{background:#fff;color:#C0392B;border:1.5px solid rgba(192,57,43,.4)}b
 
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import {getAuth,onAuthStateChanged,signOut} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import {getFirestore,collection,doc,addDoc,setDoc,updateDoc,deleteDoc,getDocs,getDoc,onSnapshot,query,orderBy,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 /* ===== 1) COLE AQUI a firebaseConfig do seu index.html ===== */
@@ -136,7 +193,7 @@ const nomeMes=m=>{const[a,b]=m.split("-");return new Date(a,b-1,1).toLocaleDateS
 
 onAuthStateChanged(auth,u=>{
  $("login").style.display=u?"none":"block";$("app").style.display=u?"grid":"none";
- if(u){$("quem").textContent=u.email||"";
+ if(u){$("quem").textContent=u.email||"";$("acc-av").textContent=((u.email||"M")[0]||"M").toUpperCase();
   getDoc(doc(db,"app_state","current")).then(s=>{clientes=((s.data()||{}).clients||[]).slice().sort((a,b)=>String(a.name).localeCompare(String(b.name),"pt-BR"));
    $("nCli").innerHTML='<option value="">Selecione o cliente</option>'+clientes.map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join("")}).catch(()=>{$("nCli").innerHTML='<option value="">Não foi possível carregar os clientes</option>'});
   const ms=x=>{const t=x.updatedAt||x.createdAt||x.criadoEm;return t&&t.toMillis?t.toMillis():0};
@@ -201,7 +258,7 @@ function listaHTML(){const l=[...posts].sort((x,y)=>(x.dataPrevista||"9").locale
  return l.map(p=>{const dt=p.dataPrevista?new Date(p.dataPrevista+"T12:00:00").toLocaleDateString("pt-BR",{weekday:"short",day:"2-digit",month:"2-digit"}):"Sem data";
   return `<div class="li" onclick="abrirPost('${p.id}')"><div class="ld">${dt}</div><div class="lt">${p.tipo==="reels"?"▶ Reels":p.tipo==="carrossel"?"❐ Carrossel":"■ Estático"}<br><span>${esc((p.legenda||"Sem legenda").slice(0,90))}</span></div></div>`}).join("")||'<div class="empty">Nenhum post ainda.</div>'}
 matchMedia("(max-width:700px)").addEventListener("change",()=>desenhar());
-window.passar=n=>{if(midias.length<2)return;bigIdx=(bigIdx+n+midias.length)%midias.length;mids()};
+window.passar=n=>{if(midias.length<2)return;slideTo((bigIdx+n+midias.length)%midias.length)};
 let filtroAj=false;
 function toast(m){let t=$("toast");if(!t){t=document.createElement("div");t.id="toast";document.body.appendChild(t)}t.textContent=m;t.className="on";clearTimeout(t._t);t._t=setTimeout(()=>t.className="",3400)}
 window.filtrar=()=>{filtroAj=!filtroAj;$("bFiltro").classList.toggle("on",filtroAj);desenhar()};
@@ -215,6 +272,7 @@ window.duplicarPlano=async()=>{
    await addDoc(collection(db,"feed_plans",r.id,"posts"),{tipo:p.tipo,legenda:p.legenda||"",dataPrevista:dt,ordem:p.ordem,midias:[],criadoEm:serverTimestamp()})}
   toast("Planejamento duplicado.");setTimeout(()=>abrirPlano(r.id),500);
  }catch(e){toast("Não foi possível duplicar: "+e.message)}};
+window.sair=()=>signOut(auth).then(()=>{location.href="index.html"}).catch(()=>toast("Não foi possível sair da conta."));
 window.excluirPlano=async()=>{
  if(!confirm("Excluir o planejamento de "+cur.clienteNome+" ("+per(cur)+") com todos os posts e comentários? Não dá para desfazer."))return;
  const id=cur.id,tk=cur.shareToken;ulP&&ulP();ulP=null;Object.values(ulC).forEach(f=>f());ulC={};
@@ -236,11 +294,13 @@ window.abrirPost=id=>{editId=id||null;const p=posts.find(x=>x.id===id);
   $("cms").innerHTML=s.docs.map(d=>d.data()).map(c=>`<div class="cm"><b>${esc(c.autor)}</b> ${c.tipo==="ajuste"?"🔴 pediu ajuste":c.tipo==="aprovado"?"🟢 aprovou":""}<small class="dtc"> · ${dtc(c)}</small><br>${esc(c.texto)}</div>`).join("")||"Sem comentários."});
  mids();$("mp").classList.add("on")};
 const gr=m=>m.url.replace("/upload/","/upload/f_auto,q_auto,w_1080/");
-function mids(){if(bigIdx>=midias.length)bigIdx=Math.max(0,midias.length-1);const b=midias[bigIdx];
- $("pBig").innerHTML=b?(b.tipo==="video"?`<video src="${b.url}" controls playsinline></video>`:`<img src="${gr(b)}">`):"<small>Nenhum arquivo ainda.</small>";
- if(midias.length>1)$("pBig").insertAdjacentHTML("beforeend",`<button class="nav l" onclick="passar(-1)">‹</button><button class="nav r" onclick="passar(1)">›</button><span class="cnt2">${bigIdx+1}/${midias.length}</span>`);
+function mids(){if(bigIdx>=midias.length)bigIdx=Math.max(0,midias.length-1);
+ $("pBig").innerHTML=midias.length?`<div class="trk" id="trk" style="transform:translateX(${-bigIdx*100}%)">`+midias.map(m=>`<div class="sl">${m.tipo==="video"?`<video src="${m.url}" controls playsinline preload="metadata"></video>`:`<img src="${gr(m)}" alt="" decoding="async">`}</div>`).join("")+`</div>`+(midias.length>1?`<button class="nav l" onclick="passar(-1)">‹</button><button class="nav r" onclick="passar(1)">›</button><span class="cnt2" id="pCnt2">${bigIdx+1}/${midias.length}</span>`:""):"<small>Nenhum arquivo ainda.</small>";
  $("pMid").innerHTML=midias.map((m,i)=>`<span class="mid ${i===bigIdx?"sel":""}" onclick="ver(${i})">${m.tipo==="video"?`<video src="${m.url}"></video>`:`<img src="${thumb(m)}">`}<i onclick="event.stopPropagation();tirar(${i})">×</i></span>`).join("")}
-window.ver=i=>{bigIdx=i;mids()};
+function slideTo(i){bigIdx=i;const t=$("trk");if(t)t.style.transform="translateX("+(-i*100)+"%)";
+ document.querySelectorAll("#pMid .mid").forEach((e,k)=>e.classList.toggle("sel",k===i));const c=$("pCnt2");if(c)c.textContent=(i+1)+"/"+midias.length;
+ document.querySelectorAll("#pBig video").forEach(v=>v.pause())}
+window.ver=i=>slideTo(i);
 window.tirar=i=>{midias.splice(i,1);mids()};
 window.fechar=()=>{ulM&&ulM();ulM=null;$("mp").classList.remove("on")};
 document.addEventListener("keydown",e=>{if(e.key==="Escape")fechar();if($("mp").classList.contains("on")&&!/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)){if(e.key==="ArrowRight")passar(1);if(e.key==="ArrowLeft")passar(-1)}});

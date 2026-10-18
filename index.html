@@ -451,19 +451,50 @@ body.auth-pending #auth-gate,body.auth-logged-out #auth-gate{display:flex}
 @media(max-width:700px){.auth-card{padding:28px 22px}}
 </style>
 <style id="move-ux">
-/* Contraste e legibilidade */
-.s-sub{color:rgba(238,232,248,.62)!important}.s-sec{color:rgba(238,232,248,.72)!important;font-size:11.5px!important;font-weight:500}
-.s-foot-txt{color:rgba(238,232,248,.62)!important;font-size:11px!important}.s-foot-txt em{color:rgba(208,132,255,.85)!important}
+/* MOVE UI v2: translúcido, arejado e arredondado */
+body{background:radial-gradient(900px 600px at 8% 10%,rgba(208,132,255,.5),transparent 60%),radial-gradient(800px 600px at 95% 85%,rgba(91,16,143,.3),transparent 60%),linear-gradient(135deg,#E4D6F5,#EFE8F8 50%,#F1F1F1) fixed}
+#app{margin:16px;padding:0;gap:0;height:calc(100vh - 32px);border-radius:36px;background:rgba(255,255,255,.38);-webkit-backdrop-filter:blur(26px) saturate(1.3);backdrop-filter:blur(26px) saturate(1.3);border:1px solid rgba(255,255,255,.7);box-shadow:0 30px 80px rgba(91,16,143,.18)}
+#sidebar{width:260px;height:100%;background:transparent;color:#3B3141;border:0;border-right:1px solid rgba(91,16,143,.10);border-radius:0;box-shadow:none}
+#main{background:transparent;border:0;border-radius:0;-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:none}
+.s-logo{padding:28px 28px 14px}.s-brand{color:#030303}.s-brand-mark{color:var(--violet)}.s-sub{color:var(--tm)}
+.s-nav{padding:4px 16px}.s-sec{color:var(--tm);font-size:11px;font-weight:500;letter-spacing:.16em;padding:0 14px;margin:18px 0 6px}
+.nb{color:#3B3141;border-radius:18px;padding:12px 16px;font-size:14.5px;font-weight:500;gap:14px}.nb:hover{background:rgba(255,255,255,.7);color:#030303}
+.nb.on{background:#030303;color:#fff}.nb.on::before{display:none}.nb-ico{width:20px;height:20px;opacity:1;display:grid;place-items:center}
+.nb-ico svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.nb-badge{background:#C0392B;color:#fff;font-size:11px;padding:2px 9px}
+.s-foot{padding:6px 16px 22px;border-top:1px solid rgba(91,16,143,.10)}.s-foot .s-sec{margin-top:12px}
+.pc{display:flex;align-items:center;gap:12px;margin:0 16px 6px;padding:12px 12px 12px 14px;border-radius:22px;background:rgba(255,255,255,.72);box-shadow:0 6px 20px rgba(91,16,143,.08)}
+.pc-av{flex:none;width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#5B108F,#D084FF);color:#fff;display:grid;place-items:center;font-family:var(--font-d);font-size:19px;font-weight:600}
+.pc-i{flex:1;min-width:0;font-size:13px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pc-bell{position:relative;flex:none;width:40px;height:40px;border-radius:50%;border:0;background:rgba(255,255,255,.7);color:#5B108F;display:grid;place-items:center;cursor:pointer;transition:var(--tr)}
+.pc-bell:hover{background:#fff;transform:translateY(-2px)}.pc-bell svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.pc-bell i{display:none;position:absolute;top:8px;right:9px;width:9px;height:9px;border-radius:50%;background:#C0392B;border:2px solid #fff}
+/* cartões, botões e campos */
+.card,.mc,.ci,.pcard,.dc,.rs,.kb-col,.kb-card{background:rgba(255,255,255,.9);border:1px solid rgba(255,255,255,.75)!important;box-shadow:0 10px 40px rgba(91,16,143,.09)!important}
+.card,.mc{border-radius:28px}.ci,.pcard,.dc,.rs,.kb-col,.kb-card{border-radius:22px}.modal,.cfm-box{border-radius:28px}
+.btn,.btn-sm{border-radius:99px}.btn{padding:11px 24px}.btn-sm{padding:8px 18px}
+.srch,.vtog,.ftab,.field input,.field select,.field textarea{border-radius:14px}
+.pill-group{background:rgba(255,255,255,.6);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.tbl th{background:rgba(247,235,255,.7)!important;font-size:11.5px!important;color:var(--ts)!important}.tbl td{font-size:13.5px}
 .mc-v,.pr-stat-n,.ph-l .pt,.modal-title{font-variant-numeric:lining-nums;font-feature-settings:"lnum" 1}
-.tbl th{font-size:11.5px!important;color:var(--ts)!important}.tbl td{font-size:13.5px}
-.card,.mc{border-color:#D9C8E6!important;box-shadow:0 4px 24px rgba(45,8,72,.10)!important}
-[data-go]{cursor:pointer}.mc[data-go]:hover{transform:translateY(-2px);border-color:var(--violet-light)!important;box-shadow:0 10px 30px rgba(91,16,143,.16)!important}
-/* Tabela de clientes: cabeçalho e coluna Cliente fixos */
-#v-clientes .tbl-wrap{overflow:auto;max-height:calc(100vh - 290px)}
-#v-clientes .tbl thead th{position:sticky;top:0;z-index:3}
-#v-clientes .tbl th:nth-child(2),#v-clientes .tbl td:nth-child(2){position:sticky;left:0;z-index:2;background:#fff}
-#v-clientes .tbl thead th:nth-child(2){z-index:4}
+.mc{position:relative}.mc-v{font-size:46px}.mc[data-go]{cursor:pointer}.mc[data-go]:hover{transform:translateY(-4px);box-shadow:0 18px 44px rgba(91,16,143,.18)!important}
+.mc[data-go]::after{content:"→";position:absolute;right:20px;top:18px;opacity:0;transform:translateX(-6px);transition:all .25s;color:var(--violet)}.mc[data-go]:hover::after{opacity:1;transform:none}
+/* dashboard */
+.dash-charts{grid-template-columns:minmax(0,7fr) minmax(0,5fr);align-items:stretch}
+.dash-charts .card{display:flex;flex-direction:column}.dash-charts .card>div:last-child{flex:1;width:100%;display:flex;align-items:center;justify-content:center}
+.stw{display:flex;align-items:center;justify-content:center;gap:clamp(20px,3vw,52px);flex-wrap:wrap;width:100%}.stw .ring{width:min(56%,320px)}
+.lgv{display:flex;flex-direction:column;gap:16px;min-width:190px}.lr{display:flex;align-items:center;gap:12px;font-size:17px}.lr b{margin-left:auto;padding-left:18px;font-size:22px;font-weight:600;font-variant-numeric:lining-nums}.sq{width:15px;height:15px;border-radius:5px;flex:none}
+/* tabela de clientes: cabeçalho e coluna Cliente fixos */
+#v-clientes .tbl-wrap{overflow:auto;max-height:calc(100vh - 290px)}#v-clientes .tbl thead th{position:sticky;top:0;z-index:3}
+#v-clientes .tbl th:nth-child(2),#v-clientes .tbl td:nth-child(2){position:sticky;left:0;z-index:2;background:#fff}#v-clientes .tbl thead th:nth-child(2){z-index:4}
 #v-clientes .tbl tbody tr:hover td:nth-child(2){background:#FBF6FE}
+@media(min-width:769px){.view{padding:clamp(24px,2.6vw,44px)}.card{padding:clamp(20px,1.8vw,30px)}.mc{padding:22px 24px}.ph-l .pt{font-size:clamp(34px,3.2vw,48px)}.ph{margin-bottom:28px}}
+@media(min-width:769px) and (max-width:1024px){#sidebar{width:220px}}
+@media(min-width:1700px){#sidebar{width:272px}}
+@media(max-width:1100px){.dash-charts{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:768px){#app{margin:0;height:auto;border-radius:0;background:transparent;border:0;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none}
+ #sidebar{width:248px;height:100vh;background:rgba(255,255,255,.9);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);border-radius:0 28px 28px 0;box-shadow:0 20px 60px rgba(91,16,143,.25)}
+ .mc-v{font-size:22px}.lr{font-size:15px}.lr b{font-size:19px}}
 </style>
 </head>
 <body class="auth-pending">
@@ -506,17 +537,18 @@ body.auth-pending #auth-gate,body.auth-logged-out #auth-gate{display:flex}
     <div class="s-brand">MO<span class="s-brand-mark">VE</span></div>
     <div class="s-sub">Central Operacional</div>
   </div>
+  <div class="pc"><div class="pc-av" id="acc-av">M</div><div class="pc-i" id="acc-email"></div><button class="pc-bell" id="acc-bell" type="button" aria-label="Ver pendências"><svg viewBox="0 0 24 24"><path d="M6 17V11a6 6 0 0 1 12 0v6l1.5 2h-15zM10 21h4"/></svg><i id="acc-dot"></i></button></div>
   <nav class="s-nav">
     <div class="s-sec">Operação</div>
-    <button class="nb on" data-v="dashboard"><span class="nb-ico">◈</span>Dashboard</button>
-    <button class="nb" data-v="clientes"><span class="nb-ico">◉</span>Clientes<span class="nb-badge" id="nb-cli" style="display:none">0</span></button>
+    <button class="nb on" data-v="dashboard"><span class="nb-ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg></span>Dashboard</button>
+    <button class="nb" data-v="clientes"><span class="nb-ico"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.4-5.5 6.5-5.5s5.9 1.9 6.5 5.5"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.8c2 .7 3.2 2.4 3.5 5.2"/></svg></span>Clientes<span class="nb-badge" id="nb-cli" style="display:none">0</span></button>
     <div class="s-sec">Acompanhamento</div>
-    <button class="nb" data-v="pendencias"><span class="nb-ico">◬</span>Pendências<span class="nb-badge" id="nb-pend">0</span></button>
-    <button class="nb" data-v="relatorios"><span class="nb-ico">⬡</span>Relatórios</button>
+    <button class="nb" data-v="pendencias"><span class="nb-ico"><svg viewBox="0 0 24 24"><path d="M12 3.5 22 20H2z"/><path d="M12 10v4.5M12 17.4v.1"/></svg></span>Pendências<span class="nb-badge" id="nb-pend">0</span></button>
+    <button class="nb" data-v="relatorios"><span class="nb-ico"><svg viewBox="0 0 24 24"><path d="M6 3h8l5 5v13H6z"/><path d="M14 3v5h5M9.5 13h6M9.5 17h6"/></svg></span>Relatórios</button>
     <div class="s-sec">Conteúdo</div>
-    <button class="nb" data-v="move-feed"><span class="nb-ico">▦</span>MOVE Feed</button>
+    <button class="nb" data-v="move-feed"><span class="nb-ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="9" cy="9" r="1.8"/><path d="m21 15-5-5L5 21"/></svg></span>MOVE Feed</button>
   </nav>
-  <div class="s-foot"><div class="s-foot-txt">MOVE Marketing<br><em>Painel da equipe</em></div><button class="auth-logout" id="btn-logout" type="button">Sair da conta</button></div>
+  <div class="s-foot"><div class="s-sec">Conta</div><button class="nb" id="btn-logout" type="button"><span class="nb-ico"><svg viewBox="0 0 24 24"><path d="M9 4H5v16h4M16 8l4 4-4 4M20 12H9"/></svg></span>Sair</button></div>
 </aside>
 
 <!-- MAIN -->
@@ -930,6 +962,7 @@ function updateBadges(){
   const atc=S.clients.filter(c=>c.status==='atrasado').length;
   function sb(id,v){ const el=document.getElementById(id); if(el){ el.textContent=v; el.style.display=v>0?'inline-flex':'none'; } }
   sb('nb-pend',pend); sb('nb-cnt',at); sb('nb-cli',atc);
+  (function(){ var d=document.getElementById('acc-dot'); if(d) d.style.display=pend>0?'block':'none'; })();
   const mob=document.getElementById('mob-badge'); if(mob){ mob.textContent=pend; mob.style.display=pend>0?'inline-flex':'none'; }
 }
 
@@ -1097,25 +1130,16 @@ function svgArea(id,data){
   const el=document.getElementById(id); if(el) el.innerHTML=s;
 }
 function svgDonut(id,data){
-  const W=300,H=220,cx=100,cy=105,R=70,ri=42,tot=Math.max(data.reduce((s,d)=>s+d.v,0),1);
-  let ang=-Math.PI/2,s='<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="font-family:Jost,system-ui,sans-serif">';
+  const tot=Math.max(data.reduce((s,d)=>s+d.v,0),1),G=1.6; let off=0,seg='',lg='';
   data.forEach(d=>{
-    const a=(d.v/tot)*2*Math.PI,ea=ang+a;
-    const x1=cx+R*Math.cos(ang),y1=cy+R*Math.sin(ang),x2=cx+R*Math.cos(ea),y2=cy+R*Math.sin(ea);
-    const i1=cx+ri*Math.cos(ang),j1=cy+ri*Math.sin(ang),i2=cx+ri*Math.cos(ea),j2=cy+ri*Math.sin(ea);
-    const lg=a>Math.PI?1:0;
-    s+='<path d="M'+i1.toFixed(2)+' '+j1.toFixed(2)+' L'+x1.toFixed(2)+' '+y1.toFixed(2)+' A'+R+' '+R+' 0 '+lg+' 1 '+x2.toFixed(2)+' '+y2.toFixed(2)+' L'+i2.toFixed(2)+' '+j2.toFixed(2)+' A'+ri+' '+ri+' 0 '+lg+' 0 '+i1.toFixed(2)+' '+j1.toFixed(2)+' Z" fill="'+d.c+'" opacity=".92"/>';
-    ang=ea;
+    const p=d.v/tot*100, len=Math.max(p-G,.1);
+    if(d.v>0) seg+='<rect x="10" y="10" width="180" height="120" rx="48" fill="none" stroke="'+d.c+'" stroke-width="16" pathLength="100" stroke-dasharray="'+len.toFixed(2)+' '+(100-len).toFixed(2)+'" stroke-dashoffset="'+(-off).toFixed(2)+'"/>';
+    off+=p;
+    lg+='<div class="lr"><i class="sq" style="background:'+d.c+'"></i><span>'+d.l+'</span><b>'+d.v+'</b></div>';
   });
-  s+='<text x="'+cx+'" y="'+(cy-4)+'" font-family="Cormorant Garamond,Georgia,serif" font-size="28" font-weight="600" fill="#030303" text-anchor="middle">'+tot+'</text>';
-  s+='<text x="'+cx+'" y="'+(cy+15)+'" font-size="10" fill="#6B647A" text-anchor="middle" letter-spacing=".05em">total</text>';
-  data.forEach((d,i)=>{
-    const lx=200,ly=24+i*28;
-    s+='<rect x="'+lx+'" y="'+ly+'" width="10" height="10" rx="2" fill="'+d.c+'"/>';
-    s+='<text x="'+(lx+15)+'" y="'+(ly+9)+'" font-size="12" fill="#3B3141" font-weight="500">'+d.l+'</text>';
-    s+='<text x="'+(W-6)+'" y="'+(ly+9)+'" font-size="13" fill="#030303" font-weight="600" text-anchor="end">'+d.v+'</text>';
-  });
-  s+='</svg>';
+  const s='<div class="stw"><svg class="ring" viewBox="0 0 200 140"><rect x="10" y="10" width="180" height="120" rx="48" fill="none" stroke="rgba(91,16,143,.08)" stroke-width="16"/>'+seg+
+    '<text x="100" y="82" text-anchor="middle" font-family="Cormorant Garamond,Georgia,serif" font-style="italic" font-weight="600" font-size="44" fill="#5B108F">'+tot+'</text>'+
+    '<text x="100" y="104" text-anchor="middle" font-family="Jost,system-ui,sans-serif" font-size="14" fill="#6B647A">total</text></svg><div class="lgv">'+lg+'</div></div>';
   const el=document.getElementById(id); if(el) el.innerHTML=s;
 }
 function svgBar(id,data,col){
@@ -1126,6 +1150,7 @@ function svgBar(id,data,col){
   const barW=W-PR-valW-8-barX;
   const mx=Math.max(...data.map(d=>d.v),1);
   let s='<svg viewBox="0 0 '+W+' '+H+'" width="100%" preserveAspectRatio="xMinYMin meet" style="font-family:Jost,system-ui,sans-serif">';
+  s+='<defs><linearGradient id="mvbar" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#5B108F"/><stop offset="1" stop-color="#D084FF"/></linearGradient></defs>';
   // Eixo X de referência (linhas verticais 25/50/75/100%)
   [0.25,0.5,0.75,1].forEach(p=>{
     const x=barX+barW*p;
@@ -1144,7 +1169,7 @@ function svgBar(id,data,col){
     // Trilha de fundo da barra
     s+='<rect x="'+barX.toFixed(1)+'" y="'+(ymid-bh/2).toFixed(1)+'" width="'+barW.toFixed(1)+'" height="'+bh+'" rx="7" fill="#F7EBFF"/>';
     // Barra colorida
-    if(bw>0) s+='<rect x="'+barX.toFixed(1)+'" y="'+(ymid-bh/2).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+bh+'" rx="7" fill="'+c+'" opacity=".92"/>';
+    if(bw>0) s+='<rect x="'+barX.toFixed(1)+'" y="'+(ymid-bh/2).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+bh+'" rx="7" fill="'+(col?'url(#mvbar)':c)+'"/>';
     // Valor à direita
     s+='<text x="'+(W-PR).toFixed(1)+'" y="'+(ymid+4).toFixed(1)+'" font-size="13" fill="#030303" font-weight="600" text-anchor="end">'+d.v+'</text>';
     if(d.statusColor) s+='<circle cx="'+(barX+barW+8).toFixed(1)+'" cy="'+ymid.toFixed(1)+'" r="4" fill="'+d.statusColor+'"/>';
@@ -2176,6 +2201,7 @@ document.addEventListener('click',e=>{
   const t=e.target;
 
   // Sidebar nav
+  if(t.closest('#acc-bell')){ navigate('pendencias'); return; }
   const nb=t.closest('.nb'); if(nb&&nb.dataset.v){ if(nb.dataset.v==='move-feed'){ location.href='feed.html'; return; } navigate(nb.dataset.v); return; }
 
   // A sessão da equipe usa Firebase Authentication.
@@ -2322,6 +2348,7 @@ function clearAuthenticatedSessionData(){
   try{
     const fb=await initFirebaseClient();
     fb.auth.onAuthStateChanged(async user=>{
+      try{ const em=document.getElementById('acc-email'); if(em){ em.textContent=(user&&user.email)||''; document.getElementById('acc-av').textContent=(((user&&user.email)||'M')[0]||'M').toUpperCase(); } }catch(e){}
       if(!user){
         if(APP_AUTHENTICATED) clearAuthenticatedSessionData();
         APP_AUTHENTICATED=false;
@@ -2370,6 +2397,8 @@ document.getElementById('login-reset').addEventListener('click',async()=>{
   try{ await firebase.app().auth().sendPasswordResetEmail(email); error.style.color='var(--ok)'; error.textContent='Se o e-mail estiver cadastrado, você receberá as instruções de redefinição.'; }
   catch(err){ error.style.color='var(--er)'; error.textContent='Não foi possível enviar o e-mail agora. Tente novamente.'; }
 });
+
+(function(){ var h=(location.hash||'').slice(1); if(['dashboard','clientes','pendencias','relatorios'].indexOf(h)<0) return; var n=0; var iv=setInterval(function(){ n++; var b=document.body.classList; if(b.contains('auth-pending')&&n<60) return; clearInterval(iv); if(!b.contains('auth-logged-out')&&typeof navigate==='function') navigate(h); },150); })();
 </script>
 </body>
 </html>
