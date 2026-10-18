@@ -496,6 +496,56 @@ body{background:radial-gradient(900px 600px at 8% 10%,rgba(208,132,255,.5),trans
  #sidebar{width:248px;height:100vh;background:rgba(255,255,255,.9);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);border-radius:0 28px 28px 0;box-shadow:0 20px 60px rgba(91,16,143,.25)}
  .mc-v{font-size:22px}.lr{font-size:15px}.lr b{font-size:19px}}
 </style>
+<style id="move-a11y">
+/* sincronização */
+.sync-chip{display:flex;align-items:center;gap:8px;width:calc(100% - 32px);margin:8px 16px 0;padding:8px 14px;border:0;border-radius:99px;background:rgba(255,255,255,.6);color:#3B3141;font:500 12px var(--font-b);text-align:left;cursor:default}
+.sync-chip i{flex:none;width:9px;height:9px;border-radius:50%;background:#9A94A8}
+.sync-chip[data-st=ok] i{background:#1E9E6A}.sync-chip[data-st=saving] i{background:#C47A1A;animation:syncp 1s infinite}
+.sync-chip[data-st=error]{background:rgba(192,57,43,.12);color:#9C2B1F;cursor:pointer}.sync-chip[data-st=error] i{background:#C0392B}
+@keyframes syncp{50%{opacity:.3}}
+#mob-bar .sync-chip{width:auto;margin:0 0 0 auto;padding:6px 12px;background:rgba(255,255,255,.14);color:#fff;font-size:11px}
+/* campos editáveis: mais evidentes, maiores e com foco visível */
+.cell-edit,.obs-cell{border-bottom:1px dashed rgba(91,16,143,.28)}
+.cell-edit{padding:6px 10px;margin:-6px -10px;min-height:32px}
+.cell-edit::after,.obs-cell::after{content:"✎";margin-left:6px;font-size:11px;color:var(--violet);opacity:0;transition:opacity .15s}
+.cell-edit:hover::after,.cell-edit:focus-visible::after,.obs-cell:hover::after,.obs-cell:focus-visible::after{opacity:1}
+@media(hover:none){.cell-edit::after,.obs-cell::after{opacity:.55}}
+.cell-feitos button{width:32px;height:32px}
+.ico{min-width:40px;min-height:40px;font-size:15px}.modal-x{min-width:40px;min-height:40px}
+[role=button]:focus-visible,.ico:focus-visible,.cell-feitos button:focus-visible,.tag-pill:focus-visible,.gmn-pill:focus-visible,.sync-chip:focus-visible,.modal-x:focus-visible{outline:3px solid rgba(91,16,143,.55);outline-offset:2px}
+/* tabela de clientes em cartões no celular */
+@media(max-width:768px){
+ #v-clientes .tbl-wrap{overflow:visible;max-height:none;background:transparent;border:0;box-shadow:none;padding:0}
+ #v-clientes .cli-tbl{display:block;min-width:0;font-size:13.5px}
+ #v-clientes .cli-tbl thead{display:none}
+ #v-clientes .cli-tbl tbody{display:grid;gap:12px}
+ #v-clientes .cli-tbl tr{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:12px 14px;padding:16px;background:rgba(255,255,255,.92);border-radius:22px;box-shadow:0 8px 28px rgba(91,16,143,.10)}
+ #v-clientes .cli-tbl td{display:block;min-width:0;padding:0;border:0;position:static!important;background:transparent!important;white-space:normal!important}
+ #v-clientes .cli-tbl td::before{display:block;margin-bottom:5px;font-size:10.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--tm)}
+ #v-clientes .cli-tbl td[colspan]{grid-column:1/-1}#v-clientes .cli-tbl td[colspan]::before{display:none}
+ #v-clientes .cli-tbl td:nth-child(1)::before{content:"Última edição"}
+ #v-clientes .cli-tbl td:nth-child(2){order:1;grid-column:1/-1;padding-right:92px}#v-clientes .cli-tbl td:nth-child(2)::before{display:none}
+ #v-clientes .cli-tbl td:nth-child(3)::before{content:"Pacote"}
+ #v-clientes .cli-tbl td:nth-child(4)::before{content:"Feitos"}
+ #v-clientes .cli-tbl td:nth-child(5)::before{content:"Responsáveis"}
+ #v-clientes .cli-tbl td:nth-child(6)::before{content:"Último programado"}
+ #v-clientes .cli-tbl td:nth-child(7)::before{content:"Situação"}
+ #v-clientes .cli-tbl td:nth-child(8)::before{content:"Resp. pendência"}
+ #v-clientes .cli-tbl td:nth-child(9)::before{content:"Pauta"}
+ #v-clientes .cli-tbl td:nth-child(10)::before{content:"Google MN"}
+ #v-clientes .cli-tbl td:nth-child(11)::before{content:"Observações"}
+ #v-clientes .cli-tbl td:nth-child(11){grid-column:1/-1;order:11}
+ #v-clientes .cli-tbl td:nth-child(12){position:absolute!important;top:8px;right:8px;display:flex;gap:2px}#v-clientes .cli-tbl td:nth-child(12)::before{display:none}
+ #v-clientes .cli-tbl td:nth-child(7){order:2}#v-clientes .cli-tbl td:nth-child(10){order:3}
+ #v-clientes .cli-tbl td:nth-child(4){order:4;grid-column:1/-1}
+ #v-clientes .cli-tbl td:nth-child(3){order:5}#v-clientes .cli-tbl td:nth-child(6){order:6}
+ #v-clientes .cli-tbl td:nth-child(5){order:7}#v-clientes .cli-tbl td:nth-child(8){order:8}
+ #v-clientes .cli-tbl td:nth-child(9){order:9}#v-clientes .cli-tbl td:nth-child(1){order:10}
+ #v-clientes .cell-feitos button{width:44px;height:44px;font-size:18px}
+ #v-clientes .cell-feitos{padding:4px}
+ .cell-edit{margin:0;padding:6px 8px}
+}
+</style>
 </head>
 <body class="auth-pending">
 <div id="auth-gate" aria-live="polite">
@@ -519,6 +569,7 @@ body{background:radial-gradient(900px 600px at 8% 10%,rgba(208,132,255,.5),trans
 <!-- Mobile bar -->
 <header id="mob-bar">
   <div class="mob-brand">MO<span>VE</span></div>
+  <button class="sync-chip" id="sync-mob" type="button" role="status" aria-live="polite" data-st="idle"><i></i><span>Aguardando login</span></button>
   <div style="display:flex;align-items:center;gap:10px">
     <span id="mob-badge" style="display:none;background:rgba(192,57,43,.22);color:#FF9B91;font-size:11px;font-weight:600;padding:3px 9px;border-radius:99px"></span>
     <button id="mob-hbg" aria-label="Menu">
@@ -538,6 +589,7 @@ body{background:radial-gradient(900px 600px at 8% 10%,rgba(208,132,255,.5),trans
     <div class="s-sub">Central Operacional</div>
   </div>
   <div class="pc"><div class="pc-av" id="acc-av">M</div><div class="pc-i" id="acc-email"></div><button class="pc-bell" id="acc-bell" type="button" aria-label="Ver pendências"><svg viewBox="0 0 24 24"><path d="M6 17V11a6 6 0 0 1 12 0v6l1.5 2h-15zM10 21h4"/></svg><i id="acc-dot"></i></button></div>
+  <button class="sync-chip" id="sync-chip" type="button" role="status" aria-live="polite" data-st="idle"><i></i><span>Aguardando login</span></button>
   <nav class="s-nav">
     <div class="s-sec">Operação</div>
     <button class="nb on" data-v="dashboard"><span class="nb-ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg></span>Dashboard</button>
@@ -810,6 +862,7 @@ function hasAuthenticatedSession(){ return !!(FBX&&FBX.auth&&FBX.auth.currentUse
 function queueCloudStateSave(){
   if(CLOUD_APPLYING||CLOUD_SAVING||!S.firebaseCfg||!hasAuthenticatedSession()||!CLOUD_BOOTSTRAPPED||CLOUD_BOOTSTRAP_IN_PROGRESS) return;
   clearTimeout(CLOUD_SAVE_TIMER);
+  setSync('saving');
   CLOUD_SAVE_TIMER=setTimeout(()=>{ saveCloudStateNow(); },500);
 }
 function buildCloudStatePayload(){
@@ -840,18 +893,23 @@ function applyCloudState(payload){
 async function saveCloudStateNow(){
   if(CLOUD_APPLYING||CLOUD_SAVING||!S.firebaseCfg||!window.firebase||!hasAuthenticatedSession()) return false;
   CLOUD_SAVING=true;
+  setSync('saving');
+  const _syncTo=setTimeout(()=>{ if(CLOUD_SAVING) setSync(navigator.onLine?'error':'offline'); },15000);
   try{
     const fb=await initFirebaseClient();
     const payload=buildCloudStatePayload();
     await fb.db.collection(CLOUD_STATE_COLLECTION).doc(CLOUD_STATE_DOC).set(payload,{merge:true});
     S.lastCloudSyncAt=payload.updatedAtIso;
+    setSync('ok');
     try{ localStorage.setItem(LS,JSON.stringify({clients:S.clients,contents:S.contents,nextId:S.nextId,exportLogs:S.exportLogs,firebaseCfg:S.firebaseCfg,lastCloudSyncAt:S.lastCloudSyncAt})); }catch(e){}
     return true;
   }catch(e){
     S.firebaseReady=false;
     console.error('Falha ao salvar estado no Firestore:',e);
+    setSync('error');
     return false;
   }finally{
+    clearTimeout(_syncTo);
     CLOUD_SAVING=false;
   }
 }
@@ -870,6 +928,50 @@ async function loadCloudStateOnce(){
     return 'error';
   }
 }
+/* ── Estado de sincronização (sempre visível) ── */
+let SYNC_ST='idle';
+function setSync(st){
+  SYNC_ST=st; window.__syncState=st;
+  var fmt=function(iso){ var d=iso?new Date(iso):new Date(); if(isNaN(d)) d=new Date();
+    var hm=d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+    return d.toDateString()===new Date().toDateString()?hm:d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})+' '+hm; };
+  var M={ idle:['Aguardando login','idle'], saving:['Salvando…','saving'],
+    ok:['Sincronizado às '+fmt(S.lastCloudSyncAt),'ok'],
+    error:['Falha ao sincronizar · tocar para tentar de novo','error'],
+    offline:['Sem conexão · alterações pendentes','error'] };
+  var v=M[st]||M.idle;
+  document.querySelectorAll('.sync-chip').forEach(function(b){ b.dataset.st=v[1]; var sp=b.querySelector('span'); if(sp) sp.textContent=v[0];
+    b.title=(st==='ok')?'Todas as alterações estão salvas na nuvem':(st==='saving'?'Gravando as alterações na nuvem':(v[1]==='error'?'Clique para tentar sincronizar novamente':'')); });
+}
+window.addEventListener('offline',function(){ if(hasAuthenticatedSession()) setSync('offline'); });
+window.addEventListener('online',function(){ if(hasAuthenticatedSession()&&CLOUD_BOOTSTRAPPED){ setSync('saving'); saveCloudStateNow().then(function(ok){ if(!ok&&!CLOUD_SAVING) setSync('ok'); }); } });
+document.addEventListener('click',function(e){ var c=e.target.closest&&e.target.closest('.sync-chip'); if(c&&(SYNC_ST==='error'||SYNC_ST==='offline')) saveCloudStateNow(); });
+
+/* ── Acessibilidade dos campos editáveis ── */
+(function(){
+  var FIELD={name:'nome',pkg:'pacote',feitos:'conteúdos feitos',resp:'responsáveis',last:'último programado',responsavelPendencia:'responsável pela pendência',obs:'observações'};
+  function enhance(root){
+    (root||document).querySelectorAll('[data-edit],[data-cc],[data-gmn-cycle]').forEach(function(el){
+      if(el.getAttribute('role')==='button') return;
+      el.setAttribute('role','button'); el.setAttribute('tabindex','0');
+      var txt=(el.textContent||'').replace(/\s+/g,' ').trim(), label;
+      if(el.hasAttribute('data-edit')) label='Editar '+(FIELD[el.getAttribute('data-edit')]||'campo')+(txt?': '+txt:'');
+      else if(el.hasAttribute('data-cc')) label='Avançar situação'+(txt?' (atual: '+txt+')':'');
+      else label='Alterar Google MN'+(txt?' (atual: '+txt+')':'');
+      el.setAttribute('aria-label',label);
+      if(!el.title) el.title='Clique (ou Enter) para editar';
+    });
+    (root||document).querySelectorAll('button[title]:not([aria-label])').forEach(function(b){ b.setAttribute('aria-label',b.getAttribute('title')); });
+  }
+  var wait=false; function sched(){ if(wait) return; wait=true; requestAnimationFrame(function(){ wait=false; enhance(document.getElementById('main')||document); }); }
+  function start(){ var m=document.getElementById('main'); if(!m) return; enhance(m); new MutationObserver(sched).observe(m,{childList:true,subtree:true}); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',start); else start();
+  document.addEventListener('keydown',function(e){
+    if(e.key!=='Enter'&&e.key!==' ') return; var el=e.target;
+    if(el&&el.getAttribute&&el.getAttribute('role')==='button'&&el.matches('[data-edit],[data-cc],[data-gmn-cycle]')){ e.preventDefault(); el.click(); }
+  });
+})();
+
 window.updDot=function(){ var d=document.getElementById('acc-dot'); if(d) d.style.display=((window.__pend||0)>0||(window.__feedNovos||0)>0)?'block':'none'; };
 let FEED_UNSUB=null;
 async function watchFeed(){
@@ -896,6 +998,7 @@ async function startCloudStateListener(){
       if(S.lastCloudSyncAt&&new Date(v.updatedAtIso)<=new Date(S.lastCloudSyncAt)) return;
       const ok=applyCloudState(v);
       if(ok){
+        setSync('ok');
         const onDash=document.getElementById('v-dashboard')?.classList.contains('on');
         if(onDash) renderDash();
         else{
@@ -910,6 +1013,7 @@ async function startCloudStateListener(){
     },err=>{
       S.firebaseReady=false;
       console.error('Falha no listener do Firestore:',err);
+      setSync('error');
       toast('A sincronização com o Firestore foi interrompida.','er');
     });
     return true;
@@ -934,7 +1038,7 @@ async function bootstrapCloudState(){
     }
     const listening=await startCloudStateListener();
     if(!listening){ toast('Não consegui iniciar a sincronização do Firestore.','er'); return false; }
-    CLOUD_BOOTSTRAPPED=true;
+    CLOUD_BOOTSTRAPPED=true; setSync('ok');
     return true;
   }finally{
     CLOUD_BOOTSTRAP_IN_PROGRESS=false;
@@ -1321,7 +1425,7 @@ function renderClients(){
   renderCliGmnPills();
   fillRespSelect('cli-resp',S.cliResp);
   const list=fCli();
-  document.getElementById('cli-count').textContent=S.clients.length+' clientes · '+list.length+' exibidos';
+  document.getElementById('cli-count').textContent=S.clients.length+' clientes · '+list.length+' exibidos · clique em um campo para editar';
   const skArr=Object.keys(SC);
   const gmnArr=['feito','nao_tem','nao_feito']; // ordem do ciclo
 
@@ -2343,6 +2447,7 @@ function clearAuthenticatedSessionData(){
   CLOUD_BOOTSTRAPPED=false;
   CLOUD_BOOTSTRAP_IN_PROGRESS=false;
   CLOUD_SAVING=false;
+  setSync('idle');
   S.clients=[]; S.contents=[]; S.exportLogs=[]; S.lastCloudSyncAt=''; S.firebaseReady=false;
   try{ localStorage.removeItem(LS); }catch(e){}
 }
