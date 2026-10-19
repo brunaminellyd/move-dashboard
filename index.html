@@ -518,6 +518,8 @@ body{background:radial-gradient(900px 600px at 8% 10%,rgba(208,132,255,.5),trans
  #v-clientes .cli-tbl th:nth-child(n+3):nth-child(-n+10),#v-clientes .cli-tbl td:nth-child(n+3):nth-child(-n+10){text-align:center}
  #v-clientes .cli-tbl th:nth-child(12),#v-clientes .cli-tbl td:nth-child(12){text-align:center;padding-left:4px;padding-right:8px}
  #v-clientes .cli-tbl{--pw:132px;--ph:30px}
+ #v-clientes .cli-tbl td{height:68px}
+ #v-clientes .cli-tbl .cell-input{height:32px;box-sizing:border-box;padding:0 10px;margin:0}
  #v-clientes .cli-tbl .cell-feitos{width:var(--pw);height:var(--ph);padding:2px;justify-content:space-between}
  #v-clientes .cli-tbl .cell-feitos button{width:26px;height:26px;font-size:14px;min-height:0}
  #v-clientes .cli-tbl .cell-feitos .cell-edit{min-height:0;min-width:0;margin:0;padding:0 4px;font-size:13px;line-height:1}
@@ -1437,6 +1439,7 @@ function renderCliGmnPills(){
   document.querySelectorAll('[data-gf]').forEach(btn=>btn.classList.toggle('on',btn.dataset.gf===S.cliGMN));
 }
 function renderClients(){
+  const _w=document.querySelector('#v-clientes .tbl-wrap'); const _st=_w?_w.scrollTop:0, _sl=_w?_w.scrollLeft:0;
   renderCliTabs();
   renderCliGmnPills();
   fillRespSelect('cli-resp',S.cliResp);
@@ -1515,6 +1518,7 @@ function renderClients(){
       +'</tr>';
     }).join(''):'<tr><td colspan="12" class="empty">Nenhum cliente encontrado</td></tr>')
     +'</tbody>';
+  if(_w){ _w.scrollTop=_st; _w.scrollLeft=_sl; }
   updateBadges();
 }
 
