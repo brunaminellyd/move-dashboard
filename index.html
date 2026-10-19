@@ -505,14 +505,22 @@ body{background:radial-gradient(900px 600px at 8% 10%,rgba(208,132,255,.5),trans
 @keyframes syncp{50%{opacity:.3}}
 #mob-bar .sync-chip{width:auto;margin:0 0 0 auto;padding:6px 12px;background:rgba(255,255,255,.14);color:#fff;font-size:11px}
 /* campos editáveis: mais evidentes, maiores e com foco visível */
-.cell-edit,.obs-cell{border-bottom:1px dashed rgba(91,16,143,.28)}
-.cell-edit{padding:6px 10px;margin:-6px -10px;min-height:32px}
-.cell-edit::after,.obs-cell::after{content:"✎";margin-left:6px;font-size:11px;color:var(--violet);opacity:0;transition:opacity .15s}
-.cell-edit:hover::after,.cell-edit:focus-visible::after,.obs-cell:hover::after,.obs-cell:focus-visible::after{opacity:1}
-@media(hover:none){.cell-edit::after,.obs-cell::after{opacity:.55}}
+.cell-edit{padding:6px 8px;margin:-6px -8px;min-height:32px}
+.cell-edit:hover,.obs-cell:hover{background:var(--violet-pale);box-shadow:inset 0 0 0 1px rgba(91,16,143,.25)}
+.cell-feitos .cell-edit{margin:0;padding:4px 6px;min-width:36px;text-align:center}
 .cell-feitos button{width:32px;height:32px}
-.ico{min-width:40px;min-height:40px;font-size:15px}.modal-x{min-width:40px;min-height:40px}
+.ico{min-width:36px;min-height:36px;font-size:15px}.cell-edit .ico{min-width:30px;min-height:30px;padding:4px 6px}.modal-x{min-width:40px;min-height:40px}
 [role=button]:focus-visible,.ico:focus-visible,.cell-feitos button:focus-visible,.tag-pill:focus-visible,.gmn-pill:focus-visible,.sync-chip:focus-visible,.modal-x:focus-visible{outline:3px solid rgba(91,16,143,.55);outline-offset:2px}
+/* tabela de clientes: alinhamento no computador */
+@media(min-width:769px){
+ #v-clientes .cli-tbl th,#v-clientes .cli-tbl td{padding:14px 12px;vertical-align:middle}
+ #v-clientes .cli-tbl th{letter-spacing:.07em;white-space:normal;line-height:1.3}
+ #v-clientes .cli-tbl th:nth-child(n+3):nth-child(-n+10),#v-clientes .cli-tbl td:nth-child(n+3):nth-child(-n+10){text-align:center}
+ #v-clientes .cli-tbl th:nth-child(12),#v-clientes .cli-tbl td:nth-child(12){text-align:center;padding-left:4px;padding-right:8px}
+ #v-clientes .cli-tbl .pkg-meter{width:172px;max-width:100%;margin:8px auto 0}
+ #v-clientes .client-name-row{flex-wrap:nowrap}
+ #v-clientes .client-name-row .cell-edit{display:block;flex:1;min-width:0;margin:0}
+}
 /* tabela de clientes em cartões no celular */
 @media(max-width:768px){
  #v-clientes .tbl-wrap{overflow:visible;max-height:none;background:transparent;border:0;box-shadow:none;padding:0}
