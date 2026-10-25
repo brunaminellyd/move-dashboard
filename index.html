@@ -413,7 +413,7 @@ button,input,select,textarea{font-family:inherit}
   .pr-stat-n{font-family:'Cormorant Garamond',Georgia,serif;font-size:32px;font-weight:600;color:#5B108F;line-height:1}
   .pr-stat-l{font-size:10px;color:#6B647A;margin-top:4px;font-weight:500;letter-spacing:.02em}
   .pr-sec{margin-bottom:16px}
-  .pr-sec-title{font-family:'Cormorant Garamond',Georgia,serif;font-size:17px;font-weight:600;color:#030303;padding-left:10px;border-left:3px solid #5B108F;margin-bottom:10px;line-height:1.2}
+  .pr-sec-title{font-family:'Cormorant Garamond',Georgia,serif;font-size:17px;font-weight:600;color:#030303;padding-left:10px;border-left:3px solid #5B108F;margin-bottom:10px;line-height:1.2;page-break-after:avoid;break-after:avoid}
   .pr-sec-title em{font-style:italic;color:#5B108F}
   .pr-pbar{background:#F7EBFF;border-radius:99px;height:8px;overflow:hidden;margin:6px 0}
   .pr-pfill{height:100%;background:linear-gradient(90deg,#5B108F,#D084FF);border-radius:99px}
@@ -424,18 +424,19 @@ button,input,select,textarea{font-family:inherit}
   table.pr-tbl tr{page-break-inside:avoid}
   .pr-pill{display:inline-block;padding:2px 8px;border-radius:99px;font-size:9px;font-weight:600;line-height:1.4;white-space:nowrap;letter-spacing:.02em}
   .pr-footer{margin-top:20px;padding-top:12px;border-top:1px solid #E4D9EB;font-size:9.5px;color:#6B647A;display:flex;justify-content:space-between;font-style:italic}
-  .pr-attention-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:10px}
+  .pr-attention-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:10px;page-break-inside:avoid;break-inside:avoid}
   .pr-attention-head .pr-sec-title{margin-bottom:3px}
   .pr-attention-note{font-size:10px;line-height:1.45;color:#6B647A;margin:0}
   .pr-attention-count{flex:none;border:1px solid #F0D7AF;background:#FFF8EC;color:#9B5B08;border-radius:999px;padding:5px 10px;font-size:10px;font-weight:600}
   table.pr-att-tbl{width:100%;border-collapse:collapse;font-size:9.5px;border:1px solid #E4D9EB;border-radius:8px;overflow:hidden}
   table.pr-att-tbl th{background:#FBF8FC;padding:6px 8px;text-align:left;font-size:8px;font-weight:600;color:#6B647A;text-transform:uppercase;letter-spacing:.08em}
+  table.pr-att-tbl thead{display:table-header-group}
   table.pr-att-tbl td{padding:6px 8px;border-top:1px solid #EEE8F3;color:#3B3141;vertical-align:top;line-height:1.35}
   table.pr-att-tbl tr{page-break-inside:avoid;break-inside:avoid}
   .pr-att-name{font-weight:600;color:#030303}
   .pr-att-empty{padding:12px;border:1px solid #D9EEE4;border-radius:8px;background:#F4FBF7;color:#26734F;font-size:10px}
-  .pr-gmn-sub{display:block;margin-top:3px;color:#9B5B08;font-size:8px;font-weight:600}
-  .pr-detail-section{page-break-before:always;break-before:page}
+  .pr-att-meta{display:block;margin-top:3px;color:#9B5B08;font-size:8px;font-weight:600}
+  .pr-detail-section{page-break-before:auto;break-before:auto}
   .pr-detail-section .pr-sec-title{margin-bottom:10px}
   table.pr-tbl thead{display:table-header-group}
   table.pr-tbl tr{page-break-inside:avoid;break-inside:avoid}
@@ -652,7 +653,7 @@ body{background:radial-gradient(900px 600px at 8% 10%,rgba(208,132,255,.5),trans
   </div>
   <div class="card">
     <div class="card-h">Atenção <em style="font-family:var(--font-d);font-style:italic;color:var(--violet)">imediata</em></div>
-    <div class="card-sub">Precisa de ação hoje</div>
+    <div class="card-sub">Atrasados, pendências e abaixo de 50% na contagem atual após o dia 15</div>
     <div id="d-urgent"></div>
   </div>
 </section>
@@ -1158,6 +1159,16 @@ function normGMN(v){
   if(raw==='nao_tem' || raw==='nao-tem' || raw==='naotem') return 'nao_tem';
   return 'nao_tem';
 }
+function belowHalfByDay15(c,now=new Date()){
+  if(now.getDate()<15) return false;
+  const pkg=Number(c?.pkg)||0;
+  const feitos=Number(c?.feitos)||0;
+  return pkg>0&&feitos/pkg<0.5;
+}
+function isImmediateAttention(c,now=new Date()){
+  if(c?.status==='sem_dados') return false;
+  return c?.status==='atrasado'||c?.status==='alguma_pendencia'||belowHalfByDay15(c,now);
+}
 function pendenciaValue(c){
   const value=String(c?.responsavelPendencia||'').toLowerCase();
   return ['alguma_pendencia','atrasado','sem_dados'].includes(c?.status)&&RPEND[value]?value:null;
@@ -1372,27 +1383,28 @@ function renderDash(){
     {l:'Sem dados',v:cliSemStat,c:'#D084FF'},
   ]);
 
-  // Atenção imediata: clientes atrasados, sem dados ou com GMN não feito
+  // Atenção imediata: atrasados, com pendência ou abaixo de 50% a partir do dia 15
   const urgent=S.clients
-    .filter(c=>c.status==='atrasado'||c.status==='sem_dados'||normGMN(c.gmn)==='nao_feito'||c.status==='alguma_pendencia')
+    .filter(c=>isImmediateAttention(c,now))
     .sort((a,b)=>{
-      const sev=c=>c.status==='atrasado'?0:c.status==='sem_dados'?1:normGMN(c.gmn)==='nao_feito'?2:3;
-      return sev(a)-sev(b);
+      const sev=c=>c.status==='atrasado'?0:c.status==='alguma_pendencia'?1:2;
+      return sev(a)-sev(b)||String(a.name||'').localeCompare(String(b.name||''),'pt-BR');
     });
   document.getElementById('d-urgent').innerHTML=!urgent.length
-    ?'<div class="empty">✓ Nenhuma urgência agora!</div>'
+    ?'<div class="empty">✓ Nenhum cliente nos critérios de atenção agora.</div>'
     :urgent.slice(0,8).map(c=>{
       let tag,tcol,tbg;
+      const low=belowHalfByDay15(c,now);
       if(c.status==='atrasado'){ tag='Atrasado'; tcol='var(--er)'; tbg='var(--erb)'; }
-      else if(c.status==='sem_dados'){ tag='Sem dados'; tcol='var(--wa)'; tbg='var(--wab)'; }
-      else if(normGMN(c.gmn)==='nao_feito'){ tag='GMN pendente'; tcol='var(--in)'; tbg='var(--inb)'; }
-      else { tag='Pendência'; tcol='#C47A1A'; tbg='rgba(196,122,26,.10)'; }
+      else if(c.status==='alguma_pendencia'){ tag='Pendência'; tcol='#C47A1A'; tbg='rgba(196,122,26,.10)'; }
+      else { tag='Abaixo de 50%'; tcol='var(--wa)'; tbg='var(--wab)'; }
       const fal=Math.max((c.pkg||0)-(c.feitos||0),0);
-      const sub=(c.respSM?'SM '+esc(c.respSM)+' · ':'')+esc(c.resp||'sem responsável')+(fal>0?' · faltam '+fal:'')+(c.status==='alguma_pendencia'&&c.obs?' · '+esc(c.obs.split('\n')[0].slice(0,60)):'');
+      const progress=low?' · '+(((Number(c.feitos)||0)/(Number(c.pkg)||1))*100).toLocaleString('pt-BR',{maximumFractionDigits:1})+'% do pacote':'';
+      const sub=(c.respSM?'SM '+esc(c.respSM)+' · ':'')+esc(c.resp||'sem responsável')+(fal>0?' · faltam '+fal:'')+progress+(c.status==='alguma_pendencia'&&c.obs?' · '+esc(c.obs.split('\n')[0].slice(0,60)):'');
       return '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-radius:var(--r-sm);background:'+tbg+';margin-bottom:8px;border:1px solid '+tcol+'33">'
         +'<div><div style="font-size:13.5px;font-weight:500;color:var(--t)">'+esc(c.name)+'</div><div style="font-size:11.5px;color:var(--tm);margin-top:3px">'+sub+'</div></div>'
         +'<span class="badge" style="background:'+tbg+';color:'+tcol+';font-weight:600">'+tag+'</span></div>';
-    }).join('')+(urgent.length>8?'<div style="text-align:center;margin-top:10px"><button class="btn-sm" type="button" data-go="alguma_pendencia">Ver todas as pendências ('+urgent.length+') →</button></div>':'');
+    }).join('')+(cliPend>8?'<div style="text-align:center;margin-top:10px"><button class="btn-sm" type="button" data-go="alguma_pendencia">Ver todas as pendências ('+cliPend+') →</button></div>':'');
 
   // Barras: todos os clientes ordenados pela quantidade faltante (decrescente)
   const statusColors={atrasado:'#D92D20',alguma_pendencia:'#D98A1F',sem_dados:'#EAB308',tudo_em_dia:'#20A36A'};
@@ -2142,9 +2154,9 @@ function exportPDF(){
   const totPkg=S.clients.reduce((s,c)=>s+(c.pkg||0),0);
   const pctFeitos=totPkg>0?Math.round(totFeitos/totPkg*100):0;
 
-  const attentionOrder={atrasado:0,alguma_pendencia:1,sem_dados:2};
+  const attentionOrder={atrasado:0,alguma_pendencia:1};
   const attentionClients=S.clients
-    .filter(c=>['atrasado','alguma_pendencia','sem_dados'].includes(c.status)||normGMN(c.gmn)==='nao_feito')
+    .filter(c=>isImmediateAttention(c,now))
     .slice()
     .sort((a,b)=>{
       const pa=attentionOrder[a.status]??3;
@@ -2152,17 +2164,18 @@ function exportPDF(){
       return pa-pb||String(a.name||'').localeCompare(String(b.name||''),'pt-BR');
     });
   const attRows=attentionClients.map(c=>{
+    const low=belowHalfByDay15(c,now);
     const status=attentionOrder[c.status]!==undefined
       ?{...SC[c.status]}
-      :{l:'GMN pendente',c:'#9B5B08',b:'rgba(196,122,26,.12)'};
+      :{l:'Abaixo de 50%',c:'#9B5B08',b:'rgba(196,122,26,.12)'};
     const responsavel=pendenciaValue(c);
-    const owner=responsavel?RPEND[responsavel].l:'Não definido';
+    const owner=responsavel?RPEND[responsavel].l:([c.respSM,c.resp].filter(Boolean).join(' · ')||'Não definido');
     const obs=String(c.obs||'').split(/\r?\n/)[0].trim();
-    const gmnExtra=normGMN(c.gmn)==='nao_feito'&&c.status!=='tudo_em_dia'
-      ?'<span class="pr-gmn-sub">GMN pendente</span>':'';
+    const lowProgress=low&&attentionOrder[c.status]!==undefined
+      ?'<span class="pr-att-meta">Pacote: '+(Number(c.feitos)||0)+' de '+(Number(c.pkg)||0)+' ('+(((Number(c.feitos)||0)/(Number(c.pkg)||1))*100).toLocaleString('pt-BR',{maximumFractionDigits:1})+'%)</span>':'';
     return '<tr>'
       +'<td><span class="pr-att-name">'+esc(c.name||'Cliente sem nome')+'</span></td>'
-      +'<td><span class="pr-pill" style="background:'+status.b+';color:'+status.c+'">'+status.l+'</span>'+gmnExtra+'</td>'
+      +'<td><span class="pr-pill" style="background:'+status.b+';color:'+status.c+'">'+status.l+'</span>'+lowProgress+'</td>'
       +'<td>'+esc(owner)+'</td>'
       +'<td>'+(obs?esc(obs):'<span style="color:#A39EAE">Sem observação registrada</span>')+'</td>'
     +'</tr>';
@@ -2205,7 +2218,7 @@ function exportPDF(){
       +'<div style="display:flex;justify-content:space-between;font-size:12px;color:#6B647A;margin-bottom:6px"><span>'+totFeitos+' publicados de '+totPkg+' contratados</span><span style="font-weight:500;color:#5B108F">'+pctFeitos+'%</span></div>'
       +'<div class="pr-pbar"><div class="pr-pfill" style="width:'+Math.min(pctFeitos,100)+'%"></div></div></div>'
     +'<div class="pr-sec">'
-      +'<div class="pr-attention-head"><div><div class="pr-sec-title">Clientes que precisam de <em>atenção</em></div><p class="pr-attention-note">Atrasados, com pendência, sem dados ou com GMN pendente. Cada cliente aparece uma única vez.</p></div>'
+      +'<div class="pr-attention-head"><div><div class="pr-sec-title">Atenção imediata</div><p class="pr-attention-note">Clientes atrasados ou com pendência, e clientes abaixo de 50% na contagem atual a partir do dia 15. Cada cliente aparece uma única vez.</p></div>'
       +'<span class="pr-attention-count">'+attentionClients.length+' de '+S.clients.length+' clientes</span></div>'
       +(attRows
         ?'<table class="pr-att-tbl"><thead><tr><th>Cliente</th><th>Situação</th><th>Responsável</th><th>Observação / próximo passo</th></tr></thead><tbody>'+attRows+'</tbody></table>'
