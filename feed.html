@@ -120,13 +120,12 @@ button{border-radius:99px;padding:0 24px}.x,.nav{border-radius:50%;padding:0}.ln
 <div id="app" style="display:none">
 <aside>
  <div class="s-logo"><div class="s-brand">MO<em>VE</em></div><div class="s-sub">Central Operacional</div></div>
- <div class="pc"><div class="pc-av" id="acc-av">M</div><div class="pc-i" id="quem"></div><a class="pc-bell" href="index.html#pendencias" aria-label="Ver pendências"><svg viewBox="0 0 24 24"><path d="M6 17V11a6 6 0 0 1 12 0v6l1.5 2h-15zM10 21h4"/></svg><i id="acc-dot"></i></a></div>
+ <div class="pc"><div class="pc-av" id="acc-av">M</div><div class="pc-i" id="quem"></div><a class="pc-bell" href="index.html#atrasados" aria-label="Ver clientes atrasados"><svg viewBox="0 0 24 24"><path d="M6 17V11a6 6 0 0 1 12 0v6l1.5 2h-15zM10 21h4"/></svg><i id="acc-dot"></i></a></div>
  <nav class="s-nav">
   <div class="s-sec">Operação</div>
   <a class="nb" href="index.html#dashboard"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg> Dashboard</a>
   <a class="nb" href="index.html#clientes"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.4-5.5 6.5-5.5s5.9 1.9 6.5 5.5"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.8c2 .7 3.2 2.4 3.5 5.2"/></svg> Clientes</a>
   <div class="s-sec">Acompanhamento</div>
-  <a class="nb" href="index.html#pendencias"><svg viewBox="0 0 24 24"><path d="M12 3.5 22 20H2z"/><path d="M12 10v4.5M12 17.4v.1"/></svg> Pendências</a>
   <a class="nb" href="index.html#relatorios"><svg viewBox="0 0 24 24"><path d="M6 3h8l5 5v13H6z"/><path d="M14 3v5h5M9.5 13h6M9.5 17h6"/></svg> Relatórios</a>
   <div class="s-sec">Conteúdo</div>
   <span class="nb on"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="9" cy="9" r="1.8"/><path d="m21 15-5-5L5 21"/></svg> MOVE Feed</span>
@@ -187,6 +186,8 @@ const firebaseConfig = {
   appId: "1:988960038443:web:1d28946abd5307974a146e"
 };
 /* ===== 2) DADOS DO CLOUDINARY ===== */
+/* Endereço do Worker de prévia (Cloudflare). Deixe vazio para usar o link direto da página. Ex.: "https://move-feed.SEU-USUARIO.workers.dev" */
+const SHARE_BASE = "";
 const CLD = { cloud:"bmcglaf1", preset:"move_feed_unsigned", maxImgMB:10, maxVidMB:100 };
 
 const app=initializeApp(firebaseConfig), auth=getAuth(app), db=getFirestore(app);
@@ -199,7 +200,7 @@ const nomeMes=m=>{const[a,b]=m.split("-");return new Date(a,b-1,1).toLocaleDateS
 onAuthStateChanged(auth,u=>{
  $("login").style.display=u?"none":"block";$("app").style.display=u?"grid":"none";
  if(u){$("quem").textContent=u.email||"";$("acc-av").textContent=((u.email||"M")[0]||"M").toUpperCase();
-  getDoc(doc(db,"app_state","current")).then(s=>{const dd=s.data()||{};const pend=(dd.contents||[]).filter(c=>["atrasado","sem_material","aguardando_aprovacao"].includes(c.status)).length+(dd.clients||[]).filter(c=>c.status==="sem_dados").length;$("acc-dot").style.display=pend>0?"block":"none";clientes=((s.data()||{}).clients||[]).slice().sort((a,b)=>String(a.name).localeCompare(String(b.name),"pt-BR"));
+  getDoc(doc(db,"app_state","current")).then(s=>{const dd=s.data()||{};const pend=(dd.clients||[]).filter(c=>c.status==="atrasado").length;$("acc-dot").style.display=pend>0?"block":"none";clientes=((s.data()||{}).clients||[]).slice().sort((a,b)=>String(a.name).localeCompare(String(b.name),"pt-BR"));
    $("nCli").innerHTML='<option value="">Selecione o cliente</option>'+clientes.map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join("")}).catch(()=>{$("nCli").innerHTML='<option value="">Não foi possível carregar os clientes</option>'});
   const ms=x=>{const t=x.updatedAt||x.createdAt||x.criadoEm;return t&&t.toMillis?t.toMillis():0};
   onSnapshot(collection(db,"feed_plans"),s=>{planos=s.docs.map(d=>{const x=d.data();return{id:d.id,...x,clienteNome:x.clientName||x.clienteNome||"Cliente",mes:x.period||x.mes||"2026-01",inicio:x.inicio||(x.period||x.mes||"2026-01")+"-01",fim:x.fim||fimMes(x.period||x.mes||"2026-01")}}).sort((a,b)=>ms(b)-ms(a));lista();
@@ -223,7 +224,7 @@ window.abrirPlano=id=>{cur=planos.find(p=>p.id===id);if(!cur)return;ulP&&ulP();O
   posts.forEach(p=>{if(!ulC[p.id])ulC[p.id]=onSnapshot(query(collection(db,"feed_plans",id,"posts",p.id,"comentarios"),orderBy("criadoEm")),c=>{
    const l=c.docs.map(x=>x.data()).filter(x=>x.tipo!=="comentario").pop();stat[p.id]=l?l.tipo:"";desenhar()})});desenhar()})};
 function cab(){$("tit").textContent=cur.clienteNome+" — "+per(cur);
- const l=cur.shareAtivo&&cur.shareToken?new URL("feed-cliente.html?t="+cur.shareToken,location.href).href:"";
+ const l=cur.shareAtivo&&cur.shareToken?(SHARE_BASE?SHARE_BASE.replace(/\/$/,"")+"/?t="+cur.shareToken:new URL("feed-cliente.html?t="+cur.shareToken,location.href).href):"";
  $("share").innerHTML=l?`<input readonly value="${l}" style="width:340px" onclick="this.select()"><button onclick="navigator.clipboard.writeText('${l}');this.textContent='Copiado!'">Copiar link</button><button class="sec" onclick="gerarLink()">Gerar novo link</button><button class="red" onclick="desativar()">Desativar link</button>`
   :`<button onclick="gerarLink()">Gerar link para o cliente</button>`;
  const ap=posts.filter(p=>stat[p.id]==="aprovado").length,aj=posts.filter(p=>stat[p.id]==="ajuste").length;

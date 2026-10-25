@@ -396,9 +396,10 @@ button,input,select,textarea{font-family:inherit}
 
 /* ══ PRINT — Relatório executivo no padrão MOVE ════════ */
 @media print{
+  @page{size:A4 portrait;margin:14mm 12mm 14mm}
   body{background:#fff!important;color:#030303!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-family:'Jost',system-ui,sans-serif}
   #app,#overlay,#cfm,#toast,#mob-bar,#sb-back{display:none!important}
-  #print-area{display:block!important;padding:22px 30px;font-family:'Jost',system-ui,sans-serif;color:#030303}
+  #print-area{display:block!important;padding:0;font-family:'Jost',system-ui,sans-serif;color:#030303}
   .pr-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid #5B108F}
   .pr-logo-m{font-family:'Cormorant Garamond',Georgia,serif;font-size:28px;font-weight:700;letter-spacing:.08em;color:#030303}
   .pr-logo-m span{color:#5B108F;font-style:italic}
@@ -423,12 +424,21 @@ button,input,select,textarea{font-family:inherit}
   table.pr-tbl tr{page-break-inside:avoid}
   .pr-pill{display:inline-block;padding:2px 8px;border-radius:99px;font-size:9px;font-weight:600;line-height:1.4;white-space:nowrap;letter-spacing:.02em}
   .pr-footer{margin-top:20px;padding-top:12px;border-top:1px solid #E4D9EB;font-size:9.5px;color:#6B647A;display:flex;justify-content:space-between;font-style:italic}
-  .pr-g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
-  .pr-insight{border:1px solid #E4D9EB;border-radius:10px;padding:14px}
-  .pr-insight h4{font-family:'Cormorant Garamond',Georgia,serif;font-size:15px;font-weight:600;margin-bottom:8px;color:#030303}
-  .pr-ir{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #EEE8F3;font-size:11px}
-  .pr-ir:last-child{border-bottom:none}
-  .pr-ir strong{color:#030303;font-weight:500}
+  .pr-attention-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:10px}
+  .pr-attention-head .pr-sec-title{margin-bottom:3px}
+  .pr-attention-note{font-size:10px;line-height:1.45;color:#6B647A;margin:0}
+  .pr-attention-count{flex:none;border:1px solid #F0D7AF;background:#FFF8EC;color:#9B5B08;border-radius:999px;padding:5px 10px;font-size:10px;font-weight:600}
+  table.pr-att-tbl{width:100%;border-collapse:collapse;font-size:9.5px;border:1px solid #E4D9EB;border-radius:8px;overflow:hidden}
+  table.pr-att-tbl th{background:#FBF8FC;padding:6px 8px;text-align:left;font-size:8px;font-weight:600;color:#6B647A;text-transform:uppercase;letter-spacing:.08em}
+  table.pr-att-tbl td{padding:6px 8px;border-top:1px solid #EEE8F3;color:#3B3141;vertical-align:top;line-height:1.35}
+  table.pr-att-tbl tr{page-break-inside:avoid;break-inside:avoid}
+  .pr-att-name{font-weight:600;color:#030303}
+  .pr-att-empty{padding:12px;border:1px solid #D9EEE4;border-radius:8px;background:#F4FBF7;color:#26734F;font-size:10px}
+  .pr-gmn-sub{display:block;margin-top:3px;color:#9B5B08;font-size:8px;font-weight:600}
+  .pr-detail-section{page-break-before:always;break-before:page}
+  .pr-detail-section .pr-sec-title{margin-bottom:10px}
+  table.pr-tbl thead{display:table-header-group}
+  table.pr-tbl tr{page-break-inside:avoid;break-inside:avoid}
 }
 
 /* ── Login Firebase + etapa inicial MOVE Feed ── */
@@ -505,11 +515,11 @@ body{background:radial-gradient(900px 600px at 8% 10%,rgba(208,132,255,.5),trans
 @keyframes syncp{50%{opacity:.3}}
 #mob-bar .sync-chip{width:auto;margin:0 0 0 auto;padding:6px 12px;background:rgba(255,255,255,.14);color:#fff;font-size:11px}
 /* campos editáveis: mais evidentes, maiores e com foco visível */
-.cell-edit{padding:6px 8px;margin:-6px -8px;min-height:32px}
+.cell-edit{padding:4px 8px;margin:-4px -8px}
 .cell-edit:hover,.obs-cell:hover{background:var(--violet-pale);box-shadow:inset 0 0 0 1px rgba(91,16,143,.25)}
 .cell-feitos .cell-edit{margin:0;padding:4px 6px;min-width:36px;text-align:center}
 .cell-feitos button{width:32px;height:32px}
-.ico{min-width:36px;min-height:36px;font-size:15px}.cell-edit .ico{min-width:30px;min-height:30px;padding:4px 6px}.modal-x{min-width:40px;min-height:40px}
+.ico{min-width:36px;min-height:36px;font-size:15px}.cell-edit .ico{min-width:0;min-height:0;padding:2px 6px}.modal-x{min-width:40px;min-height:40px}
 [role=button]:focus-visible,.ico:focus-visible,.cell-feitos button:focus-visible,.tag-pill:focus-visible,.gmn-pill:focus-visible,.sync-chip:focus-visible,.modal-x:focus-visible{outline:3px solid rgba(91,16,143,.55);outline-offset:2px}
 /* tabela de clientes: alinhamento no computador */
 @media(min-width:769px){
@@ -518,12 +528,10 @@ body{background:radial-gradient(900px 600px at 8% 10%,rgba(208,132,255,.5),trans
  #v-clientes .cli-tbl th:nth-child(n+3):nth-child(-n+10),#v-clientes .cli-tbl td:nth-child(n+3):nth-child(-n+10){text-align:center}
  #v-clientes .cli-tbl th:nth-child(12),#v-clientes .cli-tbl td:nth-child(12){text-align:center;padding-left:4px;padding-right:8px}
  #v-clientes .cli-tbl{--pw:132px;--ph:30px}
- #v-clientes .cli-tbl td{height:68px}
- #v-clientes .cli-tbl .cell-input{height:32px;box-sizing:border-box;padding:0 10px;margin:0}
- #v-clientes .cli-tbl .cell-feitos{width:var(--pw);height:var(--ph);padding:2px;justify-content:space-between}
+ #v-clientes .cli-tbl .cell-feitos{width:112px;height:var(--ph);padding:2px;justify-content:space-between}
  #v-clientes .cli-tbl .cell-feitos button{width:26px;height:26px;font-size:14px;min-height:0}
  #v-clientes .cli-tbl .cell-feitos .cell-edit{min-height:0;min-width:0;margin:0;padding:0 4px;font-size:13px;line-height:1}
- #v-clientes .cli-tbl .pkg-meter{width:var(--pw);max-width:100%;min-width:0;margin:6px auto 0}
+ #v-clientes .cli-tbl .pkg-meter{width:112px;max-width:100%;min-width:0;margin:6px auto 0}
  #v-clientes .cli-tbl .pkg-meter-top{font-size:10.5px}
  #v-clientes .cli-tbl .pkg-meter-bar{height:5px}
  #v-clientes .cli-tbl td:nth-child(5) .cell-edit{display:flex!important;flex-direction:column;align-items:center;gap:4px;min-width:0!important;margin:0;padding:0;min-height:0}
@@ -606,15 +614,14 @@ body{background:radial-gradient(900px 600px at 8% 10%,rgba(208,132,255,.5),trans
     <div class="s-brand">MO<span class="s-brand-mark">VE</span></div>
     <div class="s-sub">Central Operacional</div>
   </div>
-  <div class="pc"><div class="pc-av" id="acc-av">M</div><div class="pc-i" id="acc-email"></div><button class="pc-bell" id="acc-bell" type="button" aria-label="Ver pendências"><svg viewBox="0 0 24 24"><path d="M6 17V11a6 6 0 0 1 12 0v6l1.5 2h-15zM10 21h4"/></svg><i id="acc-dot"></i></button></div>
+  <div class="pc"><div class="pc-av" id="acc-av">M</div><div class="pc-i" id="acc-email"></div><button class="pc-bell" id="acc-bell" type="button" aria-label="Ver clientes atrasados ou com pendência"><svg viewBox="0 0 24 24"><path d="M6 17V11a6 6 0 0 1 12 0v6l1.5 2h-15zM10 21h4"/></svg><i id="acc-dot"></i></button></div>
   <button class="sync-chip" id="sync-chip" type="button" role="status" aria-live="polite" data-st="idle"><i></i><span>Aguardando login</span></button>
   <nav class="s-nav">
     <div class="s-sec">Operação</div>
     <button class="nb on" data-v="dashboard"><span class="nb-ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg></span>Dashboard</button>
     <button class="nb" data-v="clientes"><span class="nb-ico"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.4-5.5 6.5-5.5s5.9 1.9 6.5 5.5"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.8c2 .7 3.2 2.4 3.5 5.2"/></svg></span>Clientes<span class="nb-badge" id="nb-cli" style="display:none">0</span></button>
     <div class="s-sec">Acompanhamento</div>
-    <button class="nb" data-v="pendencias"><span class="nb-ico"><svg viewBox="0 0 24 24"><path d="M12 3.5 22 20H2z"/><path d="M12 10v4.5M12 17.4v.1"/></svg></span>Pendências<span class="nb-badge" id="nb-pend">0</span></button>
-    <button class="nb" data-v="relatorios"><span class="nb-ico"><svg viewBox="0 0 24 24"><path d="M6 3h8l5 5v13H6z"/><path d="M14 3v5h5M9.5 13h6M9.5 17h6"/></svg></span>Relatórios</button>
+        <button class="nb" data-v="relatorios"><span class="nb-ico"><svg viewBox="0 0 24 24"><path d="M6 3h8l5 5v13H6z"/><path d="M14 3v5h5M9.5 13h6M9.5 17h6"/></svg></span>Relatórios</button>
     <div class="s-sec">Conteúdo</div>
     <button class="nb" data-v="move-feed"><span class="nb-ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="9" cy="9" r="1.8"/><path d="m21 15-5-5L5 21"/></svg></span>MOVE Feed<span class="nb-badge" id="nb-feed" style="display:none" title="Comentários novos de clientes">0</span></button>
   </nav>
@@ -671,10 +678,7 @@ body{background:radial-gradient(900px 600px at 8% 10%,rgba(208,132,255,.5),trans
 </section>
 
 <!-- ═══ PENDÊNCIAS ═════════════════════════ -->
-<section class="view" id="v-pendencias">
-  <div class="ph"><div class="ph-l"><div class="pt">Central de <em>Pendências</em></div><div class="ps">Itens que precisam de ação imediata</div></div></div>
-  <div class="g2" id="pend-grid"></div>
-</section>
+
 
 <!-- ═══ RELATÓRIOS ═════════════════════════ -->
 <section class="view" id="v-relatorios">
@@ -1024,7 +1028,7 @@ async function startCloudStateListener(){
           if(active&&active.id==='v-clientes') renderClients();
           else if(active&&active.id==='v-conteudos') renderContents();
           else if(active&&active.id==='v-relatorios') renderRel();
-          else if(active&&active.id==='v-pendencias') renderPend();
+          
           updateBadges();
         }
       }
@@ -1098,7 +1102,7 @@ function updateBadges(){
   const atc=S.clients.filter(c=>c.status==='atrasado').length;
   function sb(id,v){ const el=document.getElementById(id); if(el){ el.textContent=v; el.style.display=v>0?'inline-flex':'none'; } }
   sb('nb-pend',pend); sb('nb-cnt',at); sb('nb-cli',atc);
-  window.__pend=pend; if(window.updDot) window.updDot();
+  window.__pend=atc; if(window.updDot) window.updDot();
   const mob=document.getElementById('mob-badge'); if(mob){ mob.textContent=pend; mob.style.display=pend>0?'inline-flex':'none'; }
 }
 
@@ -1370,24 +1374,25 @@ function renderDash(){
 
   // Atenção imediata: clientes atrasados, sem dados ou com GMN não feito
   const urgent=S.clients
-    .filter(c=>c.status==='atrasado'||c.status==='sem_dados'||normGMN(c.gmn)==='nao_feito')
+    .filter(c=>c.status==='atrasado'||c.status==='sem_dados'||normGMN(c.gmn)==='nao_feito'||c.status==='alguma_pendencia')
     .sort((a,b)=>{
-      const sev=c=>c.status==='atrasado'?0:c.status==='sem_dados'?1:2;
+      const sev=c=>c.status==='atrasado'?0:c.status==='sem_dados'?1:normGMN(c.gmn)==='nao_feito'?2:3;
       return sev(a)-sev(b);
     });
   document.getElementById('d-urgent').innerHTML=!urgent.length
     ?'<div class="empty">✓ Nenhuma urgência agora!</div>'
-    :urgent.slice(0,6).map(c=>{
+    :urgent.slice(0,8).map(c=>{
       let tag,tcol,tbg;
       if(c.status==='atrasado'){ tag='Atrasado'; tcol='var(--er)'; tbg='var(--erb)'; }
       else if(c.status==='sem_dados'){ tag='Sem dados'; tcol='var(--wa)'; tbg='var(--wab)'; }
-      else { tag='GMN pendente'; tcol='var(--in)'; tbg='var(--inb)'; }
+      else if(normGMN(c.gmn)==='nao_feito'){ tag='GMN pendente'; tcol='var(--in)'; tbg='var(--inb)'; }
+      else { tag='Pendência'; tcol='#C47A1A'; tbg='rgba(196,122,26,.10)'; }
       const fal=Math.max((c.pkg||0)-(c.feitos||0),0);
-      const sub=(c.respSM?'SM '+esc(c.respSM)+' · ':'')+esc(c.resp||'sem responsável')+(fal>0?' · faltam '+fal:'');
+      const sub=(c.respSM?'SM '+esc(c.respSM)+' · ':'')+esc(c.resp||'sem responsável')+(fal>0?' · faltam '+fal:'')+(c.status==='alguma_pendencia'&&c.obs?' · '+esc(c.obs.split('\n')[0].slice(0,60)):'');
       return '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-radius:var(--r-sm);background:'+tbg+';margin-bottom:8px;border:1px solid '+tcol+'33">'
         +'<div><div style="font-size:13.5px;font-weight:500;color:var(--t)">'+esc(c.name)+'</div><div style="font-size:11.5px;color:var(--tm);margin-top:3px">'+sub+'</div></div>'
         +'<span class="badge" style="background:'+tbg+';color:'+tcol+';font-weight:600">'+tag+'</span></div>';
-    }).join('');
+    }).join('')+(urgent.length>8?'<div style="text-align:center;margin-top:10px"><button class="btn-sm" type="button" data-go="alguma_pendencia">Ver todas as pendências ('+urgent.length+') →</button></div>':'');
 
   // Barras: todos os clientes ordenados pela quantidade faltante (decrescente)
   const statusColors={atrasado:'#D92D20',alguma_pendencia:'#D98A1F',sem_dados:'#EAB308',tudo_em_dia:'#20A36A'};
@@ -1683,25 +1688,6 @@ function renderKanban(){
 /* ════════════════════════════════════════════
    RENDER — PENDÊNCIAS
 ════════════════════════════════════════════ */
-function renderPend(){
-  const secs=[
-    {t:'Clientes Atrasados',   c:'var(--er)',cHex:'#C0392B',items:S.clients.filter(c=>c.status==='atrasado'),       fn:c=>[c.name,(c.respSM?'SM '+c.respSM+' · ':'')+(c.resp||'sem responsável')+(c.last?' · Último: '+c.last:''),(c.pkg>0?(c.pkg-c.feitos)+' faltam':'pendente')]},
-    {t:'Alguma Pendência',     c:'var(--wa)',cHex:'#C47A1A',items:S.clients.filter(c=>c.status==='alguma_pendencia'),fn:c=>[c.name,(c.resp||'sem responsável')+(c.obs?' · '+(c.obs.split('\n')[0].slice(0,60)):''),'Acompanhar']},
-    {t:'Sem Dados',            c:'#A86CC9',cHex:'#A86CC9',items:S.clients.filter(c=>c.status==='sem_dados'),         fn:c=>[c.name,'Último: '+(c.last||'—')+' · '+(c.resp||'sem responsável'),'Sem retorno']},
-    {t:'GMN Não Feito',        c:'var(--in)',cHex:'#5D6BE0',items:S.clients.filter(c=>normGMN(c.gmn)==='nao_feito'), fn:c=>[c.name,(c.resp||'sem responsável')+(c.respSM?' · SM '+c.respSM:''),'Fazer GMN']},
-  ];
-  document.getElementById('pend-grid').innerHTML=secs.map(s=>{
-    return '<div class="pcard">'
-      +'<div class="pc-head"><div class="pc-dot" style="background:'+s.c+'"></div><span class="pc-title">'+s.t+'</span><span class="pc-cnt" style="background:'+s.cHex+'18;color:'+s.c+'">'+s.items.length+'</span></div>'
-      +(!s.items.length?'<div class="empty" style="padding:14px 0;font-style:italic">✓ Nenhum item aqui</div>'
-        :s.items.map(it=>{ const [m,sb,tg]=s.fn(it);
-          return '<div class="pitem" style="background:'+s.cHex+'08;border-left-color:'+s.c+'">'
-            +'<div><div class="pitem-main">'+esc(m)+'</div><div class="pitem-sub">'+esc(sb)+'</div></div>'
-            +'<div class="pitem-tag" style="color:'+s.c+'">'+esc(tg)+'</div></div>';
-        }).join(''))
-      +'</div>';
-  }).join('');
-}
 
 /* ════════════════════════════════════════════
    RENDER — RELATÓRIOS
@@ -2149,17 +2135,38 @@ function exportPDF(){
   const ds=now.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
   const tot=S.clients.length||1;
   const emDia=S.clients.filter(c=>c.status==='tudo_em_dia').length;
-  const cliPend=S.clients.filter(c=>c.status==='alguma_pendencia').length;
   const cliAtras=S.clients.filter(c=>c.status==='atrasado').length;
-  const cliSem=S.clients.filter(c=>c.status==='sem_dados').length;
   const gmnFeito=S.clients.filter(c=>normGMN(c.gmn)==='feito').length;
-  const gmnNaoFeito=S.clients.filter(c=>normGMN(c.gmn)==='nao_feito').length;
   const pctEmDia=Math.round(emDia/tot*100);
   const totFeitos=S.clients.reduce((s,c)=>s+(c.feitos||0),0);
   const totPkg=S.clients.reduce((s,c)=>s+(c.pkg||0),0);
   const pctFeitos=totPkg>0?Math.round(totFeitos/totPkg*100):0;
-  const atCli=S.clients.filter(c=>c.status==='atrasado').map(c=>c.name).join(', ')||'Nenhum';
-  const semCli=S.clients.filter(c=>c.status==='sem_dados').map(c=>c.name).join(', ')||'Nenhum';
+
+  const attentionOrder={atrasado:0,alguma_pendencia:1,sem_dados:2};
+  const attentionClients=S.clients
+    .filter(c=>['atrasado','alguma_pendencia','sem_dados'].includes(c.status)||normGMN(c.gmn)==='nao_feito')
+    .slice()
+    .sort((a,b)=>{
+      const pa=attentionOrder[a.status]??3;
+      const pb=attentionOrder[b.status]??3;
+      return pa-pb||String(a.name||'').localeCompare(String(b.name||''),'pt-BR');
+    });
+  const attRows=attentionClients.map(c=>{
+    const status=attentionOrder[c.status]!==undefined
+      ?{...SC[c.status]}
+      :{l:'GMN pendente',c:'#9B5B08',b:'rgba(196,122,26,.12)'};
+    const responsavel=pendenciaValue(c);
+    const owner=responsavel?RPEND[responsavel].l:'Não definido';
+    const obs=String(c.obs||'').split(/\r?\n/)[0].trim();
+    const gmnExtra=normGMN(c.gmn)==='nao_feito'&&c.status!=='tudo_em_dia'
+      ?'<span class="pr-gmn-sub">GMN pendente</span>':'';
+    return '<tr>'
+      +'<td><span class="pr-att-name">'+esc(c.name||'Cliente sem nome')+'</span></td>'
+      +'<td><span class="pr-pill" style="background:'+status.b+';color:'+status.c+'">'+status.l+'</span>'+gmnExtra+'</td>'
+      +'<td>'+esc(owner)+'</td>'
+      +'<td>'+(obs?esc(obs):'<span style="color:#A39EAE">Sem observação registrada</span>')+'</td>'
+    +'</tr>';
+  }).join('');
 
   const cliRows=S.clients.map(c=>{
     const sc=SC[c.status]||{l:c.status,c:'#6B647A',b:'rgba(107,100,122,.1)'};
@@ -2183,7 +2190,8 @@ function exportPDF(){
   }).join('');
 
   document.getElementById('print-area').innerHTML=
-    '<div class="pr-hdr">'
+    '<div class="pr-page-summary">'
+    +'<div class="pr-hdr">'
       +'<div class="pr-brand-info"><div class="pr-logo-m">MO<span>VE</span></div><div class="pr-sub-l">Central Operacional</div></div>'
       +'<div><div class="pr-title">Relatório <em>Executivo</em></div><div class="pr-subtitle">Gerado em '+ds+'</div></div>'
     +'</div>'
@@ -2196,21 +2204,16 @@ function exportPDF(){
     +'<div class="pr-sec"><div class="pr-sec-title">Volume de <em>publicações</em></div>'
       +'<div style="display:flex;justify-content:space-between;font-size:12px;color:#6B647A;margin-bottom:6px"><span>'+totFeitos+' publicados de '+totPkg+' contratados</span><span style="font-weight:500;color:#5B108F">'+pctFeitos+'%</span></div>'
       +'<div class="pr-pbar"><div class="pr-pfill" style="width:'+Math.min(pctFeitos,100)+'%"></div></div></div>'
-    +'<div class="pr-g2">'
-      +'<div class="pr-insight"><h4>Pontos de <em>atenção</em></h4>'
-        +'<div class="pr-ir"><span>Clientes atrasados</span><strong>'+cliAtras+'</strong></div>'
-        +'<div class="pr-ir"><span>Lista de atrasados</span><strong style="font-size:11px">'+esc(atCli)+'</strong></div>'
-        +'<div class="pr-ir"><span>Sem dados / retorno</span><strong>'+cliSem+'</strong></div>'
-        +'<div class="pr-ir"><span>GMN pendente</span><strong>'+gmnNaoFeito+'</strong></div>'
-      +'</div>'
-      +'<div class="pr-insight"><h4>Resumo <em>geral</em></h4>'
-        +'<div class="pr-ir"><span>Clientes em dia</span><strong>'+emDia+'</strong></div>'
-        +'<div class="pr-ir"><span>Alguma pendência</span><strong>'+cliPend+'</strong></div>'
-        +'<div class="pr-ir"><span>GMN feitos no mês</span><strong>'+gmnFeito+'</strong></div>'
-        +'<div class="pr-ir"><span>Total de publicações</span><strong>'+totFeitos+'</strong></div>'
-      +'</div>'
+    +'<div class="pr-sec">'
+      +'<div class="pr-attention-head"><div><div class="pr-sec-title">Clientes que precisam de <em>atenção</em></div><p class="pr-attention-note">Atrasados, com pendência, sem dados ou com GMN pendente. Cada cliente aparece uma única vez.</p></div>'
+      +'<span class="pr-attention-count">'+attentionClients.length+' de '+S.clients.length+' clientes</span></div>'
+      +(attRows
+        ?'<table class="pr-att-tbl"><thead><tr><th>Cliente</th><th>Situação</th><th>Responsável</th><th>Observação / próximo passo</th></tr></thead><tbody>'+attRows+'</tbody></table>'
+        :'<div class="pr-att-empty">Nenhum cliente requer atenção neste momento.</div>')
     +'</div>'
-    +'<div class="pr-sec"><div class="pr-sec-title">Resumo por <em>cliente</em></div>'
+    +'</div>'
+    +'<div class="pr-detail-section">'
+    +'<div class="pr-sec"><div class="pr-sec-title">Resumo completo por <em>cliente</em></div>'
       +'<table class="pr-tbl"><thead><tr><th>Cliente</th><th style="text-align:center">Pacote</th><th style="text-align:center">Faltam</th><th>Situação</th><th>Responsável</th><th>GMN</th><th>Comentários</th></tr></thead><tbody>'+cliRows+'</tbody></table>'
     +'</div>'
     +'<div class="pr-footer"><span>MOVE Marketing — Central Operacional</span><span>'+ds+'</span></div>';
@@ -2312,7 +2315,7 @@ async function pullExportLogsCloud(){
 /* ════════════════════════════════════════════
    NAVIGATION
 ════════════════════════════════════════════ */
-const REND={dashboard:renderDash,clientes:renderClients,pendencias:renderPend,relatorios:renderRel};
+const REND={dashboard:renderDash,clientes:renderClients,relatorios:renderRel};
 function navigate(v){
   document.querySelectorAll('.view').forEach(e=>e.classList.remove('on'));
   document.querySelectorAll('.nb').forEach(e=>e.classList.remove('on'));
@@ -2339,7 +2342,7 @@ document.addEventListener('click',e=>{
   const t=e.target;
 
   // Sidebar nav
-  if(t.closest('#acc-bell')){ if((window.__pend||0)===0&&(window.__feedNovos||0)>0){ location.href='feed.html'; } else navigate('pendencias'); return; }
+  if(t.closest('#acc-bell')){ if((window.__pend||0)>0){ S.cliFilter='atrasado'; navigate('clientes'); } else if((window.__feedNovos||0)>0){ location.href='feed.html'; } else { S.cliFilter='alguma_pendencia'; navigate('clientes'); } return; }
   const nb=t.closest('.nb'); if(nb&&nb.dataset.v){ if(nb.dataset.v==='move-feed'){ location.href='feed.html'; return; } navigate(nb.dataset.v); return; }
 
   // A sessão da equipe usa Firebase Authentication.
@@ -2538,7 +2541,7 @@ document.getElementById('login-reset').addEventListener('click',async()=>{
   catch(err){ error.style.color='var(--er)'; error.textContent='Não foi possível enviar o e-mail agora. Tente novamente.'; }
 });
 
-(function(){ var h=(location.hash||'').slice(1); if(['dashboard','clientes','pendencias','relatorios'].indexOf(h)<0) return; var n=0; var iv=setInterval(function(){ n++; var b=document.body.classList; if(b.contains('auth-pending')&&n<60) return; clearInterval(iv); if(!b.contains('auth-logged-out')&&typeof navigate==='function') navigate(h); },150); })();
+(function(){ var h=(location.hash||'').slice(1); if(['dashboard','clientes','pendencias','atrasados','relatorios'].indexOf(h)<0) return; var n=0; var iv=setInterval(function(){ n++; var b=document.body.classList; if(b.contains('auth-pending')&&n<60) return; clearInterval(iv); if(!b.contains('auth-logged-out')&&typeof navigate==='function') if(h==='pendencias'){ S.cliFilter='alguma_pendencia'; h='clientes'; } else if(h==='atrasados'){ S.cliFilter='atrasado'; h='clientes'; } navigate(h); },150); })();
 </script>
 </body>
 </html>
