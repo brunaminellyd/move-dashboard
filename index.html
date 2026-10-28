@@ -4,9 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>MOVE Marketing — Central Operacional</title>
-<link rel="icon" type="image/png" href="./favicon-move.png?v=2">
+<link rel="icon" type="image/png" href="./assets/brand/favicon-move.png?v=4">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Jost:wght@300;400;500;600&display=swap');
 /* ── MOVE Brand Identity ── */
 :root{
   /* Violetas — paleta MOVE */
@@ -37,8 +36,8 @@
   --in:#5D6BE0;  --inb:rgba(93,107,224,.10);
   --or:#D97706;  --orb:rgba(217,119,6,.10);
   /* Fontes */
-  --font-d:'Cormorant Garamond',Georgia,serif;
-  --font-b:'Jost',system-ui,sans-serif;
+  --font-d:'Nexa',Georgia,serif;
+  --font-b:'Nexa',system-ui,sans-serif;
   /* Forma e movimento */
   --r:12px; --r-sm:8px;
   --tr:all 0.28s cubic-bezier(.4,0,.2,1);
@@ -397,23 +396,23 @@ button,input,select,textarea{font-family:inherit}
 /* ══ PRINT — Relatório executivo no padrão MOVE ════════ */
 @media print{
   @page{size:A4 portrait;margin:14mm 12mm 14mm}
-  body{background:#fff!important;color:#030303!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-family:'Jost',system-ui,sans-serif}
+  body{background:#fff!important;color:#030303!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-family:'Nexa',system-ui,sans-serif}
   #app,#overlay,#cfm,#toast,#mob-bar,#sb-back{display:none!important}
-  #print-area{display:block!important;padding:0;font-family:'Jost',system-ui,sans-serif;color:#030303}
+  #print-area{display:block!important;padding:0;font-family:'Nexa',system-ui,sans-serif;color:#030303}
   .pr-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid #5B108F}
-  .pr-logo-m{font-family:'Cormorant Garamond',Georgia,serif;font-size:28px;font-weight:700;letter-spacing:.08em;color:#030303}
+  .pr-logo-m{font-family:'Nexa',Georgia,serif;font-size:28px;font-weight:700;letter-spacing:.08em;color:#030303}
   .pr-logo-m span{color:#5B108F;font-style:italic}
   .pr-brand-info{display:flex;flex-direction:column;gap:2px}
   .pr-sub-l{font-size:9px;color:#6B647A;letter-spacing:.14em;text-transform:uppercase;font-weight:500}
-  .pr-title{font-family:'Cormorant Garamond',Georgia,serif;font-size:24px;font-weight:600;color:#030303;text-align:right;line-height:1.15}
+  .pr-title{font-family:'Nexa',Georgia,serif;font-size:24px;font-weight:600;color:#030303;text-align:right;line-height:1.15}
   .pr-title em{font-style:italic;color:#5B108F}
   .pr-subtitle{font-size:11px;color:#6B647A;text-align:right;margin-top:3px}
   .pr-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
   .pr-stat{border:1px solid #E4D9EB;border-radius:10px;padding:12px 12px;text-align:center;background:#F1F1F1}
-  .pr-stat-n{font-family:'Cormorant Garamond',Georgia,serif;font-size:32px;font-weight:600;color:#5B108F;line-height:1}
+  .pr-stat-n{font-family:'Nexa',Georgia,serif;font-size:32px;font-weight:600;color:#5B108F;line-height:1}
   .pr-stat-l{font-size:10px;color:#6B647A;margin-top:4px;font-weight:500;letter-spacing:.02em}
   .pr-sec{margin-bottom:16px}
-  .pr-sec-title{font-family:'Cormorant Garamond',Georgia,serif;font-size:17px;font-weight:600;color:#030303;padding-left:10px;border-left:3px solid #5B108F;margin-bottom:10px;line-height:1.2;page-break-after:avoid;break-after:avoid}
+  .pr-sec-title{font-family:'Nexa',Georgia,serif;font-size:17px;font-weight:600;color:#030303;padding-left:10px;border-left:3px solid #5B108F;margin-bottom:10px;line-height:1.2;page-break-after:avoid;break-after:avoid}
   .pr-sec-title em{font-style:italic;color:#5B108F}
   .pr-pbar{background:#F7EBFF;border-radius:99px;height:8px;overflow:hidden;margin:6px 0}
   .pr-pfill{height:100%;background:linear-gradient(90deg,#5B108F,#D084FF);border-radius:99px}
@@ -573,11 +572,34 @@ body{background:radial-gradient(900px 600px at 8% 10%,rgba(208,132,255,.5),trans
  .cell-edit{margin:0;padding:6px 8px}
 }
 </style>
+  <link rel="stylesheet" href="./assets/brand/move-brand.css?v=3">
+  <link rel="stylesheet" href="./assets/brand/move-ui.css?v=1">
+  <style id="dashboard-layout-tuning">
+    /* Mantido aqui para que a leitura do Dashboard não dependa do cache do CSS compartilhado. */
+    .move-index #v-dashboard.view.on{
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+    }
+    .move-index #v-dashboard > .ph,
+    .move-index #v-dashboard > .mg,
+    .move-index #v-dashboard > .dash-charts,
+    .move-index #v-dashboard > .card{margin:0!important}
+    .move-index #v-dashboard > .dash-charts{
+      grid-template-columns:minmax(0,2fr) minmax(320px,1fr)!important;
+      gap:16px!important;
+      align-items:start!important;
+    }
+    .move-index #v-dashboard > .dash-charts .card{min-width:0}
+    .move-index #v-dashboard > .dash-charts .card > div:last-child{flex:none!important}
+    .move-index #v-dashboard > .dash-charts .card:last-child{align-self:start}
+    @media(max-width:768px){.move-index #v-dashboard.view.on{gap:12px}}
+  </style>
 </head>
-<body class="auth-pending">
+<body class="auth-pending move-index">
 <div id="auth-gate" aria-live="polite">
   <div class="auth-card" id="auth-card">
-    <div class="auth-brand">MO<span>VE</span></div>
+    <img class="brand-image brand-image-auth" src="./assets/brand/move-logo.png" alt="MOVE Marketing">
     <div class="auth-subtitle">Central Operacional · acesso da equipe</div>
     <div id="auth-wait" class="auth-wait">Verificando acesso…</div>
     <form id="login-form" style="display:none">
@@ -595,7 +617,7 @@ body{background:radial-gradient(900px 600px at 8% 10%,rgba(208,132,255,.5),trans
 
 <!-- Mobile bar -->
 <header id="mob-bar">
-  <div class="mob-brand">MO<span>VE</span></div>
+  <img class="brand-image brand-image-mobile" src="./assets/brand/move-logo.png" alt="MOVE Marketing">
   <button class="sync-chip" id="sync-mob" type="button" role="status" aria-live="polite" data-st="idle"><i></i><span>Aguardando login</span></button>
   <div style="display:flex;align-items:center;gap:10px">
     <span id="mob-badge" style="display:none;background:rgba(192,57,43,.22);color:#FF9B91;font-size:11px;font-weight:600;padding:3px 9px;border-radius:99px"></span>
@@ -612,7 +634,7 @@ body{background:radial-gradient(900px 600px at 8% 10%,rgba(208,132,255,.5),trans
 <!-- SIDEBAR -->
 <aside id="sidebar">
   <div class="s-logo">
-    <div class="s-brand">MO<span class="s-brand-mark">VE</span></div>
+    <img class="brand-image brand-image-sidebar" src="./assets/brand/move-logo.png" alt="MOVE Marketing">
     <div class="s-sub">Central Operacional</div>
   </div>
   <div class="pc"><div class="pc-av" id="acc-av">M</div><div class="pc-i" id="acc-email"></div><button class="pc-bell" id="acc-bell" type="button" aria-label="Ver clientes atrasados ou com pendência"><svg viewBox="0 0 24 24"><path d="M6 17V11a6 6 0 0 1 12 0v6l1.5 2h-15zM10 21h4"/></svg><i id="acc-dot"></i></button></div>
@@ -639,6 +661,11 @@ body{background:radial-gradient(900px 600px at 8% 10%,rgba(208,132,255,.5),trans
   </div>
   <div class="mg" id="m1"></div>
   <div class="mg" id="m2"></div>
+  <div class="card">
+    <div class="card-h">Atenção <em style="font-family:var(--font-d);font-style:italic;color:var(--violet)">imediata</em></div>
+    <div class="card-sub">Atrasados, pendências e abaixo de 50% na contagem atual após o dia 15</div>
+    <div id="d-urgent"></div>
+  </div>
   <div class="dash-charts">
     <div class="card">
       <div class="card-h">Pendências por <em style="font-family:var(--font-d);font-style:italic;color:var(--violet)">cliente</em></div>
@@ -650,11 +677,6 @@ body{background:radial-gradient(900px 600px at 8% 10%,rgba(208,132,255,.5),trans
       <div class="card-sub">Distribuição dos clientes</div>
       <div id="ch-donut"></div>
     </div>
-  </div>
-  <div class="card">
-    <div class="card-h">Atenção <em style="font-family:var(--font-d);font-style:italic;color:var(--violet)">imediata</em></div>
-    <div class="card-sub">Atrasados, pendências e abaixo de 50% na contagem atual após o dia 15</div>
-    <div id="d-urgent"></div>
   </div>
 </section>
 
@@ -1257,7 +1279,7 @@ function svgArea(id,data){
   const yA=data.map(d=>PT+h-(d.ag/mx)*h);
   const ln=ys=>ys.map((y,i)=>(i?'L':'M')+xs[i].toFixed(1)+' '+y.toFixed(1)).join(' ');
   const ar=ys=>ln(ys)+' L'+xs[n-1].toFixed(1)+' '+(PT+h)+' L'+xs[0].toFixed(1)+' '+(PT+h)+' Z';
-  let s='<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="overflow:visible;font-family:Jost,system-ui,sans-serif">'
+  let s='<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="overflow:visible;font-family:Nexa,system-ui,sans-serif">'
     +'<defs>'
     +'<linearGradient id="gP" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stop-color="#5B108F" stop-opacity=".32"/><stop offset="95%" stop-color="#5B108F" stop-opacity="0"/></linearGradient>'
     +'<linearGradient id="gA" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stop-color="#D084FF" stop-opacity=".18"/><stop offset="95%" stop-color="#D084FF" stop-opacity="0"/></linearGradient>'
@@ -1289,8 +1311,8 @@ function svgDonut(id,data){
     lg+='<div class="lr"><i class="sq" style="background:'+d.c+'"></i><span>'+d.l+'</span><b>'+d.v+'</b></div>';
   });
   const s='<div class="stw"><svg class="ring" viewBox="0 0 200 140"><rect x="10" y="10" width="180" height="120" rx="48" fill="none" stroke="rgba(91,16,143,.08)" stroke-width="16"/>'+seg+
-    '<text x="100" y="82" text-anchor="middle" font-family="Cormorant Garamond,Georgia,serif" font-style="italic" font-weight="600" font-size="44" fill="#5B108F">'+tot+'</text>'+
-    '<text x="100" y="104" text-anchor="middle" font-family="Jost,system-ui,sans-serif" font-size="14" fill="#6B647A">total</text></svg><div class="lgv">'+lg+'</div></div>';
+    '<text x="100" y="82" text-anchor="middle" font-family="Nexa,system-ui,sans-serif" font-style="italic" font-weight="600" font-size="44" fill="#5B108F">'+tot+'</text>'+
+    '<text x="100" y="104" text-anchor="middle" font-family="Nexa,system-ui,sans-serif" font-size="14" fill="#6B647A">total</text></svg><div class="lgv">'+lg+'</div></div>';
   const el=document.getElementById(id); if(el) el.innerHTML=s;
 }
 function svgBar(id,data,col){
@@ -1300,7 +1322,7 @@ function svgBar(id,data,col){
   const barX=PL+labelW+8;
   const barW=W-PR-valW-8-barX;
   const mx=Math.max(...data.map(d=>d.v),1);
-  let s='<svg viewBox="0 0 '+W+' '+H+'" width="100%" preserveAspectRatio="xMinYMin meet" style="font-family:Jost,system-ui,sans-serif">';
+  let s='<svg viewBox="0 0 '+W+' '+H+'" width="100%" preserveAspectRatio="xMinYMin meet" style="font-family:Nexa,system-ui,sans-serif">';
   s+='<defs><linearGradient id="mvbar" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#5B108F"/><stop offset="1" stop-color="#D084FF"/></linearGradient></defs>';
   // Eixo X de referência (linhas verticais 25/50/75/100%)
   [0.25,0.5,0.75,1].forEach(p=>{
@@ -1320,7 +1342,7 @@ function svgBar(id,data,col){
     // Trilha de fundo da barra
     s+='<rect x="'+barX.toFixed(1)+'" y="'+(ymid-bh/2).toFixed(1)+'" width="'+barW.toFixed(1)+'" height="'+bh+'" rx="7" fill="#F7EBFF"/>';
     // Barra colorida
-    if(bw>0) s+='<rect x="'+barX.toFixed(1)+'" y="'+(ymid-bh/2).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+bh+'" rx="7" fill="'+(col?'url(#mvbar)':c)+'"/>';
+    if(bw>0) s+='<rect x="'+barX.toFixed(1)+'" y="'+(ymid-bh/2).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+bh+'" rx="7" fill="'+c+'"/>';
     // Valor à direita
     s+='<text x="'+(W-PR).toFixed(1)+'" y="'+(ymid+4).toFixed(1)+'" font-size="13" fill="#030303" font-weight="600" text-anchor="end">'+d.v+'</text>';
     if(d.statusColor) s+='<circle cx="'+(barX+barW+8).toFixed(1)+'" cy="'+ymid.toFixed(1)+'" r="4" fill="'+d.statusColor+'"/>';
@@ -2205,7 +2227,7 @@ function exportPDF(){
   document.getElementById('print-area').innerHTML=
     '<div class="pr-page-summary">'
     +'<div class="pr-hdr">'
-      +'<div class="pr-brand-info"><div class="pr-logo-m">MO<span>VE</span></div><div class="pr-sub-l">Central Operacional</div></div>'
+      +'<div class="pr-brand-info"><img class="pr-logo-image" src="./assets/brand/move-logo.png" alt="MOVE Marketing"><div class="pr-sub-l">Central Operacional</div></div>'
       +'<div><div class="pr-title">Relatório <em>Executivo</em></div><div class="pr-subtitle">Gerado em '+ds+'</div></div>'
     +'</div>'
     +'<div class="pr-stats">'
@@ -2556,5 +2578,6 @@ document.getElementById('login-reset').addEventListener('click',async()=>{
 
 (function(){ var h=(location.hash||'').slice(1); if(['dashboard','clientes','pendencias','atrasados','relatorios'].indexOf(h)<0) return; var n=0; var iv=setInterval(function(){ n++; var b=document.body.classList; if(b.contains('auth-pending')&&n<60) return; clearInterval(iv); if(!b.contains('auth-logged-out')&&typeof navigate==='function') if(h==='pendencias'){ S.cliFilter='alguma_pendencia'; h='clientes'; } else if(h==='atrasados'){ S.cliFilter='atrasado'; h='clientes'; } navigate(h); },150); })();
 </script>
+<script src="./assets/brand/move-ui.js?v=1"></script>
 </body>
 </html>

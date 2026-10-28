@@ -1,0 +1,65 @@
+/* MOVE UI — camada final: leve, neutra e consistente. Carregar depois de move-brand.css */
+
+/* 1. Ritmo único de espaçamento */
+:root{--gap:16px;--ok:#1E7F5C;--warn:#B26A12;--er:#B3261E}
+@media(max-width:768px){:root{--gap:12px}}
+.mg,.dash-charts{gap:var(--gap)!important;margin:0!important}
+.move-index #v-dashboard.view.on{gap:var(--gap)!important}
+.ph{margin-bottom:var(--gap)!important}
+.card{padding:clamp(16px,1.1vw + 9px,24px)!important}
+
+/* 4. Tipografia: títulos mais fechados, apoio mais leve, números estáveis */
+body{font-size:clamp(14px,.12vw + 13.4px,15.5px)}
+.ph-l .pt{font-size:clamp(24px,1.1vw + 17px,34px)!important;letter-spacing:-.02em!important}
+.modal-title,.card-h{letter-spacing:-.015em}
+.card-sub,.mc-s,.ps,.s-sub,.empty{font-weight:300!important;color:#726B78!important}
+.mc-l{font-weight:500!important;letter-spacing:.08em}
+.mc-v{font-size:clamp(28px,.8vw + 22px,36px)!important;font-weight:400!important;letter-spacing:-.02em}
+.mc-v,.tbl td,.tbl th,.pkg-meter,.cell-feitos,.lr b,.nb-badge,.sync-chip{font-variant-numeric:tabular-nums}
+.tbl{font-size:clamp(12.5px,.15vw + 12px,14px)}
+.s-sec{font-weight:500!important;letter-spacing:.1em!important}
+.nb.on{font-weight:500!important}
+.btn,.btn-sm{font-weight:500!important}
+
+/* 8. Menos efeito decorativo: superfícies planas, lilás só para identidade e ação */
+#overlay,#cfm,#sb-back{background:rgba(23,19,26,.45)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+.pill-group{background:#fff!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+#auth-gate{background:#F1F1F1!important}
+.pc-av,.av{background:#F0E5F7!important;color:#5B108F!important;font-family:"Nexa",system-ui,sans-serif!important;font-weight:700!important}
+.pfill,.pkg-meter-fill,.pr-pfill{background:#5B108F!important}
+.pkg-meter-fill.over{background:#B3261E!important}
+.stw .ring{width:min(46%,240px)!important}.stw{justify-content:flex-start!important;gap:clamp(16px,2vw,32px)!important}
+.lr{font-size:15px!important}.lr b{font-size:19px!important;font-weight:500!important}
+@media(max-width:768px){#sidebar{background:#FAF9FB!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;box-shadow:0 8px 28px rgba(24,18,30,.18)!important}}
+@media print{.pr-pfill{background:#5B108F!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+
+/* 5 e 10. Resposta imediata ao toque, com movimento curto */
+button,.btn,.btn-sm,.ftab,.vtog,.nb,.ico,.pc-bell,.sync-chip,.cell-edit,.tag-pill,.gmn-pill,.modal-x,.pl,.rc,.cell{transition:transform .1s ease,background-color .12s ease,color .12s ease,border-color .12s ease,box-shadow .12s ease!important}
+button:active,.btn:active,.btn-sm:active,.ftab:active,.vtog:active,.nb:active,.ico:active,.pc-bell:active,.modal-x:active,.cell-feitos button:active,.rc:active{transform:scale(.97)!important}
+.btn-p:active{background:#340759!important}
+.nb:active{background:#E6D6F2!important}
+.cell-edit:active,.tag-pill:active,.gmn-pill:active{transform:scale(.98)!important;background:#F0E5F7!important}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.view.on{animation:fadeIn .12s ease!important}
+.card,.mc,.cell,.rc{animation:none!important}
+.mc[data-go]:hover,.card:hover{transform:none!important}
+
+/* 6. Estados de operação com o mesmo sinal visual */
+#toast{border-radius:12px!important;box-shadow:0 6px 20px rgba(24,18,30,.12)!important}
+#toast::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:currentColor;margin-right:10px;vertical-align:middle}
+#toast.ok{color:var(--ok);background:#F0F8F4}#toast.wa{color:var(--warn);background:#FBF5EC}#toast.er{color:var(--er);background:#FDF0EF}
+[aria-busy="true"]{opacity:.6;pointer-events:none}
+.sync-chip[data-st=ok] i{background:var(--ok)}.sync-chip[data-st=saving] i{background:var(--warn)}.sync-chip[data-st=error]{background:#FDF0EF!important;color:var(--er)!important}.sync-chip[data-st=error] i{background:var(--er)}
+
+/* 9. Modais que abrem a partir de onde você clicou */
+@keyframes modalIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:none}}
+#overlay.on .modal,#cfm.on>div,.modal.on .box{animation:modalIn .16s ease-out both}
+
+/* 11. Preferências do sistema */
+@media (prefers-reduced-motion:reduce){
+ *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+}
+@media (prefers-reduced-transparency:reduce){
+ *{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+ #overlay,#cfm,#sb-back{background:rgba(23,19,26,.7)!important}
+}

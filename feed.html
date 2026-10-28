@@ -4,9 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>MOVE Feed</title>
-<link rel="icon" type="image/png" href="./favicon-move.png?v=2">
+<link rel="icon" type="image/png" href="./assets/brand/favicon-move.png?v=4">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Jost:wght@300;400;500;600&display=swap');
 :root{--violet:#5B108F;--vl:#D084FF;--vd:#43096F;--vp:#F7EBFF;--bdr:#E4D9EB;--tm:#6B647A;--ok:#1E9E6A;--er:#C0392B;--r:12px;--rs:8px;--sh:0 2px 20px rgba(45,8,72,.07);--tr:all .28s cubic-bezier(.4,0,.2,1);--fd:'Cormorant Garamond',Georgia,serif;--fb:'Jost',system-ui,sans-serif}
 *{box-sizing:border-box}
 body{margin:0;padding:16px;min-height:100vh;font-family:var(--fb);font-size:15px;color:#030303;background:linear-gradient(135deg,#E6E8F1,#F1F1F1);-webkit-font-smoothing:antialiased}
@@ -114,12 +113,14 @@ button{border-radius:99px;padding:0 24px}.x,.nav{border-radius:50%;padding:0}.ln
 .nw{float:right;background:#C0392B;color:#fff;font-size:11px;font-weight:600;line-height:1.5;border-radius:99px;padding:0 8px}
 .rc{position:relative}.rc .nw{position:absolute;top:14px;right:14px;float:none}
 </style>
+  <link rel="stylesheet" href="./assets/brand/move-brand.css?v=3">
+  <link rel="stylesheet" href="./assets/brand/move-ui.css?v=1">
 </head>
-<body>
+<body class="move-feed-admin">
 <div id="login" style="padding:40px;display:none">Você precisa estar logado. <a href="index.html">Entrar pelo painel MOVE Operacional</a>, depois volte aqui.</div>
 <div id="app" style="display:none">
 <aside>
- <div class="s-logo"><div class="s-brand">MO<em>VE</em></div><div class="s-sub">Central Operacional</div></div>
+ <div class="s-logo"><img class="brand-image brand-image-sidebar" src="./assets/brand/move-logo.png" alt="MOVE Marketing"><div class="s-sub">Central Operacional</div></div>
  <div class="pc"><div class="pc-av" id="acc-av">M</div><div class="pc-i" id="quem"></div><a class="pc-bell" href="index.html#atrasados" aria-label="Ver clientes atrasados"><svg viewBox="0 0 24 24"><path d="M6 17V11a6 6 0 0 1 12 0v6l1.5 2h-15zM10 21h4"/></svg><i id="acc-dot"></i></a></div>
  <nav class="s-nav">
   <div class="s-sec">Operação</div>
@@ -259,7 +260,16 @@ function origemLim(){return cur.limite?"definido manualmente":((clientes.find(c=
 window.alterarLimite=async()=>{const v=prompt("Limite de posts deste planejamento.\nPor padrão usamos o pacote do cliente (ou 20, se não houver).",lim());if(v===null)return;const n=parseInt(v,10);
  if(!(n>=1&&n<=100))return toast("Informe um número de 1 a 100.");await updateDoc(doc(db,"feed_plans",cur.id),{limite:n,updatedAt:serverTimestamp()});toast("Limite atualizado.")};
 const dtc=c=>c.criadoEm&&c.criadoEm.toDate?c.criadoEm.toDate().toLocaleString("pt-BR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"}):"agora";
-function recentes(){$("rec").innerHTML=planos.length?'<div class="kick" style="margin:6px 0 10px">Planejamentos recentes</div><div class="recg">'+planos.slice(0,6).map(p=>`<div class="rc" onclick="abrirPlano('${p.id}')"><small>${esc(p.clienteNome)}</small><b>${per(p)}</b>${p.novos>0?`<span class="nw" title="Comentários novos">${p.novos}</span>`:""}</div>`).join("")+"</div>":'<div class="empty"><button onclick="document.getElementById(\'nCli\').focus()">＋ Criar primeiro planejamento</button><div style="margin-top:10px">Escolha um cliente e um mês no menu lateral e clique em Criar planejamento.</div></div>'}
+function recentes(){
+ const stage=$("vazio"),el=$("rec");
+ if(planos.length){
+  stage.classList.add("has-plans");
+  el.innerHTML='<div class="select-plan"><span class="select-plan-mark">M</span><div><strong>Selecione um planejamento</strong><p>Escolha um item na lista ao lado para abrir posts, calendário e aprovações.</p></div></div>';
+  return;
+ }
+ stage.classList.remove("has-plans");
+ el.innerHTML='<div class="empty"><button onclick="document.getElementById(\'nCli\').focus()">＋ Criar primeiro planejamento</button><div style="margin-top:10px">Escolha um cliente e um mês no menu lateral e clique em Criar planejamento.</div></div>';
+}
 function listaHTML(){const l=[...posts].sort((x,y)=>(x.dataPrevista||"9").localeCompare(y.dataPrevista||"9"));
  return l.map(p=>{const dt=p.dataPrevista?new Date(p.dataPrevista+"T12:00:00").toLocaleDateString("pt-BR",{weekday:"short",day:"2-digit",month:"2-digit"}):"Sem data";
   return `<div class="li" onclick="abrirPost('${p.id}')"><div class="ld">${dt}</div><div class="lt">${p.tipo==="reels"?"▶ Reels":p.tipo==="carrossel"?"❐ Carrossel":"■ Estático"}<br><span>${esc((p.legenda||"Sem legenda").slice(0,90))}</span></div></div>`}).join("")||'<div class="empty">Nenhum post ainda.</div>'}
@@ -338,5 +348,6 @@ window.excluirPost=async()=>{if(!confirm("Excluir este post e seus comentários?
 window.responder=async()=>{const t=$("rTxt").value.trim();if(!t)return;
  await addDoc(collection(db,"feed_plans",cur.id,"posts",editId,"comentarios"),{autor:"MOVE",texto:t,tipo:"comentario",criadoEm:serverTimestamp()});$("rTxt").value=""};
 </script>
+<script src="./assets/brand/move-ui.js?v=1"></script>
 </body>
 </html>
