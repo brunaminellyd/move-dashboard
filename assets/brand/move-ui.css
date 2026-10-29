@@ -63,3 +63,24 @@ button:active,.btn:active,.btn-sm:active,.ftab:active,.vtog:active,.nb:active,.i
  *{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
  #overlay,#cfm,#sb-back{background:rgba(23,19,26,.7)!important}
 }
+
+/* Dashboard: espaçamento único entre todos os blocos (16 px no computador, 12 px no celular) */
+.move-index #v-dashboard.view.on{display:block!important}
+.move-index #v-dashboard>*{margin:0 0 var(--gap)!important}
+.move-index #v-dashboard>*:last-child{margin-bottom:0!important}
+.move-index #v-dashboard>.mg,.move-index #v-dashboard>.dash-charts{gap:var(--gap)!important}
+.move-index #v-dashboard>.dash-charts{align-items:start!important}
+.move-index #v-dashboard>.dash-charts>.card{align-self:start!important}
+.move-index #v-dashboard .dash-charts .card>div:last-child{flex:none!important}
+.move-index #v-dashboard button[data-go].btn-sm{display:block;margin:var(--gap) auto 0;padding:8px 16px;background:#fff;color:#5B108F;border:1px solid #CBB0DC;font:inherit;font-size:13px;font-weight:500;cursor:pointer}
+.move-index #v-dashboard button[data-go].btn-sm:hover{background:#F0E5F7}
+
+/* A Nexa não tem itálico: sem itálico simulado em nenhuma tela */
+.view *,#sidebar *,.modal *,#toast,svg text{font-style:normal!important}
+svg text{font-family:"Nexa",system-ui,sans-serif!important}
+
+/* Relatório em PDF: todas as páginas com fundo branco */
+@media print{
+ html,body,body.move-index,.move-index #app,.move-index #main,#print-area{background:#fff!important}
+ #print-area *{font-style:normal!important}
+}
