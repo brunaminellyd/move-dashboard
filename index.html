@@ -595,6 +595,70 @@ body{background:radial-gradient(900px 600px at 8% 10%,rgba(208,132,255,.5),trans
     .move-index #v-dashboard > .dash-charts .card:last-child{align-self:start}
     @media(max-width:768px){.move-index #v-dashboard.view.on{gap:12px}}
   </style>
+  <style id="move-ronda">
+    /* ── Ronda Diária — Estilo Notion / Accordion ── */
+    #v-ronda .ronda-card-row{border-bottom:1px solid var(--div);transition:background .15s ease}
+    #v-ronda .ronda-card-row:last-child{border-bottom:none}
+    #v-ronda .ronda-card-row:hover{background:rgba(91,16,143,.015)}
+
+    #v-ronda .ronda-summary-row{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;cursor:pointer;gap:12px;user-select:none}
+    #v-ronda .ronda-sum-left{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
+    #v-ronda .ronda-toggle-ico{font-size:12px;color:var(--tm);width:16px;text-align:center;transition:transform .2s}
+    #v-ronda .ronda-cli-info{display:flex;flex-direction:column;min-width:0}
+    #v-ronda .ronda-cli-name{font-weight:600;font-size:14px;color:var(--t);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    #v-ronda .ronda-cli-resp{font-size:11px;color:var(--tm)}
+
+    #v-ronda .ronda-sum-mid{display:flex;align-items:center;gap:8px;flex-shrink:0}
+    #v-ronda .ronda-count-pill{font-size:11.5px;padding:3px 9px;border-radius:99px;font-weight:600}
+    #v-ronda .ronda-count-pill.abertos{background:rgba(91,16,143,.08);color:var(--violet)}
+    #v-ronda .ronda-count-pill.zerado{background:var(--okb);color:var(--ok);font-weight:500}
+
+    #v-ronda .ronda-age-pill{font-size:11.5px;padding:3px 8px;border-radius:4px;color:var(--tm);background:var(--card2)}
+    #v-ronda .ronda-age-pill.alerta{background:var(--wab);color:var(--wa);font-weight:500}
+    #v-ronda .ronda-age-pill.critico{background:var(--erb);color:var(--er);font-weight:600}
+
+    #v-ronda .ronda-sum-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+    #v-ronda .ronda-visto-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:6px 14px;border-radius:99px;font-size:12px;font-weight:500;font-family:inherit;cursor:pointer;border:1.5px solid var(--bdr);background:#FFFFFF;color:var(--ts);transition:all .2s cubic-bezier(.4,0,.2,1)}
+    #v-ronda .ronda-visto-btn:hover{border-color:var(--violet-light);color:var(--violet);background:var(--violet-pale)}
+    #v-ronda .ronda-visto-btn.ok{background:var(--okb);color:var(--ok);border-color:rgba(30,158,106,.35);font-weight:600}
+
+    #v-ronda .ronda-details{padding:10px 18px 16px 44px;background:rgba(91,16,143,.015);border-top:1px dashed var(--div)}
+    #v-ronda .ronda-sugestao-banner{display:flex;align-items:center;flex-wrap:wrap;gap:8px;font-size:12px;color:var(--ts);background:var(--card);padding:8px 12px;border-radius:var(--r-sm);border:1px dashed var(--bdrh);margin-bottom:10px}
+
+    #v-ronda .ronda-items-list{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+    #v-ronda .ronda-item{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:var(--r-sm);background:#FFFFFF;border:1px solid var(--div);transition:border-color .15s}
+    #v-ronda .ronda-item:hover{border-color:var(--bdrh)}
+    #v-ronda .ronda-item.resolvido{opacity:.55;background:transparent;border-style:dashed}
+    #v-ronda .ronda-item.resolvido .ronda-item-txt{text-decoration:line-through;color:var(--tm)}
+
+    #v-ronda .ronda-circle-btn{width:22px;height:22px;border-radius:50%;border:2px solid var(--bdrh);background:transparent;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s ease}
+    #v-ronda .ronda-circle-btn:hover{border-color:var(--ok);background:var(--okb)}
+    #v-ronda .ronda-item.resolvido .ronda-circle-btn{border-color:var(--ok);background:var(--ok);color:#fff;font-size:11px}
+
+    #v-ronda .ronda-resp-pill{display:inline-flex;align-items:center;padding:2px 8px;border-radius:99px;font-size:10.5px;font-weight:700;cursor:pointer;border:none;letter-spacing:.02em;transition:opacity .15s}
+    #v-ronda .ronda-resp-pill:hover{opacity:.8}
+
+    #v-ronda .ronda-item-txt{flex:1;font-size:13.5px;color:var(--t);line-height:1.4;word-break:break-word}
+    #v-ronda .ronda-item-age{font-size:11px;color:var(--tm);white-space:nowrap;flex-shrink:0}
+    #v-ronda .ronda-empty-itens{font-size:12.5px;color:var(--tm);padding:6px 0}
+
+    #v-ronda .ronda-add-box{display:flex;align-items:center;gap:8px}
+    #v-ronda .ronda-add-input{flex:1;height:34px;font-size:13px;padding:0 12px;border:1px solid var(--bdr);border-radius:var(--r-sm);background:#FFFFFF;color:var(--t);outline:none;transition:border-color .2s}
+    #v-ronda .ronda-add-input:focus{border-color:var(--violet);box-shadow:0 0 0 2px rgba(91,16,143,.12)}
+
+    /* Celular */
+    @media(max-width:768px){
+      #v-ronda .ronda-summary-row{flex-direction:column;align-items:flex-start;gap:10px;padding:14px}
+      #v-ronda .ronda-sum-left{width:100%;flex-wrap:wrap}
+      #v-ronda .ronda-sum-mid{width:100%;justify-content:flex-start}
+      #v-ronda .ronda-sum-right{width:100%}
+      #v-ronda .ronda-visto-btn{width:100%!important;justify-content:center;padding:10px!important;font-size:13px!important}
+      #v-ronda .ronda-details{padding:12px 14px 16px 14px}
+      #v-ronda .ronda-circle-btn{width:28px;height:28px;border-width:2.5px}
+      #v-ronda .ronda-add-box{flex-direction:column;align-items:stretch}
+      #v-ronda .ronda-add-box .srch{width:100%!important}
+    }
+  </style>
 </head>
 <body class="auth-pending move-index">
 <div id="auth-gate" aria-live="polite">
@@ -643,6 +707,7 @@ body{background:radial-gradient(900px 600px at 8% 10%,rgba(208,132,255,.5),trans
     <div class="s-sec">Operação</div>
     <button class="nb on" data-v="dashboard"><span class="nb-ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg></span>Dashboard</button>
     <button class="nb" data-v="clientes"><span class="nb-ico"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.4-5.5 6.5-5.5s5.9 1.9 6.5 5.5"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.8c2 .7 3.2 2.4 3.5 5.2"/></svg></span>Clientes<span class="nb-badge" id="nb-cli" style="display:none">0</span></button>
+    <button class="nb" data-v="ronda"><span class="nb-ico"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>Ronda<span class="nb-badge" id="nb-ronda" style="display:none">0</span></button>
     <div class="s-sec">Acompanhamento</div>
         <button class="nb" data-v="relatorios"><span class="nb-ico"><svg viewBox="0 0 24 24"><path d="M6 3h8l5 5v13H6z"/><path d="M14 3v5h5M9.5 13h6M9.5 17h6"/></svg></span>Relatórios</button>
     <div class="s-sec">Conteúdo</div>
@@ -700,8 +765,18 @@ body{background:radial-gradient(900px 600px at 8% 10%,rgba(208,132,255,.5),trans
   <div class="card" style="padding:0;overflow:hidden"><div class="tbl-wrap"><table class="tbl" id="cli-tbl"></table></div></div>
 </section>
 
-<!-- ═══ PENDÊNCIAS ═════════════════════════ -->
-
+<!-- ═══ RONDA ══════════════════════════════ -->
+<section class="view" id="v-ronda">
+  <div class="ph">
+    <div class="ph-l"><div class="pt">Ronda <em style="font-family:var(--font-d);font-style:italic;color:var(--violet)">diária</em></div><div class="ps" id="ronda-sub"></div></div>
+    <div class="ph-r">
+      <select class="srch" id="ronda-resp" style="width:160px"><option value="todos">Todos responsáveis</option></select>
+      <input class="srch" id="ronda-srch" placeholder="🔍 Buscar cliente…" style="width:160px">
+    </div>
+  </div>
+  <div class="ftabs" id="ronda-tabs"></div>
+  <div class="card" style="padding:0;overflow:hidden"><div id="ronda-list"></div></div>
+</section>
 
 <!-- ═══ RELATÓRIOS ═════════════════════════ -->
 <section class="view" id="v-relatorios">
@@ -714,6 +789,7 @@ body{background:radial-gradient(900px 600px at 8% 10%,rgba(208,132,255,.5),trans
   </div>
   <div class="g3" style="margin-bottom:16px" id="rep-stats"></div>
   <div class="card" style="margin-bottom:14px" id="rep-prog"></div>
+  <div class="card" style="margin-bottom:14px" id="rep-operacao"></div>
   <div class="card" style="margin-bottom:14px;padding:0;overflow:hidden" id="rep-tbl"></div>
   <div class="card" style="margin-bottom:14px" id="rep-history"></div>
   <div class="g2" id="rep-ins"></div>
@@ -820,18 +896,18 @@ const KB_COLS=[
 // gmn = 'feito' | 'nao_feito' | 'nao_tem' · last = último programado (DD/MM/AAAA)
 // obs = texto livre (multilinha) · updated = ISO timestamp auto
 const DEF_CLI=[
-  {id:1, name:'TechVision BR',     pkg:20,pkgTipo:'',         feitos:17,resp:'Mariana de Grande',respSM:'',                 last:'25/04/2026',status:'tudo_em_dia',     gmn:'feito',    obs:'Perfil muito engajado.',                                                                                          updated:'2026-05-13T09:25:00'},
-  {id:2, name:'Bella Moda',        pkg:12,pkgTipo:'',         feitos:5, resp:'Flaviana',         respSM:'',                 last:'',          status:'alguma_pendencia', gmn:'nao_tem',  obs:'Aguardando materiais do cliente para nova coleção de inverno.',                                                  updated:'2026-05-12T16:40:00'},
-  {id:3, name:'DrConsult Saúde',   pkg:28,pkgTipo:'',         feitos:22,resp:'Mariana de Grande',respSM:'Mariana Forones',  last:'08/04/2026',status:'alguma_pendencia', gmn:'feito',    obs:'GMN feito para o mês;\nNão há novos aprovados; Temos storys para postar, como faremos?\nE os novos temas quem vai fazer?', updated:'2026-05-14T18:32:00'},
-  {id:4, name:'Construfix',        pkg:12,pkgTipo:'8 + 4',    feitos:3, resp:'Mariana de Grande',respSM:'Mariana Forones',  last:'30/04/2026',status:'tudo_em_dia',      gmn:'nao_tem',  obs:'Solicitação de novos temas para o Haras;\nEu: Mandar vídeo de agradecimento para aprovação',                       updated:'2026-04-27T00:38:00'},
-  {id:5, name:'Grupo Floresta',    pkg:16,pkgTipo:'',         feitos:12,resp:'Mariana de Grande',respSM:'',                 last:'29/04/2026',status:'alguma_pendencia', gmn:'nao_tem',  obs:'Vários cards para ajuste de Flaviana;\nVários cards para fazer criativo e vídeo',                                  updated:'2026-04-27T00:34:00'},
-  {id:6, name:'Studio Fit',        pkg:8, pkgTipo:'',         feitos:2, resp:'Flaviana',         respSM:'',                 last:'',          status:'sem_dados',        gmn:'nao_tem',  obs:'Solicitação de novos temas para MAIO',                                                                            updated:'2026-04-27T00:38:00'},
-  {id:7, name:'AgroPlus',          pkg:12,pkgTipo:'',         feitos:10,resp:'Mariana Forones',  respSM:'',                 last:'24/04/2026',status:'alguma_pendencia', gmn:'feito',    obs:'GMN feito para o mês;\nNão temos mais tantos conteúdos para postar, como vamos proceder?\nEu: Enviar dois cards para aprovação', updated:'2026-04-27T00:45:00'},
-  {id:8, name:'Clínica Estela',    pkg:12,pkgTipo:'',         feitos:4, resp:'Flaviana',         respSM:'Mariana de Grande',last:'',          status:'atrasado',         gmn:'feito',    obs:'GMN feito até dia 8 de maio;\nQuem fará os conteúdos do mês de MAIO?',                                            updated:'2026-04-27T01:09:00'},
-  {id:9, name:'RealEasy Imóveis',  pkg:12,pkgTipo:'',         feitos:12,resp:'Mariana Forones',  respSM:'Mariana de Grande',last:'24/04/2026',status:'atrasado',         gmn:'nao_tem',  obs:'Precisa de novos conteúdos urgente;',                                                                             updated:'2026-04-27T01:22:00'},
-  {id:10,name:'Sabor & Arte',      pkg:15,pkgTipo:'',         feitos:13,resp:'Flaviana',         respSM:'',                 last:'13/04/2026',status:'alguma_pendencia', gmn:'feito',    obs:'GMN feito até dia 8 de maio;\nConteúdos para MAIO solicitado',                                                    updated:'2026-04-27T06:21:00'},
-  {id:11,name:'NovaTech Soluções', pkg:6, pkgTipo:'',         feitos:2, resp:'Mariana de Grande',respSM:'',                 last:'',          status:'tudo_em_dia',      gmn:'nao_tem',  obs:'SEM MAIS NOVIDADES',                                                                                              updated:'2026-04-27T01:30:00'},
-  {id:12,name:'Lar & Estilo',      pkg:12,pkgTipo:'',         feitos:3, resp:'Mariana de Grande',respSM:'',                 last:'10/04/2026',status:'atrasado',         gmn:'nao_tem',  obs:'Mudança na criação de conteúdos, não fazemos mais vídeos',                                                        updated:'2026-04-27T01:32:00'},
+  {id:1, name:'TechVision BR',     pkg:20,pkgTipo:'',         feitos:17,resp:'Mariana de Grande',respSM:'',                 last:'25/04/2026',status:'tudo_em_dia',     gmn:'feito',    pendencias:[],vistoEm:'',obs:'Perfil muito engajado.',                                                                                          updated:'2026-05-13T09:25:00'},
+  {id:2, name:'Bella Moda',        pkg:12,pkgTipo:'',         feitos:5, resp:'Flaviana',         respSM:'',                 last:'',          status:'alguma_pendencia', gmn:'nao_tem',  pendencias:[],vistoEm:'',obs:'Aguardando materiais do cliente para nova coleção de inverno.',                                                  updated:'2026-05-12T16:40:00'},
+  {id:3, name:'DrConsult Saúde',   pkg:28,pkgTipo:'',         feitos:22,resp:'Mariana de Grande',respSM:'Mariana Forones',  last:'08/04/2026',status:'alguma_pendencia', gmn:'feito',    pendencias:[],vistoEm:'',obs:'GMN feito para o mês;\nNão há novos aprovados; Temos storys para postar, como faremos?\nE os novos temas quem vai fazer?', updated:'2026-05-14T18:32:00'},
+  {id:4, name:'Construfix',        pkg:12,pkgTipo:'8 + 4',    feitos:3, resp:'Mariana de Grande',respSM:'Mariana Forones',  last:'30/04/2026',status:'tudo_em_dia',      gmn:'nao_tem',  pendencias:[],vistoEm:'',obs:'Solicitação de novos temas para o Haras;\nEu: Mandar vídeo de agradecimento para aprovação',                       updated:'2026-04-27T00:38:00'},
+  {id:5, name:'Grupo Floresta',    pkg:16,pkgTipo:'',         feitos:12,resp:'Mariana de Grande',respSM:'',                 last:'29/04/2026',status:'alguma_pendencia', gmn:'nao_tem',  pendencias:[],vistoEm:'',obs:'Vários cards para ajuste de Flaviana;\nVários cards para fazer criativo e vídeo',                                  updated:'2026-04-27T00:34:00'},
+  {id:6, name:'Studio Fit',        pkg:8, pkgTipo:'',         feitos:2, resp:'Flaviana',         respSM:'',                 last:'',          status:'sem_dados',        gmn:'nao_tem',  pendencias:[],vistoEm:'',obs:'Solicitação de novos temas para MAIO',                                                                            updated:'2026-04-27T00:38:00'},
+  {id:7, name:'AgroPlus',          pkg:12,pkgTipo:'',         feitos:10,resp:'Mariana Forones',  respSM:'',                 last:'24/04/2026',status:'alguma_pendencia', gmn:'feito',    pendencias:[],vistoEm:'',obs:'GMN feito para o mês;\nNão temos mais tantos conteúdos para postar, como vamos proceder?\nEu: Enviar dois cards para aprovação', updated:'2026-04-27T00:45:00'},
+  {id:8, name:'Clínica Estela',    pkg:12,pkgTipo:'',         feitos:4, resp:'Flaviana',         respSM:'Mariana de Grande',last:'',          status:'atrasado',         gmn:'feito',    pendencias:[],vistoEm:'',obs:'GMN feito até dia 8 de maio;\nQuem fará os conteúdos do mês de MAIO?',                                            updated:'2026-04-27T01:09:00'},
+  {id:9, name:'RealEasy Imóveis',  pkg:12,pkgTipo:'',         feitos:12,resp:'Mariana Forones',  respSM:'Mariana de Grande',last:'24/04/2026',status:'atrasado',         gmn:'nao_tem',  pendencias:[],vistoEm:'',obs:'Precisa de novos conteúdos urgente;',                                                                             updated:'2026-04-27T01:22:00'},
+  {id:10,name:'Sabor & Arte',      pkg:15,pkgTipo:'',         feitos:13,resp:'Flaviana',         respSM:'',                 last:'13/04/2026',status:'alguma_pendencia', gmn:'feito',    pendencias:[],vistoEm:'',obs:'GMN feito até dia 8 de maio;\nConteúdos para MAIO solicitado',                                                    updated:'2026-04-27T06:21:00'},
+  {id:11,name:'NovaTech Soluções', pkg:6, pkgTipo:'',         feitos:2, resp:'Mariana de Grande',respSM:'',                 last:'',          status:'tudo_em_dia',      gmn:'nao_tem',  pendencias:[],vistoEm:'',obs:'SEM MAIS NOVIDADES',                                                                                              updated:'2026-04-27T01:30:00'},
+  {id:12,name:'Lar & Estilo',      pkg:12,pkgTipo:'',         feitos:3, resp:'Mariana de Grande',respSM:'',                 last:'10/04/2026',status:'atrasado',         gmn:'nao_tem',  pendencias:[],vistoEm:'',obs:'Mudança na criação de conteúdos, não fazemos mais vídeos',                                                        updated:'2026-04-27T01:32:00'},
 ];
 const DEF_CNT=[]; // Conteúdos removidos — gestão agora é por cliente
 
@@ -854,15 +930,35 @@ const S={
   clients:[], contents:[], nextId:300,
   cliFilter:'todos', cliSearch:'', cliResp:'todos', cliGMN:'todos',
   cntFilter:'todos', cntSearch:'', cntView:'lista', cntResp:'todos',
+  rondaSearch:'', rondaResp:'todos', rondaFilter:'todos', rondaOpen:{},
   exportLogs:[], firebaseCfg:null, firebaseReady:false,
   lastCloudSyncAt:'',
   modal:null, editId:null,
 };
 
 /* ════════════════════════════════════════════
-   LOCAL STORAGE
+   LOCAL STORAGE & OBS MIGRATION
 ════════════════════════════════════════════ */
 const LS='move_v5';
+function migrateClientObs(c){
+  if(!Array.isArray(c.pendencias)) c.pendencias=[];
+  if(c.pendencias.length===0 && c.obs && typeof c.obs==='string' && c.obs.trim()){
+    const lines=c.obs.split(/\r?\n|;/).map(l=>l.trim()).filter(Boolean);
+    lines.forEach((line,idx)=>{
+      let resp='move';
+      const low=line.toLowerCase();
+      if(low.includes('cliente')||low.includes('aguardando')||low.includes('aprov')||low.includes('tema')) resp='cliente';
+      else if(low.includes('terceiro')||low.includes('grafica')||low.includes('gráfica')) resp='terceiro';
+      c.pendencias.push({
+        id:Date.now()+'_'+idx+'_'+Math.random().toString(36).slice(2,6),
+        texto:line,
+        responsavel:resp,
+        criadoEm:c.updated||new Date().toISOString(),
+        resolvidoEm:null
+      });
+    });
+  }
+}
 function save(){
   try{ localStorage.setItem(LS,JSON.stringify({clients:S.clients,contents:S.contents,nextId:S.nextId,exportLogs:S.exportLogs,firebaseCfg:S.firebaseCfg,lastCloudSyncAt:S.lastCloudSyncAt})); }
   catch(e){}
@@ -872,7 +968,11 @@ function load(){
   try{
     const d=JSON.parse(localStorage.getItem(LS)||'null');
     if(d){
-      S.clients=d.clients||[];
+      S.clients=(d.clients||[]).map(c=>{
+        const cli={pendencias:[],vistoEm:'',...c};
+        migrateClientObs(cli);
+        return cli;
+      });
       S.contents=d.contents||[];
       S.nextId=d.nextId||300;
       S.exportLogs=Array.isArray(d.exportLogs)?d.exportLogs:[];
@@ -884,7 +984,11 @@ function load(){
   }catch(e){ reset(false); }
 }
 function reset(notify){
-  S.clients=JSON.parse(JSON.stringify(DEF_CLI));
+  S.clients=JSON.parse(JSON.stringify(DEF_CLI)).map(c=>{
+    const cli={pendencias:[],vistoEm:'',...c};
+    migrateClientObs(cli);
+    return cli;
+  });
   S.contents=JSON.parse(JSON.stringify(DEF_CNT));
   S.nextId=300;
   S.exportLogs=[];
@@ -924,7 +1028,11 @@ function applyCloudState(payload){
   if(!payload||!Array.isArray(payload.clients)||!Array.isArray(payload.contents)) return false;
   CLOUD_APPLYING=true;
   try{
-    S.clients=payload.clients;
+    S.clients=payload.clients.map(c=>{
+      const cli={pendencias:[],vistoEm:'',...c};
+      migrateClientObs(cli);
+      return cli;
+    });
     S.contents=payload.contents;
     S.nextId=payload.nextId||300;
     S.exportLogs=Array.isArray(payload.exportLogs)?payload.exportLogs:[];
@@ -1051,6 +1159,7 @@ async function startCloudStateListener(){
           if(active&&active.id==='v-clientes') renderClients();
           else if(active&&active.id==='v-conteudos') renderContents();
           else if(active&&active.id==='v-relatorios') renderRel();
+          else if(active&&active.id==='v-ronda') renderRonda();
           
           updateBadges();
         }
@@ -1127,6 +1236,7 @@ function updateBadges(){
   sb('nb-pend',pend); sb('nb-cnt',at); sb('nb-cli',atc);
   window.__pend=atc; if(window.updDot) window.updDot();
   const mob=document.getElementById('mob-badge'); if(mob){ mob.textContent=pend; mob.style.display=pend>0?'inline-flex':'none'; }
+  if(typeof rondaBadge==='function') rondaBadge();
 }
 
 // Formata timestamp ISO para "DD/MM HH:MM" — aceita texto legado também
@@ -1196,6 +1306,15 @@ function pendenciaValue(c){
   return ['alguma_pendencia','atrasado','sem_dados'].includes(c?.status)&&RPEND[value]?value:null;
 }
 function pendenciaChip(c,print=false){
+  const abertos=(c?.pendencias||[]).filter(p=>!p.resolvidoEm);
+  if(abertos.length){
+    const owners=new Set();
+    abertos.forEach(p=>owners.add((p.responsavel||'move').toLowerCase()));
+    return Array.from(owners).map(o=>{
+      const cfg=RPEND[o]||RPEND.move;
+      return '<span class="'+(print?'pr-pill':'pending-owner')+'" style="background:'+cfg.b+';color:'+cfg.c+'">'+cfg.l+'</span>';
+    }).join(' ');
+  }
   const value=pendenciaValue(c);
   if(!value) return '—';
   const cfg=RPEND[value];
@@ -1422,7 +1541,9 @@ function renderDash(){
       else { tag='Abaixo de 50%'; tcol='var(--wa)'; tbg='var(--wab)'; }
       const fal=Math.max((c.pkg||0)-(c.feitos||0),0);
       const progress=low?' · '+(((Number(c.feitos)||0)/(Number(c.pkg)||1))*100).toLocaleString('pt-BR',{maximumFractionDigits:1})+'% do pacote':'';
-      const sub=(c.respSM?'SM '+esc(c.respSM)+' · ':'')+esc(c.resp||'sem responsável')+(fal>0?' · faltam '+fal:'')+progress+(c.status==='alguma_pendencia'&&c.obs?' · '+esc(c.obs.split('\n')[0].slice(0,60)):'');
+      const abertos=(c.pendencias||[]).filter(p=>!p.resolvidoEm);
+      const pendTxt=abertos.length ? (' · ['+((RPEND[abertos[0].responsavel]||RPEND.move).l)+'] '+esc(abertos[0].texto.slice(0,50))) : (c.obs?' · '+esc(c.obs.split('\n')[0].slice(0,50)):'');
+      const sub=(c.respSM?'SM '+esc(c.respSM)+' · ':'')+esc(c.resp||'sem responsável')+(fal>0?' · faltam '+fal:'')+progress+pendTxt;
       return '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-radius:var(--r-sm);background:'+tbg+';margin-bottom:8px;border:1px solid '+tcol+'33">'
         +'<div><div style="font-size:13.5px;font-weight:500;color:var(--t)">'+esc(c.name)+'</div><div style="font-size:11.5px;color:var(--tm);margin-top:3px">'+sub+'</div></div>'
         +'<span class="badge" style="background:'+tbg+';color:'+tcol+';font-weight:600">'+tag+'</span></div>';
@@ -1520,10 +1641,25 @@ function renderClients(){
       if(c.resp) respPills+='<span class="tag-pill" style="background:rgba(91,16,143,.10);color:#43096F">'+esc(c.resp)+'</span>';
       if(c.respSM) respPills+='<span class="tag-pill sm" style="background:rgba(196,122,26,.13);color:#8A5200">'+esc(c.respSM)+'</span>';
       if(!respPills) respPills='<span style="color:var(--tm);font-size:10px">— vazio —</span>';
-      // Observação truncada visual
-      const obsTxt=(c.obs||'').trim();
-      const obsHtml=obsTxt?esc(obsTxt):'clique para adicionar…';
-      const obsCls=obsTxt?'obs-cell':'obs-cell empty';
+      // Observações e Responsáveis da pendência calculados a partir dos itens da Ronda
+      const abertos=(c.pendencias||[]).filter(p=>!p.resolvidoEm);
+      const pendOwners=new Set();
+      abertos.forEach(p=>pendOwners.add(p.responsavel||'move'));
+      const pendOwnersArray=Array.from(pendOwners);
+      const pendOwnersHtml=pendOwnersArray.length
+        ? pendOwnersArray.map(o=>{
+            const cfg=RPEND[o]||RPEND.move;
+            return '<span class="tag-pill" style="background:'+cfg.b+';color:'+cfg.c+';font-size:10px;font-weight:700">'+cfg.l+'</span>';
+          }).join(' ')
+        : (pendenciaValue(c)?pendenciaChip(c):'<span style="color:var(--tm);font-size:11px">—</span>');
+
+      const obsDisplay=abertos.length
+        ? abertos.slice(0,3).map(p=>{
+            const cfg=RPEND[p.responsavel||'move']||RPEND.move;
+            return '<div style="margin-bottom:2px;font-size:11.5px;line-height:1.3"><strong style="color:'+cfg.c+'">['+cfg.l+']</strong> '+esc(p.texto)+'</div>';
+          }).join('')+(abertos.length>3?'<div style="font-size:10.5px;color:var(--violet)">+ '+(abertos.length-3)+' item(ns) na ronda…</div>':'')
+        : (c.obs?esc(c.obs):'<span style="color:var(--tm);font-style:italic">— sem pendências —</span>');
+      const obsCls=abertos.length?'obs-cell':'obs-cell empty';
       return '<tr data-row="'+c.id+'">'
         +'<td style="color:var(--tm);font-size:11px;white-space:nowrap">'+fmtTime(c.updated)+'</td>'
         +'<td>'
@@ -1546,11 +1682,12 @@ function renderClients(){
         +'<td><span class="cell-edit" data-edit="resp" data-id="'+c.id+'" style="display:inline-block;min-width:120px">'+respPills+'</span></td>'
         +'<td><span class="cell-edit" data-edit="last" data-id="'+c.id+'" style="color:'+(c.last?'var(--ts)':'var(--tm)')+';font-size:11px">'+(c.last||'— vazio —')+'</span></td>'
         +'<td><span class="tag-pill" data-cc="'+c.id+'" data-next="'+nextSt+'" style="background:'+sc.b+';color:'+sc.c+'" title="Clique para avançar">'+sc.l+'</span></td>'
-        +'<td><span class="cell-edit" data-edit="responsavelPendencia" data-id="'+c.id+'" title="Clique para editar">'+pendenciaChip(c)+'</span></td>'
+        +'<td><div style="cursor:pointer" data-r-open="'+c.id+'" title="Calculado a partir das pendências da Ronda">'+pendOwnersHtml+'</div></td>'
         +'<td><span class="pauta-pill" style="background:'+pCfg.b+';color:'+pCfg.c+'" title="Calculado automaticamente: (Último programado − Última edição) ≥ 5 dias = BOM">'+pCfg.l+'</span></td>'
         +'<td><span class="gmn-pill" data-gmn-cycle="'+c.id+'" data-next-gmn="'+nextGmn+'" style="background:'+gmnCfg.b+';color:'+gmnCfg.c+'" title="Clique para ciclar">'+gmnCfg.l+'</span></td>'
-        +'<td><div class="'+obsCls+'" data-edit="obs" data-id="'+c.id+'">'+obsHtml+'</div></td>'
+        +'<td><div class="'+obsCls+'" data-r-open="'+c.id+'" title="Clique para abrir e gerenciar na Ronda">'+obsDisplay+'</div></td>'
         +'<td style="white-space:nowrap">'
+          +'<button class="ico" data-r-open="'+c.id+'" title="Abrir na ronda">📋</button>'
           +'<button class="ico" data-ec="'+c.id+'" title="Editar tudo">✏</button>'
           +'<button class="ico del" data-dc="'+c.id+'" title="Excluir">✕</button>'
         +'</td>'
@@ -1748,6 +1885,33 @@ function renderRel(){
   const semCli=S.clients.filter(c=>c.status==='sem_dados').map(c=>c.name).join(', ')||'Nenhum';
   const maxV=S.clients.length?S.clients.reduce((p,c)=>(c.feitos||0)>(p.feitos||0)?c:p,S.clients[0]):null;
 
+  // Métricas da Ronda e Gargalos da Operação (Visão Agência de Marketing)
+  let totItens=0, totResolvidos=0, pMove=0, pCli=0, pTerc=0, pCriticos=0;
+  const gargalosCriticos=[];
+  const hoje=todayISO();
+  let vistosHoje=0;
+
+  S.clients.forEach(c=>{
+    if(c.rondaVistoEm && c.rondaVistoEm.slice(0,10)===hoje) vistosHoje++;
+    (c.pendencias||[]).forEach(it=>{
+      totItens++;
+      if(it.resolvidoEm){
+        totResolvidos++;
+      } else {
+        const resp=(it.responsavel||'move').toLowerCase();
+        if(resp==='cliente') pCli++;
+        else if(resp==='terceiro') pTerc++;
+        else pMove++;
+
+        const d=ageDays(it.criadoEm);
+        if(d>=7){
+          pCriticos++;
+          gargalosCriticos.push({cli:c.name,txt:it.texto,d,resp:it.responsavel||'move'});
+        }
+      }
+    });
+  });
+
   document.getElementById('rep-stats').innerHTML=[
     {n:totPkg,l:'Pacote contratado',s:'soma de todos os clientes',c:'#5B108F'},
     {n:totFeitos,l:'Conteúdos feitos',s:pctConcl+'% do pacote',c:'#1E9E6A'},
@@ -1768,9 +1932,67 @@ function renderRel(){
     +'<div class="pbar"><div class="pfill" style="width:'+Math.min(pctConcl,100)+'%"></div></div>'
     +'<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:18px">'+mini+'</div>';
 
+  const elOp=document.getElementById('rep-operacao');
+  if(elOp){
+    const pctRondaHoje=totCli>0?Math.round((vistosHoje/totCli)*100):0;
+    const criticosHtml=gargalosCriticos.length
+      ?'<div style="margin-top:12px;padding:10px 14px;background:rgba(192,57,43,.08);border:1px solid rgba(192,57,43,.25);border-radius:var(--r-sm)">'
+        +'<div style="font-size:12px;font-weight:700;color:var(--er);margin-bottom:6px">⚠️ Atenção: '+pCriticos+' item(ns) parado(s) há 7 dias ou mais</div>'
+        +gargalosCriticos.slice(0,6).map(g=>{
+          const cfg=RPEND[g.resp]||RPEND.move;
+          return '<div style="font-size:11.5px;color:var(--ts);line-height:1.4;margin-bottom:3px">'
+            +'<strong>'+esc(g.cli)+'</strong>: '+esc(g.txt)
+            +' · <span style="color:'+cfg.c+';font-weight:700">['+cfg.l+']</span>'
+            +' <span style="color:var(--er);font-weight:600">('+g.d+' dias)</span>'
+            +'</div>';
+        }).join('')
+        +(gargalosCriticos.length>6?'<div style="font-size:10.5px;color:var(--er);margin-top:4px">+ '+(gargalosCriticos.length-6)+' outros itens críticos na Ronda…</div>':'')
+        +'</div>'
+      :'<div style="margin-top:10px;font-size:12px;color:var(--ok);font-weight:500">✓ Nenhum item estagnado há mais de 7 dias. Operação fluindo no prazo.</div>';
+
+    elOp.innerHTML=
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px;flex-wrap:wrap">'
+      +'<div>'
+        +'<div class="card-h" style="margin-bottom:2px">Saúde da Operação · <em style="font-family:var(--font-d);font-style:italic;color:var(--violet)">Gargalos & Agilidade</em></div>'
+        +'<div class="card-sub" style="margin:0">Mapeamento de pendências: o que depende da MOVE, do Cliente ou de Terceiros</div>'
+      +'</div>'
+      +'<div style="font-size:11.5px;color:var(--tm);background:var(--card2);padding:6px 12px;border-radius:99px;border:1px solid var(--bdr)">'
+        +'👁 Ronda de hoje: <strong style="color:var(--violet)">'+vistosHoje+' de '+totCli+' clientes</strong> ('+pctRondaHoje+'%)'
+      +'</div>'
+      +'</div>'
+      +'<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px">'
+        +'<div style="text-align:center;padding:12px 10px;background:var(--card2);border-radius:var(--r-sm);border:1px solid var(--bdr)">'
+          +'<div style="font-family:var(--font-d);font-size:26px;font-weight:600;color:#5B108F">'+pMove+'</div>'
+          +'<div style="font-size:11px;font-weight:700;color:#5B108F;margin-top:2px">MOVE (Interna)</div>'
+          +'<div style="font-size:10px;color:var(--tm);margin-top:2px">criação, copy e design</div>'
+        +'</div>'
+        +'<div style="text-align:center;padding:12px 10px;background:var(--card2);border-radius:var(--r-sm);border:1px solid var(--bdr)">'
+          +'<div style="font-family:var(--font-d);font-size:26px;font-weight:600;color:#C47A1A">'+pCli+'</div>'
+          +'<div style="font-size:11px;font-weight:700;color:#C47A1A;margin-top:2px">CLIENTE (Externa)</div>'
+          +'<div style="font-size:10px;color:var(--tm);margin-top:2px">aprovação e materiais</div>'
+        +'</div>'
+        +'<div style="text-align:center;padding:12px 10px;background:var(--card2);border-radius:var(--r-sm);border:1px solid var(--bdr)">'
+          +'<div style="font-family:var(--font-d);font-size:26px;font-weight:600;color:#5D6BE0">'+pTerc+'</div>'
+          +'<div style="font-size:11px;font-weight:700;color:#5D6BE0;margin-top:2px">TERCEIRO</div>'
+          +'<div style="font-size:10px;color:var(--tm);margin-top:2px">gráfica, dev e parceiros</div>'
+        +'</div>'
+        +'<div style="text-align:center;padding:12px 10px;background:var(--card2);border-radius:var(--r-sm);border:1px solid var(--bdr)">'
+          +'<div style="font-family:var(--font-d);font-size:26px;font-weight:600;color:#C0392B">'+pCriticos+'</div>'
+          +'<div style="font-size:11px;font-weight:700;color:#C0392B;margin-top:2px">GARGALOS (+7d)</div>'
+          +'<div style="font-size:10px;color:var(--tm);margin-top:2px">travados há mais de 1 sem.</div>'
+        +'</div>'
+        +'<div style="text-align:center;padding:12px 10px;background:var(--card2);border-radius:var(--r-sm);border:1px solid var(--bdr)">'
+          +'<div style="font-family:var(--font-d);font-size:26px;font-weight:600;color:var(--ok)">'+totResolvidos+'</div>'
+          +'<div style="font-size:11px;font-weight:700;color:var(--ok);margin-top:2px">RESOLVIDOS</div>'
+          +'<div style="font-size:10px;color:var(--tm);margin-top:2px">itens concluídos</div>'
+        +'</div>'
+      +'</div>'
+      +criticosHtml;
+  }
+
   document.getElementById('rep-tbl').innerHTML=
     '<div style="padding:14px 18px;border-bottom:1px solid var(--div);display:flex;justify-content:space-between;align-items:center"><div class="card-h" style="margin:0">Resumo por <em style="font-family:var(--font-d);font-style:italic;color:var(--violet)">cliente</em></div></div>'
-    +'<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Cliente</th><th style="text-align:center">Pacote</th><th style="text-align:center">Faltam</th><th>Situação</th><th>Responsável</th><th>GMN</th><th>Comentários</th></tr></thead><tbody>'
+    +'<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Cliente</th><th style="text-align:center">Pacote</th><th style="text-align:center">Faltam</th><th>Situação</th><th>Responsável</th><th>GMN</th><th>Comentários / Itens</th></tr></thead><tbody>'
     +S.clients.map((c,i)=>{
       const sc=SC[c.status]||{l:c.status,c:'#6B647A',b:'rgba(107,100,122,.1)'};
       const f=c.feitos||0,p=c.pkg||0,fal=p-f;
@@ -1778,8 +2000,22 @@ function renderRel(){
       const fc=p>0?(fal>0?'#C47A1A':'#1E9E6A'):'#6B647A';
       const falTxt=p>0?(fal>0?fal:fal===0?'✓':'+'+Math.abs(fal)):'—';
       const gmnVal=normGMN(c.gmn), gmnCfg=GMN[gmnVal]||{l:'—',c:'#6B647A',b:'transparent'};
-      const obs=(c.obs||'').trim();
-      const obsCell=obs?esc(obs).replace(/\n/g,'<br>'):'<span style="color:var(--tm);font-style:italic">—</span>';
+      const abertos=(c.pendencias||[]).filter(x=>!x.resolvidoEm);
+      let obsCell;
+      if(abertos.length){
+        obsCell = abertos.slice(0,3).map(p=>{
+          const cfg=RPEND[p.responsavel||'move']||RPEND.move;
+          const age=ageDays(p.criadoEm);
+          const ageTxt=age===0?'hoje':age+'d';
+          const ageWarn=age>=7?' style="color:var(--er);font-weight:700"':'';
+          return '<div style="margin-bottom:2px;font-size:11px;line-height:1.35">'
+            +'<strong style="color:'+cfg.c+'">['+cfg.l+']</strong> '+esc(p.texto)+' <span'+ageWarn+' style="color:var(--tm);font-size:10px">('+ageTxt+')</span></div>';
+        }).join('')+(abertos.length>3?'<div style="font-size:10px;color:var(--violet)">+ '+(abertos.length-3)+' item(ns) na ronda…</div>':'');
+      } else if((c.obs||'').trim()){
+        obsCell=esc((c.obs||'').trim()).replace(/\n/g,'<br>');
+      } else {
+        obsCell='<span style="color:var(--tm);font-style:italic">— sem pendências —</span>';
+      }
       return '<tr>'
         +'<td style="font-weight:500;color:var(--t)">'+esc(c.name)+'</td>'
         +'<td style="text-align:center;font-weight:500;color:var(--ts)">'+pkgTxt+'</td>'
@@ -1809,6 +2045,242 @@ function renderRel(){
     +'<div class="ir"><span style="color:var(--ts)">Total de publicações</span><span style="color:var(--violet);font-weight:600">'+totFeitos+'</span></div>'
     +'</div>';
   renderExportHistory();
+}
+
+/* ════════════════════════════════════════════
+   RONDA DIÁRIA
+════════════════════════════════════════════ */
+function todayISO(){
+  const d=new Date();
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+
+function ageDays(isoStr){
+  if(!isoStr) return 0;
+  const t=new Date(isoStr).getTime();
+  if(isNaN(t)) return 0;
+  return Math.max(0,Math.floor((Date.now()-t)/86400000));
+}
+
+function ageLabel(isoStr){
+  if(!isoStr) return '';
+  const days=ageDays(isoStr);
+  if(days===0) return 'hoje';
+  if(days===1) return 'há 1 dia';
+  return 'há '+days+' dias';
+}
+
+function cleanOldPendencias(){
+  const cutoff=Date.now()-60*86400000;
+  let changed=false;
+  (S.clients||[]).forEach(c=>{
+    if(!Array.isArray(c.pendencias)) { c.pendencias=[]; return; }
+    const before=c.pendencias.length;
+    c.pendencias=c.pendencias.filter(p=>{
+      if(!p.resolvidoEm) return true;
+      const resT=new Date(p.resolvidoEm).getTime();
+      return isNaN(resT)||resT>cutoff;
+    });
+    if(c.pendencias.length!==before) changed=true;
+  });
+  if(changed) save();
+}
+
+function sugerirStatus(c){
+  const pends=c.pendencias||[];
+  const abertos=pends.filter(p=>!p.resolvidoEm);
+  const temSeteDias=abertos.some(p=>ageDays(p.criadoEm)>=7);
+  if(temSeteDias&&c.status!=='atrasado') return 'atrasado';
+  if(abertos.length>0&&c.status==='tudo_em_dia') return 'alguma_pendencia';
+  if(abertos.length===0&&c.status==='alguma_pendencia') return 'tudo_em_dia';
+  return null;
+}
+
+function rondaBadge(){
+  const today=todayISO();
+  const naovistos=(S.clients||[]).filter(c=>!c.vistoEm||c.vistoEm!==today).length;
+  const el=document.getElementById('nb-ronda');
+  if(el){
+    el.textContent=naovistos;
+    el.style.display=naovistos>0?'inline-flex':'none';
+  }
+}
+
+function renderRondaTabs(){
+  const today=todayISO();
+  const tot=S.clients.length;
+  const aVerificar=S.clients.filter(c=>!c.vistoEm||c.vistoEm!==today).length;
+  const comItens=S.clients.filter(c=>(c.pendencias||[]).some(p=>!p.resolvidoEm)).length;
+  const tabs=[
+    {k:'todos',l:'Todos',n:tot},
+    {k:'a_verificar',l:'A verificar',n:aVerificar},
+    {k:'com_itens',l:'Com itens abertos',n:comItens}
+  ];
+  const el=document.getElementById('ronda-tabs');
+  if(!el) return;
+  el.innerHTML=tabs.map(t=>{
+    const on=S.rondaFilter===t.k;
+    return '<button class="ftab'+(on?' on':'')+'" data-rft="'+t.k+'">'+t.l+' <span style="opacity:.55">('+t.n+')</span></button>';
+  }).join('');
+}
+
+function fRonda(){
+  const today=todayISO();
+  let list=S.clients.slice();
+  if(S.rondaFilter==='a_verificar') list=list.filter(c=>!c.vistoEm||c.vistoEm!==today);
+  else if(S.rondaFilter==='com_itens') list=list.filter(c=>(c.pendencias||[]).some(p=>!p.resolvidoEm));
+  
+  if(S.rondaResp&&S.rondaResp!=='todos'){
+    list=list.filter(c=>c.resp===S.rondaResp||c.respSM===S.rondaResp);
+  }
+  if(S.rondaSearch){
+    const q=S.rondaSearch.toLowerCase().trim();
+    list=list.filter(c=>{
+      const matchName=(c.name||'').toLowerCase().includes(q);
+      const matchResp=(c.resp||'').toLowerCase().includes(q)||(c.respSM||'').toLowerCase().includes(q);
+      const matchItems=(c.pendencias||[]).some(p=>(p.texto||'').toLowerCase().includes(q));
+      return matchName||matchResp||matchItems;
+    });
+  }
+  return list;
+}
+
+function renderRonda(){
+  cleanOldPendencias();
+  renderRondaTabs();
+  fillRespSelect('ronda-resp',S.rondaResp||'todos');
+  
+  const today=todayISO();
+  const list=fRonda();
+  const aVerificarCount=S.clients.filter(c=>!c.vistoEm||c.vistoEm!==today).length;
+  const sub='Verificação diária dos clientes · '+list.length+' exibidos · '+aVerificarCount+' a verificar hoje';
+  const subEl=document.getElementById('ronda-sub');
+  if(subEl) subEl.textContent=sub;
+  
+  const container=document.getElementById('ronda-list');
+  if(!container) return;
+  
+  if(!list.length){
+    container.innerHTML='<div class="empty">Nenhum cliente encontrado na ronda com os filtros atuais.</div>';
+    rondaBadge();
+    return;
+  }
+  
+  container.innerHTML=list.map(c=>{
+    const pendencias=c.pendencias||[];
+    const abertos=pendencias.filter(p=>!p.resolvidoEm);
+    const resolvidosRecentes=pendencias.filter(p=>p.resolvidoEm).slice(-3);
+    const vistoHoje=c.vistoEm===today;
+    const sc=SC[c.status]||{l:c.status,c:'#6B647A',b:'rgba(107,100,122,.1)'};
+    const sug=sugerirStatus(c);
+    const scSug=sug?SC[sug]:null;
+    
+    // Controle de expansão
+    const isOpen=S.rondaOpen[c.id]!==undefined?S.rondaOpen[c.id]:(abertos.length>0);
+    
+    // Idade do item mais antigo
+    let oldestPill='';
+    if(abertos.length>0){
+      const maxDays=Math.max(...abertos.map(p=>ageDays(p.criadoEm)));
+      if(maxDays>=7){
+        oldestPill='<span class="ronda-age-pill critico" title="Parado há '+maxDays+' dias">⚠️ mais antigo há '+maxDays+' dias</span>';
+      }else if(maxDays>=3){
+        oldestPill='<span class="ronda-age-pill alerta">mais antigo há '+maxDays+' dias</span>';
+      }else if(maxDays===1){
+        oldestPill='<span class="ronda-age-pill">mais antigo há 1 dia</span>';
+      }else if(maxDays===0){
+        oldestPill='<span class="ronda-age-pill">criado hoje</span>';
+      }else{
+        oldestPill='<span class="ronda-age-pill">mais antigo há '+maxDays+' dias</span>';
+      }
+    }
+    
+    const abertosPill=abertos.length>0
+      ?'<span class="ronda-count-pill abertos">'+abertos.length+' pendência'+(abertos.length>1?'s':'')+'</span>'
+      :'<span class="ronda-count-pill zerado">✓ tudo resolvido</span>';
+    
+    let sugestaoHtml='';
+    if(scSug){
+      sugestaoHtml='<div class="ronda-sugestao-banner">'
+        +'<span>Sugestão da situação (item 7+ dias ou resolvido):</span>'
+        +bdg(scSug)
+        +'<button type="button" class="btn btn-p btn-sm" style="padding:2px 10px;height:24px;font-size:11px" data-ronda-accept-status="'+c.id+'" data-st="'+sug+'">Aplicar</button>'
+        +'</div>';
+    }
+    
+    const openItemsHtml=abertos.map(p=>{
+      const days=ageDays(p.criadoEm);
+      const ageCls=days>=7?' critico':days>=3?' alerta':'';
+      const respKey=p.responsavel||'move';
+      const respCfg=RPEND[respKey]||RPEND.move;
+      return '<div class="ronda-item" data-pid="'+p.id+'" data-cid="'+c.id+'">'
+        +'<button type="button" class="ronda-circle-btn" data-ronda-resolve="'+p.id+'" data-cid="'+c.id+'" title="Marcar como resolvido"></button>'
+        +'<button type="button" class="ronda-resp-pill" data-ronda-cycle-resp="'+p.id+'" data-cid="'+c.id+'" style="background:'+respCfg.b+';color:'+respCfg.c+'" title="Clique para alternar responsável (MOVE / CLIENTE / TERCEIRO)">'+respCfg.l+'</button>'
+        +'<span class="ronda-item-txt">'+esc(p.texto)+'</span>'
+        +'<span class="ronda-item-age'+ageCls+'">'+ageLabel(p.criadoEm)+'</span>'
+        +'<button type="button" class="ico" data-ronda-edit="'+p.id+'" data-cid="'+c.id+'" title="Editar item">✏</button>'
+        +'<button type="button" class="ico del" data-ronda-del="'+p.id+'" data-cid="'+c.id+'" title="Excluir item">✕</button>'
+        +'</div>';
+    }).join('');
+    
+    const resolvedItemsHtml=resolvidosRecentes.map(p=>{
+      const respKey=p.responsavel||'move';
+      const respCfg=RPEND[respKey]||RPEND.move;
+      return '<div class="ronda-item resolvido" data-pid="'+p.id+'" data-cid="'+c.id+'">'
+        +'<span class="ronda-circle-btn ok">✓</span>'
+        +'<span class="ronda-resp-pill" style="background:'+respCfg.b+';color:'+respCfg.c+'">'+respCfg.l+'</span>'
+        +'<span class="ronda-item-txt">'+esc(p.texto)+'</span>'
+        +'<span class="ronda-item-age" style="color:var(--ok)">resolvido '+ageLabel(p.resolvidoEm)+'</span>'
+        +'<button type="button" class="ico del" data-ronda-del="'+p.id+'" data-cid="'+c.id+'" title="Excluir item">✕</button>'
+        +'</div>';
+    }).join('');
+    
+    const emptyNotice=(!abertos.length&&!resolvidosRecentes.length)
+      ?'<div class="ronda-empty-itens">Nenhuma pendência cadastrada para este cliente. Adicione uma abaixo.</div>'
+      :'';
+    
+    return '<div class="ronda-card-row" data-rcid="'+c.id+'">'
+      +'<div class="ronda-summary-row" data-ronda-toggle="'+c.id+'">'
+        +'<div class="ronda-sum-left">'
+          +'<span class="ronda-toggle-ico">'+(isOpen?'▾':'▸')+'</span>'
+          +'<div class="av" style="background:'+avc(c.name)+';width:28px;height:28px;font-size:11px">'+ini(c.name)+'</div>'
+          +'<div class="ronda-cli-info">'
+            +'<div class="ronda-cli-name">'+esc(c.name)+'</div>'
+            +'<div class="ronda-cli-resp">'+esc(c.respSM||c.resp||'')+'</div>'
+          +'</div>'
+          +bdg(sc)
+        +'</div>'
+        +'<div class="ronda-sum-mid">'
+          +abertosPill
+          +oldestPill
+        +'</div>'
+        +'<div class="ronda-sum-right" onclick="event.stopPropagation()">'
+          +'<button type="button" class="ronda-visto-btn'+(vistoHoje?' ok':'')+'" data-ronda-visto="'+c.id+'" title="'+(vistoHoje?'Clique para desmarcar':'Marcar como olhei hoje')+'">'
+            +(vistoHoje?'✓ Olhei hoje':'Olhei hoje')
+          +'</button>'
+        +'</div>'
+      +'</div>'
+      +'<div class="ronda-details" style="'+(isOpen?'':'display:none')+'">'
+        +sugestaoHtml
+        +'<div class="ronda-items-list">'
+          +openItemsHtml
+          +resolvedItemsHtml
+          +emptyNotice
+        +'</div>'
+        +'<form class="ronda-add-box" data-ronda-add-form="'+c.id+'">'
+          +'<input class="ronda-add-input" placeholder="+ Adicionar pendência para '+esc(c.name)+'..." data-ronda-add-input="'+c.id+'">'
+          +'<select class="srch ronda-add-resp" data-ronda-add-resp="'+c.id+'" style="width:110px;height:34px;font-size:12px">'
+            +'<option value="move">MOVE</option>'
+            +'<option value="cliente">Cliente</option>'
+            +'<option value="terceiro">Terceiro</option>'
+          +'</select>'
+          +'<button type="submit" class="btn btn-p btn-sm" style="height:34px;padding:0 14px">Adicionar</button>'
+        +'</form>'
+      +'</div>'
+    +'</div>';
+  }).join('');
+  
+  rondaBadge();
 }
 
 
@@ -1993,26 +2465,29 @@ function openModal(mode,tid){
       +'</div>'
       +'<div class="fg2">'
         +'<div class="field"><label>Social Media (SM)</label><select id="frsm"><option value="">— vazio —</option>'+TEAM.map(r=>'<option'+(c&&c.respSM===r?' selected':'')+'>'+esc(r)+'</option>').join('')+'</select><div class="field-hint">Quem cuida das redes deste cliente</div></div>'
-        +'<div class="field"><label>Posts feitos este mês</label><input id="ff" type="number" min="0" value="'+(c?c.feitos:0)+'"><div class="field-hint">Prontos ou já postados</div></div>'
+        +'<div class="field"><label>Posts do pacote (número mensal)</label><input id="fp" type="number" min="0" value="'+(c?c.pkg:12)+'"><div class="field-hint">Total contratado no mês</div></div>'
       +'</div>'
       +'<div class="fg2">'
-        +'<div class="field"><label>Posts do pacote (número)</label><input id="fp" type="number" min="0" value="'+(c?c.pkg:12)+'"><div class="field-hint">Total mensal — base do cálculo</div></div>'
-        +'<div class="field"><label>Rótulo do pacote (opcional)</label><input id="fpt" value="'+(c?esc(c.pkgTipo||''):'')+'" placeholder="Ex: 8 + 4 · Só Reels"><div class="field-hint">Use quando não for só um número</div></div>'
+        +'<div class="field"><label>Posts feitos este mês</label><input id="ff" type="number" min="0" value="'+(c?c.feitos:0)+'"><div class="field-hint">Prontos ou postados</div></div>'
+        +'<div class="field"><label>Último programado</label><input id="fl" type="date" value="'+(c?dateInputValue(c.last):'')+'"><div class="field-hint">Data no calendário</div></div>'
       +'</div>'
       +'<div class="fg2">'
         +'<div class="field"><label>Situação</label><select id="fs">'+selSC(c?c.status:'tudo_em_dia')+'</select></div>'
-        +'<div class="field"><label>Último programado</label><input id="fl" type="date" value="'+(c?dateInputValue(c.last):'')+'"><div class="field-hint">Selecione a data no calendário ou digite-a</div></div>'
+        +'<div class="field"><label>Google Meu Negócio</label>'
+          +'<select id="fgmn">'
+            +'<option value="nao_tem"'+(c&&normGMN(c.gmn)==='nao_tem'?' selected':'')+'>NÃO TEM — cliente não usa GMN</option>'
+            +'<option value="feito"'+(c&&normGMN(c.gmn)==='feito'?' selected':'')+'>FEITO — publicações feitas no mês</option>'
+            +'<option value="nao_feito"'+(c&&normGMN(c.gmn)==='nao_feito'?' selected':'')+'>NÃO FEITO — tem GMN mas ainda não fizemos</option>'
+          +'</select>'
+        +'</div>'
       +'</div>'
-      +'<div class="field"><label>Responsável pela pendência</label><select id="frp"><option value="">— nenhum —</option>'+Object.entries(RPEND).map(([k,v])=>'<option value="'+k+'"'+(c&&c.responsavelPendencia===k?' selected':'')+'>'+v.l+'</option>').join('')+'</select><div class="field-hint">Quem precisa agir para resolver a pendência</div></div>'
-      +'<div class="field"><label>Google Meu Negócio</label>'
-        +'<select id="fgmn">'
-          +'<option value="nao_tem"'+(c&&normGMN(c.gmn)==='nao_tem'?' selected':'')+'>NÃO TEM — cliente não usa GMN</option>'
-          +'<option value="feito"'+(c&&normGMN(c.gmn)==='feito'?' selected':'')+'>FEITO — publicações feitas no mês</option>'
-          +'<option value="nao_feito"'+(c&&normGMN(c.gmn)==='nao_feito'?' selected':'')+'>NÃO FEITO — tem GMN mas ainda não fizemos</option>'
-        +'</select>'
-      +'</div>'
-      +'<div class="field"><label>Texto / Observações</label><textarea id="fo" style="min-height:90px">'+(c?esc(c.obs):'')+'</textarea><div class="field-hint">Anotações livres. Pode usar várias linhas.</div></div>'
-      +(c?'<div class="field-hint" style="margin-top:-6px">Última edição registrada: '+fmtTime(c.updated)+'</div>':'');
+      +(c
+        ? '<div style="background:var(--card2);border:1px solid var(--bdr);border-radius:var(--r-sm);padding:12px 14px;margin-top:10px;display:flex;justify-content:space-between;align-items:center">'
+            +'<div><div style="font-weight:600;font-size:13px;color:var(--t)">Pendências &amp; Itens da Ronda</div><div style="font-size:11.5px;color:var(--tm)">'+(c.pendencias||[]).filter(p=>!p.resolvidoEm).length+' pendência(s) em aberto</div></div>'
+            +'<button type="button" class="btn btn-p btn-sm" data-r-open="'+c.id+'">📋 Gerenciar na Ronda</button>'
+          +'</div>'
+          +'<div class="field-hint" style="margin-top:6px">Última edição registrada: '+fmtTime(c.updated)+'</div>'
+        : '');
   }
   else if(mode==='new-k'||mode==='edit-k'){
     const it=tid?S.contents.find(x=>x.id===tid):null;
@@ -2088,9 +2563,25 @@ async function saveModal(){
   if(m==='new-c'||m==='edit-c'){
     const name=(document.getElementById('fn').value||'').trim();
     if(!name){ toast('Preencha o nome','er'); return; }
-    const obj={name,pkg:parseInt(document.getElementById('fp').value)||0,feitos:parseInt(document.getElementById('ff').value)||0,pkgTipo:document.getElementById('fpt').value.trim(),resp:document.getElementById('fr').value,respSM:document.getElementById('frsm').value,responsavelPendencia:RPEND[document.getElementById('frp').value]?document.getElementById('frp').value:null,status:document.getElementById('fs').value,last:formatDateBR(document.getElementById('fl').value),obs:document.getElementById('fo').value.trim(),gmn:document.getElementById('fgmn').value,updated:new Date().toISOString()};
-    if(S.editId){ const c=S.clients.find(x=>x.id===S.editId); if(c) Object.assign(c,obj); toast('"'+obj.name+'" atualizado ✓'); }
-    else { S.clients.push({id:gid(),...obj}); toast('"'+obj.name+'" adicionado ✓'); }
+    const obj={
+      name,
+      pkg:parseInt(document.getElementById('fp').value)||0,
+      feitos:parseInt(document.getElementById('ff').value)||0,
+      resp:document.getElementById('fr').value,
+      respSM:document.getElementById('frsm').value,
+      status:document.getElementById('fs').value,
+      last:formatDateBR(document.getElementById('fl').value),
+      gmn:document.getElementById('fgmn').value,
+      updated:new Date().toISOString()
+    };
+    if(S.editId){
+      const c=S.clients.find(x=>x.id===S.editId);
+      if(c) Object.assign(c,obj);
+      toast('"'+obj.name+'" atualizado ✓');
+    }else{
+      S.clients.push({id:gid(),pendencias:[],vistoEm:'',...obj});
+      toast('"'+obj.name+'" adicionado ✓');
+    }
     save(); closeModal(); renderClients(); renderDash();
   }
   else if(m==='new-k'||m==='edit-k'){
@@ -2176,6 +2667,23 @@ function exportPDF(){
   const totPkg=S.clients.reduce((s,c)=>s+(c.pkg||0),0);
   const pctFeitos=totPkg>0?Math.round(totFeitos/totPkg*100):0;
 
+  // Métricas da Ronda e Gargalos da Operação (Visão Agência de Marketing)
+  let totItens=0, totResolvidos=0, pMove=0, pCli=0, pTerc=0, pCriticos=0;
+  S.clients.forEach(c=>{
+    (c.pendencias||[]).forEach(it=>{
+      totItens++;
+      if(it.resolvidoEm){
+        totResolvidos++;
+      } else {
+        const resp=(it.responsavel||'move').toLowerCase();
+        if(resp==='cliente') pCli++;
+        else if(resp==='terceiro') pTerc++;
+        else pMove++;
+        if(ageDays(it.criadoEm)>=7) pCriticos++;
+      }
+    });
+  });
+
   const attentionOrder={atrasado:0,alguma_pendencia:1};
   const attentionClients=S.clients
     .filter(c=>isImmediateAttention(c,now))
@@ -2190,16 +2698,30 @@ function exportPDF(){
     const status=attentionOrder[c.status]!==undefined
       ?{...SC[c.status]}
       :{l:'Abaixo de 50%',c:'#9B5B08',b:'rgba(196,122,26,.12)'};
-    const responsavel=pendenciaValue(c);
-    const owner=responsavel?RPEND[responsavel].l:([c.respSM,c.resp].filter(Boolean).join(' · ')||'Não definido');
-    const obs=String(c.obs||'').split(/\r?\n/)[0].trim();
+    const abertos=(c.pendencias||[]).filter(p=>!p.resolvidoEm);
+    let owner=pendenciaChip(c,true);
+    if(owner==='—'){
+      owner=[c.respSM,c.resp].filter(Boolean).join(' · ')||'Não definido';
+    }
+    let obsText='';
+    if(abertos.length){
+      obsText=abertos.map(p=>{
+        const cfg=RPEND[p.responsavel||'move']||RPEND.move;
+        const age=ageDays(p.criadoEm);
+        const ageTxt=age===0?'hoje':age+'d';
+        return '<div style="margin-bottom:2px"><span class="pr-pill" style="background:'+cfg.b+';color:'+cfg.c+';font-size:8px;padding:1px 4px;font-weight:700">'+cfg.l+'</span> '+esc(p.texto)+' <span style="color:#A39EAE;font-size:8.5px">('+ageTxt+')</span></div>';
+      }).join('');
+    } else {
+      const o=String(c.obs||'').split(/\r?\n/)[0].trim();
+      obsText=o?esc(o):'<span style="color:#A39EAE">Sem pendências registradas</span>';
+    }
     const lowProgress=low&&attentionOrder[c.status]!==undefined
       ?'<span class="pr-att-meta">Pacote: '+(Number(c.feitos)||0)+' de '+(Number(c.pkg)||0)+' ('+(((Number(c.feitos)||0)/(Number(c.pkg)||1))*100).toLocaleString('pt-BR',{maximumFractionDigits:1})+'%)</span>':'';
     return '<tr>'
       +'<td><span class="pr-att-name">'+esc(c.name||'Cliente sem nome')+'</span></td>'
       +'<td><span class="pr-pill" style="background:'+status.b+';color:'+status.c+'">'+status.l+'</span>'+lowProgress+'</td>'
-      +'<td>'+esc(owner)+'</td>'
-      +'<td>'+(obs?esc(obs):'<span style="color:#A39EAE">Sem observação registrada</span>')+'</td>'
+      +'<td>'+owner+'</td>'
+      +'<td style="font-size:9.5px;line-height:1.4">'+obsText+'</td>'
     +'</tr>';
   }).join('');
 
@@ -2211,8 +2733,20 @@ function exportPDF(){
     const falTxt=p>0?(fal>0?String(fal):fal===0?'✓':'+'+Math.abs(fal)):'—';
     const gmnVal=normGMN(c.gmn);
     const gmnCfg=GMN[gmnVal]||{l:'—',c:'#6B647A',b:'transparent'};
-    const obs=(c.obs||'').trim();
-    const obsCell=obs?esc(obs).replace(/\n/g,'<br>'):'<span style="color:#A39EAE">—</span>';
+    const abertos=(c.pendencias||[]).filter(p=>!p.resolvidoEm);
+    let obsCell;
+    if(abertos.length){
+      obsCell=abertos.map(p=>{
+        const cfg=RPEND[p.responsavel||'move']||RPEND.move;
+        const age=ageDays(p.criadoEm);
+        const ageTxt=age===0?'hoje':age+'d';
+        return '<div style="margin-bottom:2px"><span class="pr-pill" style="background:'+cfg.b+';color:'+cfg.c+';font-size:8px;padding:1px 4px;font-weight:700">'+cfg.l+'</span> '+esc(p.texto)+' <span style="color:#A39EAE;font-size:8.5px">('+ageTxt+')</span></div>';
+      }).join('');
+    } else if((c.obs||'').trim()){
+      obsCell=esc((c.obs||'').trim()).replace(/\n/g,'<br>');
+    } else {
+      obsCell='<span style="color:#A39EAE">—</span>';
+    }
     return '<tr>'
       +'<td style="font-weight:500;color:#030303">'+esc(c.name)+'</td>'
       +'<td style="text-align:center;font-weight:500;color:#3B3141">'+pkgTxt+'</td>'
@@ -2239,6 +2773,15 @@ function exportPDF(){
     +'<div class="pr-sec"><div class="pr-sec-title">Volume de <em>publicações</em></div>'
       +'<div style="display:flex;justify-content:space-between;font-size:12px;color:#6B647A;margin-bottom:6px"><span>'+totFeitos+' publicados de '+totPkg+' contratados</span><span style="font-weight:500;color:#5B108F">'+pctFeitos+'%</span></div>'
       +'<div class="pr-pbar"><div class="pr-pfill" style="width:'+Math.min(pctFeitos,100)+'%"></div></div></div>'
+    +'<div class="pr-sec">'
+      +'<div class="pr-sec-title">Saúde da Operação · <em>Gargalos por Agente</em></div>'
+      +'<div class="pr-stats" style="margin-bottom:12px">'
+        +'<div class="pr-stat"><div class="pr-stat-n" style="color:#5B108F">'+pMove+'</div><div class="pr-stat-l">Pendência MOVE</div></div>'
+        +'<div class="pr-stat"><div class="pr-stat-n" style="color:#C47A1A">'+pCli+'</div><div class="pr-stat-l">Aguardando Cliente</div></div>'
+        +'<div class="pr-stat"><div class="pr-stat-n" style="color:#5D6BE0">'+pTerc+'</div><div class="pr-stat-l">Aguardando Terceiro</div></div>'
+        +'<div class="pr-stat"><div class="pr-stat-n" style="color:#C0392B">'+pCriticos+'</div><div class="pr-stat-l">Gargalos (+7 dias)</div></div>'
+      +'</div>'
+    +'</div>'
     +'<div class="pr-sec">'
       +'<div class="pr-attention-head"><div><div class="pr-sec-title">Atenção imediata</div><p class="pr-attention-note">Clientes atrasados ou com pendência, e clientes abaixo de 50% na contagem atual a partir do dia 15. Cada cliente aparece uma única vez.</p></div>'
       +'<span class="pr-attention-count">'+attentionClients.length+' de '+S.clients.length+' clientes</span></div>'
@@ -2350,7 +2893,7 @@ async function pullExportLogsCloud(){
 /* ════════════════════════════════════════════
    NAVIGATION
 ════════════════════════════════════════════ */
-const REND={dashboard:renderDash,clientes:renderClients,relatorios:renderRel};
+const REND={dashboard:renderDash,clientes:renderClients,relatorios:renderRel,ronda:renderRonda};
 function navigate(v){
   document.querySelectorAll('.view').forEach(e=>e.classList.remove('on'));
   document.querySelectorAll('.nb').forEach(e=>e.classList.remove('on'));
@@ -2477,16 +3020,207 @@ document.addEventListener('click',e=>{
   const ck=t.closest('[data-ck]');
   if(ck){ const it=S.contents.find(x=>x.id===parseInt(ck.dataset.ck)); if(it){ it.status=ck.dataset.next; save(); renderContents(); renderDash(); toast('Status: '+(SK[ck.dataset.next]?.l||ck.dataset.next)); } return; }
 
+  // Ronda: Marcar / desmarcar visto hoje
+  const rv=t.closest('[data-ronda-visto]');
+  if(rv){
+    const cId=parseInt(rv.dataset.rondaVisto);
+    const c=S.clients.find(x=>x.id===cId);
+    if(c){
+      const today=todayISO();
+      if(c.vistoEm===today){
+        c.vistoEm='';
+        toast('Desmarcado como visto hoje');
+      }else{
+        c.vistoEm=today;
+        toast('Marcado como visto hoje ✓');
+      }
+      c.updated=new Date().toISOString();
+      save();
+      renderRonda();
+    }
+    return;
+  }
+
+  // Ronda: Alternar expansão (toca no cliente para abrir/fechar itens)
+  const rt=t.closest('[data-ronda-toggle]');
+  if(rt){
+    const cId=parseInt(rt.dataset.rondaToggle);
+    const cur=S.rondaOpen[cId]!==undefined?S.rondaOpen[cId]:true;
+    S.rondaOpen[cId]=!cur;
+    renderRonda();
+    return;
+  }
+
+  // Ronda: Alternar responsável do item (MOVE -> CLIENTE -> TERCEIRO)
+  const rcr=t.closest('[data-ronda-cycle-resp]');
+  if(rcr){
+    const cId=parseInt(rcr.dataset.cid);
+    const pId=rcr.dataset.rondaCycleResp;
+    const c=S.clients.find(x=>x.id===cId);
+    if(c){
+      const p=(c.pendencias||[]).find(x=>String(x.id)===String(pId));
+      if(p){
+        const order=['move','cliente','terceiro'];
+        const nextIdx=(order.indexOf(p.responsavel||'move')+1)%order.length;
+        p.responsavel=order[nextIdx];
+        c.updated=new Date().toISOString();
+        save();
+        renderRonda();
+        renderClients();
+        toast('Responsável: '+RPEND[p.responsavel].l);
+      }
+    }
+    return;
+  }
+
+  // Ronda: Resolver item
+  const rr=t.closest('[data-ronda-resolve]');
+  if(rr){
+    const cId=parseInt(rr.dataset.cid);
+    const pId=rr.dataset.rondaResolve;
+    const c=S.clients.find(x=>x.id===cId);
+    if(c){
+      const p=(c.pendencias||[]).find(x=>String(x.id)===String(pId));
+      if(p){
+        p.resolvidoEm=new Date().toISOString();
+        c.updated=new Date().toISOString();
+        save();
+        renderRonda();
+        renderClients();
+        toast('Item resolvido ✓');
+      }
+    }
+    return;
+  }
+
+  // Ronda: Editar texto do item
+  const re=t.closest('[data-ronda-edit]');
+  if(re){
+    const cId=parseInt(re.dataset.cid);
+    const pId=re.dataset.rondaEdit;
+    const c=S.clients.find(x=>x.id===cId);
+    if(c){
+      const p=(c.pendencias||[]).find(x=>String(x.id)===String(pId));
+      if(p){
+        const novo=prompt('Editar pendência:',p.texto);
+        if(novo!==null && novo.trim()){
+          p.texto=novo.trim();
+          c.updated=new Date().toISOString();
+          save();
+          renderRonda();
+          renderClients();
+          toast('Item atualizado ✓');
+        }
+      }
+    }
+    return;
+  }
+
+  // Ronda: Excluir item
+  const rd=t.closest('[data-ronda-del]');
+  if(rd){
+    const cId=parseInt(rd.dataset.cid);
+    const pId=rd.dataset.rondaDel;
+    const c=S.clients.find(x=>x.id===cId);
+    if(c){
+      confirm2('🗑️','Excluir este item?','Esta pendência será removida imediatamente.','Excluir',()=>{
+        c.pendencias=(c.pendencias||[]).filter(x=>String(x.id)!==String(pId));
+        c.updated=new Date().toISOString();
+        save();
+        renderRonda();
+        renderClients();
+        toast('Item excluído','wa');
+      });
+    }
+    return;
+  }
+
+  // Ronda: Aceitar status sugerido
+  const ras=t.closest('[data-ronda-accept-status]');
+  if(ras){
+    const cId=parseInt(ras.dataset.rondaAcceptStatus);
+    const newSt=ras.dataset.st;
+    const c=S.clients.find(x=>x.id===cId);
+    if(c&&SC[newSt]){
+      c.status=newSt;
+      c.updated=new Date().toISOString();
+      save();
+      renderRonda();
+      renderClients();
+      renderDash();
+      toast('Situação alterada para: '+SC[newSt].l+' ✓');
+    }
+    return;
+  }
+
+  // Ronda: Filtro tabs
+  const rft=t.closest('[data-rft]');
+  if(rft){
+    S.rondaFilter=rft.dataset.rft;
+    renderRonda();
+    return;
+  }
+
+  // Ronda: Abrir cliente na ronda (a partir da tabela ou modal)
+  const ro=t.closest('[data-r-open]');
+  if(ro){
+    closeModal();
+    const cId=parseInt(ro.dataset.rOpen);
+    const c=S.clients.find(x=>x.id===cId);
+    if(c){
+      S.rondaSearch=c.name.toLowerCase();
+      S.rondaFilter='todos';
+      S.rondaOpen[cId]=true;
+      const srchInp=document.getElementById('ronda-srch');
+      if(srchInp) srchInp.value=c.name;
+    }
+    navigate('ronda');
+    return;
+  }
+
+});
+
+// Submit listener (adicionar item na ronda com responsável)
+document.addEventListener('submit',e=>{
+  const form=e.target.closest('[data-ronda-add-form]');
+  if(form){
+    e.preventDefault();
+    const cId=parseInt(form.dataset.rondaAddForm);
+    const c=S.clients.find(x=>x.id===cId);
+    const inp=form.querySelector('[data-ronda-add-input]');
+    const sel=form.querySelector('[data-ronda-add-resp]');
+    const val=(inp?inp.value:'').trim();
+    const resp=(sel?sel.value:'move')||'move';
+    if(!val) return;
+    if(c){
+      c.pendencias=c.pendencias||[];
+      c.pendencias.push({
+        id:Date.now()+'_'+Math.random().toString(36).slice(2,7),
+        texto:val,
+        responsavel:resp,
+        criadoEm:new Date().toISOString(),
+        resolvidoEm:null
+      });
+      c.updated=new Date().toISOString();
+      S.rondaOpen[cId]=true;
+      save();
+      renderRonda();
+      renderClients();
+      toast('Item adicionado ✓');
+    }
+  }
 });
 
 // Search + filters
 document.addEventListener('input',e=>{
   if(e.target.id==='cli-srch'){ S.cliSearch=e.target.value.toLowerCase(); renderClients(); }
   if(e.target.id==='cnt-srch'){ S.cntSearch=e.target.value.toLowerCase(); renderContents(); }
+  if(e.target.id==='ronda-srch'){ S.rondaSearch=e.target.value.toLowerCase(); renderRonda(); }
 });
 document.addEventListener('change',e=>{
   if(e.target.id==='cli-resp'){ S.cliResp=e.target.value; renderClients(); }
   if(e.target.id==='cnt-resp'){ S.cntResp=e.target.value; renderContents(); }
+  if(e.target.id==='ronda-resp'){ S.rondaResp=e.target.value; renderRonda(); }
 });
 
 // ESC
@@ -2576,7 +3310,7 @@ document.getElementById('login-reset').addEventListener('click',async()=>{
   catch(err){ error.style.color='var(--er)'; error.textContent='Não foi possível enviar o e-mail agora. Tente novamente.'; }
 });
 
-(function(){ var h=(location.hash||'').slice(1); if(['dashboard','clientes','pendencias','atrasados','relatorios'].indexOf(h)<0) return; var n=0; var iv=setInterval(function(){ n++; var b=document.body.classList; if(b.contains('auth-pending')&&n<60) return; clearInterval(iv); if(!b.contains('auth-logged-out')&&typeof navigate==='function') if(h==='pendencias'){ S.cliFilter='alguma_pendencia'; h='clientes'; } else if(h==='atrasados'){ S.cliFilter='atrasado'; h='clientes'; } navigate(h); },150); })();
+(function(){ var h=(location.hash||'').slice(1); if(['dashboard','clientes','pendencias','atrasados','relatorios','ronda'].indexOf(h)<0) return; var n=0; var iv=setInterval(function(){ n++; var b=document.body.classList; if(b.contains('auth-pending')&&n<60) return; clearInterval(iv); if(!b.contains('auth-logged-out')&&typeof navigate==='function') if(h==='pendencias'||h==='ronda'){ navigate('ronda'); } else if(h==='atrasados'){ S.cliFilter='atrasado'; navigate('clientes'); } else { navigate(h); } },150); })();
 </script>
 <script src="./assets/brand/move-ui.js?v=1"></script>
 </body>
