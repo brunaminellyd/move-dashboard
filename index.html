@@ -395,50 +395,51 @@ button,input,select,textarea{font-family:inherit}
 
 /* ══ PRINT — Relatório executivo no padrão MOVE ════════ */
 @media print{
-  @page{size:A4 portrait;margin:14mm 12mm 14mm}
+  @page{size:A4 portrait;margin:10mm 12mm 10mm}
   body{background:#fff!important;color:#030303!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-family:'Nexa',system-ui,sans-serif}
   #app,#overlay,#cfm,#toast,#mob-bar,#sb-back{display:none!important}
   #print-area{display:block!important;padding:0;font-family:'Nexa',system-ui,sans-serif;color:#030303}
-  .pr-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid #5B108F}
-  .pr-logo-m{font-family:'Nexa',Georgia,serif;font-size:28px;font-weight:700;letter-spacing:.08em;color:#030303}
+  .pr-page{page-break-after:always;break-after:page;box-sizing:border-box;display:flex;flex-direction:column;min-height:265mm}
+  .pr-page:last-child{page-break-after:avoid;break-after:avoid;min-height:auto}
+  .pr-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-bottom:10px;border-bottom:2px solid #5B108F}
+  .pr-hdr-sm{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-bottom:8px;border-bottom:1.5px solid #5B108F}
+  .pr-logo-image{height:30px;width:auto;object-fit:contain;display:block}
+  .pr-logo-image-sm{height:22px;width:auto;object-fit:contain;display:block}
+  .pr-logo-m{font-family:'Nexa',Georgia,serif;font-size:20px;font-weight:700;letter-spacing:.08em;color:#030303}
   .pr-logo-m span{color:#5B108F;font-style:italic}
-  .pr-brand-info{display:flex;flex-direction:column;gap:2px}
-  .pr-sub-l{font-size:9px;color:#6B647A;letter-spacing:.14em;text-transform:uppercase;font-weight:500}
-  .pr-title{font-family:'Nexa',Georgia,serif;font-size:24px;font-weight:600;color:#030303;text-align:right;line-height:1.15}
+  .pr-brand-info{display:flex;flex-direction:column;gap:1px}
+  .pr-sub-l{font-size:8.5px;color:#6B647A;letter-spacing:.14em;text-transform:uppercase;font-weight:600}
+  .pr-title{font-family:'Nexa',Georgia,serif;font-size:21px;font-weight:600;color:#030303;text-align:right;line-height:1.15}
   .pr-title em{font-style:italic;color:#5B108F}
-  .pr-subtitle{font-size:11px;color:#6B647A;text-align:right;margin-top:3px}
-  .pr-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
-  .pr-stat{border:1px solid #E4D9EB;border-radius:10px;padding:12px 12px;text-align:center;background:#F1F1F1}
-  .pr-stat-n{font-family:'Nexa',Georgia,serif;font-size:32px;font-weight:600;color:#5B108F;line-height:1}
-  .pr-stat-l{font-size:10px;color:#6B647A;margin-top:4px;font-weight:500;letter-spacing:.02em}
-  .pr-sec{margin-bottom:16px}
-  .pr-sec-title{font-family:'Nexa',Georgia,serif;font-size:17px;font-weight:600;color:#030303;padding-left:10px;border-left:3px solid #5B108F;margin-bottom:10px;line-height:1.2;page-break-after:avoid;break-after:avoid}
+  .pr-subtitle{font-size:9.5px;color:#6B647A;text-align:right;margin-top:2px}
+  .pr-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
+  .pr-stat{border:1px solid #E4D9EB;border-radius:8px;padding:8px 10px;text-align:center;background:#F9F7FA}
+  .pr-stat-n{font-family:'Nexa',Georgia,serif;font-size:24px;font-weight:600;color:#5B108F;line-height:1}
+  .pr-stat-l{font-size:9px;color:#6B647A;margin-top:3px;font-weight:500;letter-spacing:.02em}
+  .pr-sec{margin-bottom:11px}
+  .pr-sec-title{font-family:'Nexa',Georgia,serif;font-size:14px;font-weight:600;color:#030303;padding-left:8px;border-left:3px solid #5B108F;margin-bottom:7px;line-height:1.2;page-break-after:avoid;break-after:avoid}
   .pr-sec-title em{font-style:italic;color:#5B108F}
-  .pr-pbar{background:#F7EBFF;border-radius:99px;height:8px;overflow:hidden;margin:6px 0}
+  .pr-pbar{background:#F7EBFF;border-radius:99px;height:7px;overflow:hidden;margin:4px 0}
   .pr-pfill{height:100%;background:linear-gradient(90deg,#5B108F,#D084FF);border-radius:99px}
-  table.pr-tbl{width:100%;border-collapse:collapse;font-size:10px;border:1px solid #E4D9EB;border-radius:8px;overflow:hidden;margin-bottom:10px}
-  table.pr-tbl th{background:#F1F1F1;padding:7px 8px;text-align:left;font-size:9px;font-weight:500;color:#6B647A;text-transform:uppercase;letter-spacing:.1em}
-  table.pr-tbl td{padding:6px 8px;border-bottom:1px solid #EEE8F3;color:#3B3141;vertical-align:top;line-height:1.35}
+  table.pr-tbl{width:100%;border-collapse:collapse;font-size:9px;border:1px solid #E4D9EB;border-radius:6px;overflow:hidden;margin-bottom:6px}
+  table.pr-tbl th{background:#F4F1F7;padding:5px 7px;text-align:left;font-size:8px;font-weight:600;color:#554B60;text-transform:uppercase;letter-spacing:.08em}
+  table.pr-tbl td{padding:5px 7px;border-bottom:1px solid #EEE8F3;color:#3B3141;vertical-align:middle;line-height:1.3}
   table.pr-tbl tr:last-child td{border-bottom:none}
-  table.pr-tbl tr{page-break-inside:avoid}
-  .pr-pill{display:inline-block;padding:2px 8px;border-radius:99px;font-size:9px;font-weight:600;line-height:1.4;white-space:nowrap;letter-spacing:.02em}
-  .pr-footer{margin-top:20px;padding-top:12px;border-top:1px solid #E4D9EB;font-size:9.5px;color:#6B647A;display:flex;justify-content:space-between;font-style:italic}
-  .pr-attention-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:10px;page-break-inside:avoid;break-inside:avoid}
-  .pr-attention-head .pr-sec-title{margin-bottom:3px}
-  .pr-attention-note{font-size:10px;line-height:1.45;color:#6B647A;margin:0}
-  .pr-attention-count{flex:none;border:1px solid #F0D7AF;background:#FFF8EC;color:#9B5B08;border-radius:999px;padding:5px 10px;font-size:10px;font-weight:600}
-  table.pr-att-tbl{width:100%;border-collapse:collapse;font-size:9.5px;border:1px solid #E4D9EB;border-radius:8px;overflow:hidden}
-  table.pr-att-tbl th{background:#FBF8FC;padding:6px 8px;text-align:left;font-size:8px;font-weight:600;color:#6B647A;text-transform:uppercase;letter-spacing:.08em}
+  table.pr-tbl tr{page-break-inside:avoid;break-inside:avoid}
+  .pr-pill{display:inline-block;padding:2px 7px;border-radius:99px;font-size:8px;font-weight:700;line-height:1.3;white-space:nowrap;letter-spacing:.02em}
+  .pr-footer{margin-top:auto;padding-top:8px;border-top:1px solid #E4D9EB;font-size:8.5px;color:#6B647A;display:flex;justify-content:space-between;font-style:italic}
+  .pr-attention-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:6px;page-break-inside:avoid;break-inside:avoid}
+  .pr-attention-head .pr-sec-title{margin-bottom:2px}
+  .pr-attention-note{font-size:9px;line-height:1.35;color:#6B647A;margin:0}
+  .pr-attention-count{flex:none;border:1px solid #F0D7AF;background:#FFF8EC;color:#9B5B08;border-radius:999px;padding:3px 8px;font-size:9px;font-weight:600}
+  table.pr-att-tbl{width:100%;border-collapse:collapse;font-size:9px;border:1px solid #E4D9EB;border-radius:6px;overflow:hidden}
+  table.pr-att-tbl th{background:#F8F4FA;padding:5px 7px;text-align:left;font-size:8px;font-weight:600;color:#6B647A;text-transform:uppercase;letter-spacing:.08em}
   table.pr-att-tbl thead{display:table-header-group}
-  table.pr-att-tbl td{padding:6px 8px;border-top:1px solid #EEE8F3;color:#3B3141;vertical-align:top;line-height:1.35}
+  table.pr-att-tbl td{padding:5px 7px;border-top:1px solid #EEE8F3;color:#3B3141;vertical-align:top;line-height:1.3}
   table.pr-att-tbl tr{page-break-inside:avoid;break-inside:avoid}
   .pr-att-name{font-weight:600;color:#030303}
-  .pr-att-empty{padding:12px;border:1px solid #D9EEE4;border-radius:8px;background:#F4FBF7;color:#26734F;font-size:10px}
-  .pr-att-meta{display:block;margin-top:3px;color:#9B5B08;font-size:8px;font-weight:600}
-  .pr-detail-section{page-break-before:auto;break-before:auto}
-  .pr-detail-section .pr-sec-title{margin-bottom:10px}
-  table.pr-tbl thead{display:table-header-group}
-  table.pr-tbl tr{page-break-inside:avoid;break-inside:avoid}
+  .pr-att-empty{padding:10px;border:1px solid #D9EEE4;border-radius:6px;background:#F4FBF7;color:#26734F;font-size:9.5px}
+  .pr-att-meta{display:block;margin-top:2px;color:#9B5B08;font-size:8px;font-weight:600}
 }
 
 /* ── Login Firebase + etapa inicial MOVE Feed ── */
@@ -2653,8 +2654,15 @@ async function saveModal(){
 }
 
 /* ════════════════════════════════════════════
-   RELATÓRIO PDF
+   RELATÓRIO PDF (2 PÁGINAS ESTRATÉGICAS — PADRÃO MOVE)
 ════════════════════════════════════════════ */
+function cleanItemText(txt){
+  if(!txt) return '';
+  return String(txt)
+    .replace(/^(CLIENTE|MOVE|TERCEIRO)\s*(➔|->|:|—|-)?\s*/i, '')
+    .trim();
+}
+
 function exportPDF(){
   const now=new Date();
   const ds=now.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
@@ -2693,6 +2701,8 @@ function exportPDF(){
       const pb=attentionOrder[b.status]??3;
       return pa-pb||String(a.name||'').localeCompare(String(b.name||''),'pt-BR');
     });
+
+  // Linhas da Página 1: Atenção Imediata (Somente quem precisa de ação/gargalo)
   const attRows=attentionClients.map(c=>{
     const low=belowHalfByDay15(c,now);
     const status=attentionOrder[c.status]!==undefined
@@ -2706,25 +2716,30 @@ function exportPDF(){
     let obsText='';
     if(abertos.length){
       obsText=abertos.map(p=>{
-        const cfg=RPEND[p.responsavel||'move']||RPEND.move;
+        const raw=cleanItemText(p.texto);
         const age=ageDays(p.criadoEm);
         const ageTxt=age===0?'hoje':age+'d';
-        return '<div style="margin-bottom:2px"><span class="pr-pill" style="background:'+cfg.b+';color:'+cfg.c+';font-size:8px;padding:1px 4px;font-weight:700">'+cfg.l+'</span> '+esc(p.texto)+' <span style="color:#A39EAE;font-size:8.5px">('+ageTxt+')</span></div>';
+        const isMulti=abertos.length>1;
+        const resp=(p.responsavel||'move').toLowerCase();
+        const cfg=RPEND[resp]||RPEND.move;
+        const tagDot=isMulti?'<strong style="color:'+cfg.c+'">['+cfg.l+']</strong> ':'';
+        return '<div style="margin-bottom:2px;font-size:8.5px;line-height:1.3">'+tagDot+esc(raw)+' <span style="color:#A39EAE;font-size:8px">('+ageTxt+')</span></div>';
       }).join('');
     } else {
-      const o=String(c.obs||'').split(/\r?\n/)[0].trim();
-      obsText=o?esc(o):'<span style="color:#A39EAE">Sem pendências registradas</span>';
+      const o=cleanItemText(String(c.obs||'').split(/\r?\n/)[0].trim());
+      obsText=o?'<span style="font-size:8.5px">'+esc(o)+'</span>':'<span style="color:#A39EAE">—</span>';
     }
     const lowProgress=low&&attentionOrder[c.status]!==undefined
       ?'<span class="pr-att-meta">Pacote: '+(Number(c.feitos)||0)+' de '+(Number(c.pkg)||0)+' ('+(((Number(c.feitos)||0)/(Number(c.pkg)||1))*100).toLocaleString('pt-BR',{maximumFractionDigits:1})+'%)</span>':'';
     return '<tr>'
-      +'<td><span class="pr-att-name">'+esc(c.name||'Cliente sem nome')+'</span></td>'
+      +'<td style="white-space:nowrap"><span class="pr-att-name">'+esc(c.name||'Cliente sem nome')+'</span></td>'
       +'<td><span class="pr-pill" style="background:'+status.b+';color:'+status.c+'">'+status.l+'</span>'+lowProgress+'</td>'
       +'<td>'+owner+'</td>'
-      +'<td style="font-size:9.5px;line-height:1.4">'+obsText+'</td>'
+      +'<td>'+obsText+'</td>'
     +'</tr>';
   }).join('');
 
+  // Linhas da Página 2: Resumo Completo de Todas as Contas (Com métricas de entrega)
   const cliRows=S.clients.map(c=>{
     const sc=SC[c.status]||{l:c.status,c:'#6B647A',b:'rgba(107,100,122,.1)'};
     const f=c.feitos||0,p=c.pkg||0,fal=p-f;
@@ -2735,66 +2750,106 @@ function exportPDF(){
     const gmnCfg=GMN[gmnVal]||{l:'—',c:'#6B647A',b:'transparent'};
     const abertos=(c.pendencias||[]).filter(p=>!p.resolvidoEm);
     let obsCell;
-    if(abertos.length){
-      obsCell=abertos.map(p=>{
-        const cfg=RPEND[p.responsavel||'move']||RPEND.move;
+    if(c.status==='tudo_em_dia'||(!abertos.length && !(c.obs||'').trim())){
+      obsCell='<span style="color:#1E9E6A;font-weight:600">✓ Em dia · Sem pendências</span>';
+    } else if(abertos.length){
+      obsCell=abertos.slice(0,2).map(p=>{
+        const raw=cleanItemText(p.texto);
         const age=ageDays(p.criadoEm);
         const ageTxt=age===0?'hoje':age+'d';
-        return '<div style="margin-bottom:2px"><span class="pr-pill" style="background:'+cfg.b+';color:'+cfg.c+';font-size:8px;padding:1px 4px;font-weight:700">'+cfg.l+'</span> '+esc(p.texto)+' <span style="color:#A39EAE;font-size:8.5px">('+ageTxt+')</span></div>';
-      }).join('');
-    } else if((c.obs||'').trim()){
-      obsCell=esc((c.obs||'').trim()).replace(/\n/g,'<br>');
+        return '<div style="font-size:8.5px;line-height:1.25">'+esc(raw)+' <span style="color:#A39EAE">('+ageTxt+')</span></div>';
+      }).join('')+(abertos.length>2?'<div style="font-size:8px;color:#5B108F;font-weight:600">+ '+(abertos.length-2)+' item(ns)…</div>':'');
     } else {
-      obsCell='<span style="color:#A39EAE">—</span>';
+      const o=cleanItemText(String(c.obs||'').split(/\r?\n/)[0].trim());
+      obsCell=o?'<span style="font-size:8.5px">'+esc(o)+'</span>':'<span style="color:#A39EAE">—</span>';
     }
     return '<tr>'
-      +'<td style="font-weight:500;color:#030303">'+esc(c.name)+'</td>'
+      +'<td style="font-weight:600;color:#030303;white-space:nowrap">'+esc(c.name)+'</td>'
       +'<td style="text-align:center;font-weight:500;color:#3B3141">'+pkgTxt+'</td>'
+      +'<td style="text-align:center;font-weight:600;color:#5B108F">'+f+'</td>'
       +'<td style="text-align:center;font-weight:600;color:'+falColor+'">'+falTxt+'</td>'
       +'<td><span class="pr-pill" style="background:'+sc.b+';color:'+sc.c+'">'+sc.l+'</span></td>'
       +'<td>'+pendenciaChip(c,true)+'</td>'
       +'<td><span class="pr-pill" style="background:'+gmnCfg.b+';color:'+gmnCfg.c+'">'+gmnCfg.l+'</span></td>'
-      +'<td style="font-size:9.5px;color:#6B647A;white-space:normal;line-height:1.4;max-width:220px">'+obsCell+'</td>'
+      +'<td style="max-width:240px">'+obsCell+'</td>'
       +'</tr>';
   }).join('');
 
   document.getElementById('print-area').innerHTML=
-    '<div class="pr-page-summary">'
-    +'<div class="pr-hdr">'
-      +'<div class="pr-brand-info"><img class="pr-logo-image" src="./assets/brand/move-logo.png" alt="MOVE Marketing"><div class="pr-sub-l">Central Operacional</div></div>'
-      +'<div><div class="pr-title">Relatório <em>Executivo</em></div><div class="pr-subtitle">Gerado em '+ds+'</div></div>'
-    +'</div>'
-    +'<div class="pr-stats">'
-      +'<div class="pr-stat"><div class="pr-stat-n">'+S.clients.length+'</div><div class="pr-stat-l">Clientes ativos</div></div>'
-      +'<div class="pr-stat"><div class="pr-stat-n" style="color:#1E9E6A">'+emDia+'</div><div class="pr-stat-l">Em dia ('+pctEmDia+'%)</div></div>'
-      +'<div class="pr-stat"><div class="pr-stat-n" style="color:#C0392B">'+cliAtras+'</div><div class="pr-stat-l">Atrasados</div></div>'
-      +'<div class="pr-stat"><div class="pr-stat-n" style="color:#5D6BE0">'+gmnFeito+'</div><div class="pr-stat-l">GMN feito</div></div>'
-    +'</div>'
-    +'<div class="pr-sec"><div class="pr-sec-title">Volume de <em>publicações</em></div>'
-      +'<div style="display:flex;justify-content:space-between;font-size:12px;color:#6B647A;margin-bottom:6px"><span>'+totFeitos+' publicados de '+totPkg+' contratados</span><span style="font-weight:500;color:#5B108F">'+pctFeitos+'%</span></div>'
-      +'<div class="pr-pbar"><div class="pr-pfill" style="width:'+Math.min(pctFeitos,100)+'%"></div></div></div>'
-    +'<div class="pr-sec">'
-      +'<div class="pr-sec-title">Saúde da Operação · <em>Gargalos por Agente</em></div>'
-      +'<div class="pr-stats" style="margin-bottom:12px">'
-        +'<div class="pr-stat"><div class="pr-stat-n" style="color:#5B108F">'+pMove+'</div><div class="pr-stat-l">Pendência MOVE</div></div>'
-        +'<div class="pr-stat"><div class="pr-stat-n" style="color:#C47A1A">'+pCli+'</div><div class="pr-stat-l">Aguardando Cliente</div></div>'
-        +'<div class="pr-stat"><div class="pr-stat-n" style="color:#5D6BE0">'+pTerc+'</div><div class="pr-stat-l">Aguardando Terceiro</div></div>'
-        +'<div class="pr-stat"><div class="pr-stat-n" style="color:#C0392B">'+pCriticos+'</div><div class="pr-stat-l">Gargalos (+7 dias)</div></div>'
+    // ════ PÁGINA 1: VISÃO EXECUTIVA & GARGALOS ════
+    '<div class="pr-page">'
+      +'<div>'
+        +'<div class="pr-hdr">'
+          +'<div class="pr-brand-info">'
+            +'<img class="pr-logo-image" src="./assets/brand/move-logo.png" alt="MOVE Marketing">'
+            +'<div class="pr-sub-l">Central Operacional · Visão Executiva</div>'
+          +'</div>'
+          +'<div>'
+            +'<div class="pr-title">Relatório <em>Executivo</em></div>'
+            +'<div class="pr-subtitle">Gerado em '+ds+' · <strong>Página 1 de 2</strong></div>'
+          +'</div>'
+        +'</div>'
+
+        +'<div class="pr-stats">'
+          +'<div class="pr-stat"><div class="pr-stat-n">'+S.clients.length+'</div><div class="pr-stat-l">Clientes ativos</div></div>'
+          +'<div class="pr-stat"><div class="pr-stat-n" style="color:#1E9E6A">'+emDia+'</div><div class="pr-stat-l">Em dia ('+pctEmDia+'%)</div></div>'
+          +'<div class="pr-stat"><div class="pr-stat-n" style="color:#C0392B">'+cliAtras+'</div><div class="pr-stat-l">Atrasados</div></div>'
+          +'<div class="pr-stat"><div class="pr-stat-n" style="color:#5D6BE0">'+gmnFeito+'</div><div class="pr-stat-l">GMN feito</div></div>'
+        +'</div>'
+
+        +'<div class="pr-sec">'
+          +'<div class="pr-sec-title">Volume de <em>publicações do mês</em></div>'
+          +'<div style="display:flex;justify-content:space-between;font-size:11px;color:#6B647A;margin-bottom:4px"><span>'+totFeitos+' publicados de '+totPkg+' contratados</span><span style="font-weight:600;color:#5B108F">'+pctFeitos+'%</span></div>'
+          +'<div class="pr-pbar"><div class="pr-pfill" style="width:'+Math.min(pctFeitos,100)+'%"></div></div>'
+        +'</div>'
+
+        +'<div class="pr-sec">'
+          +'<div class="pr-sec-title">Saúde da Operação · <em>Gargalos por Agente</em></div>'
+          +'<div class="pr-stats">'
+            +'<div class="pr-stat"><div class="pr-stat-n" style="color:#5B108F">'+pMove+'</div><div class="pr-stat-l">Pendência MOVE</div></div>'
+            +'<div class="pr-stat"><div class="pr-stat-n" style="color:#C47A1A">'+pCli+'</div><div class="pr-stat-l">Aguardando Cliente</div></div>'
+            +'<div class="pr-stat"><div class="pr-stat-n" style="color:#5D6BE0">'+pTerc+'</div><div class="pr-stat-l">Aguardando Terceiro</div></div>'
+            +'<div class="pr-stat"><div class="pr-stat-n" style="color:#C0392B">'+pCriticos+'</div><div class="pr-stat-l">Gargalos (+7 dias)</div></div>'
+          +'</div>'
+        +'</div>'
+
+        +'<div class="pr-sec">'
+          +'<div class="pr-attention-head">'
+            +'<div>'
+              +'<div class="pr-sec-title">Atenção Imediata & Gargalos</div>'
+              +'<p class="pr-attention-note">Contas que necessitam de intervenção hoje: pendências abertas, atrasos ou entregas pendentes.</p>'
+            +'</div>'
+            +'<span class="pr-attention-count">'+attentionClients.length+' de '+S.clients.length+' contas</span>'
+          +'</div>'
+          +(attRows
+            ?'<table class="pr-att-tbl"><thead><tr><th>Cliente</th><th>Situação</th><th>Responsável</th><th>O que precisa de ação / Gargalo</th></tr></thead><tbody>'+attRows+'</tbody></table>'
+            :'<div class="pr-att-empty">✓ Nenhuma conta requer atenção imediata no momento. Todas as operações em dia.</div>')
+        +'</div>'
       +'</div>'
+      +'<div class="pr-footer"><span>MOVE Marketing — Central Operacional</span><span>Página 1 de 2 · Visão Executiva & Gargalos</span></div>'
     +'</div>'
-    +'<div class="pr-sec">'
-      +'<div class="pr-attention-head"><div><div class="pr-sec-title">Atenção imediata</div><p class="pr-attention-note">Clientes atrasados ou com pendência, e clientes abaixo de 50% na contagem atual a partir do dia 15. Cada cliente aparece uma única vez.</p></div>'
-      +'<span class="pr-attention-count">'+attentionClients.length+' de '+S.clients.length+' clientes</span></div>'
-      +(attRows
-        ?'<table class="pr-att-tbl"><thead><tr><th>Cliente</th><th>Situação</th><th>Responsável</th><th>Observação / próximo passo</th></tr></thead><tbody>'+attRows+'</tbody></table>'
-        :'<div class="pr-att-empty">Nenhum cliente requer atenção neste momento.</div>')
-    +'</div>'
-    +'</div>'
-    +'<div class="pr-detail-section">'
-    +'<div class="pr-sec"><div class="pr-sec-title">Resumo completo por <em>cliente</em></div>'
-      +'<table class="pr-tbl"><thead><tr><th>Cliente</th><th style="text-align:center">Pacote</th><th style="text-align:center">Faltam</th><th>Situação</th><th>Responsável</th><th>GMN</th><th>Comentários</th></tr></thead><tbody>'+cliRows+'</tbody></table>'
-    +'</div>'
-    +'<div class="pr-footer"><span>MOVE Marketing — Central Operacional</span><span>'+ds+'</span></div>';
+
+    // ════ PÁGINA 2: FECHAMENTO GERAL DE CONTAS ════
+    +'<div class="pr-page">'
+      +'<div>'
+        +'<div class="pr-hdr-sm">'
+          +'<div class="pr-brand-info">'
+            +'<img class="pr-logo-image-sm" src="./assets/brand/move-logo.png" alt="MOVE Marketing">'
+            +'<div class="pr-sub-l">Fechamento Geral de Clientes</div>'
+          +'</div>'
+          +'<div style="text-align:right">'
+            +'<div style="font-size:12px;font-weight:600;color:#030303">Relatório Operacional de Todas as Contas</div>'
+            +'<div class="pr-subtitle">Gerado em '+ds+' · <strong>Página 2 de 2</strong></div>'
+          +'</div>'
+        +'</div>'
+
+        +'<div class="pr-sec">'
+          +'<div class="pr-sec-title">Resumo Completo de <em>todas as contas</em></div>'
+          +'<table class="pr-tbl"><thead><tr><th>Cliente</th><th style="text-align:center">Pacote</th><th style="text-align:center">Feitos</th><th style="text-align:center">Faltam</th><th>Situação</th><th>Resp.</th><th>GMN</th><th>Próxima Etapa / Status</th></tr></thead><tbody>'+cliRows+'</tbody></table>'
+        +'</div>'
+      +'</div>'
+      +'<div class="pr-footer"><span>MOVE Marketing — Central Operacional</span><span>Página 2 de 2 · Fechamento Geral</span></div>'
+    +'</div>';
 
   setTimeout(()=>{
     window.print();
