@@ -660,6 +660,7 @@ body{background:radial-gradient(900px 600px at 8% 10%,rgba(208,132,255,.5),trans
       #v-ronda .ronda-add-box .srch{width:100%!important}
     }
   </style>
+<style id="cmp-css">.cmp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}.cmp-grid.c4{grid-template-columns:repeat(4,1fr)}@media(max-width:768px){.cmp-grid,.cmp-grid.c4{grid-template-columns:repeat(2,1fr)}}</style>
 </head>
 <body class="auth-pending move-index">
 <div id="auth-gate" aria-live="polite">
@@ -791,6 +792,7 @@ body{background:radial-gradient(900px 600px at 8% 10%,rgba(208,132,255,.5),trans
   <div class="g3" style="margin-bottom:16px" id="rep-stats"></div>
   <div class="card" style="margin-bottom:14px" id="rep-prog"></div>
   <div class="card" style="margin-bottom:14px" id="rep-operacao"></div>
+  <div class="card" style="margin-bottom:14px" id="rep-cmp"></div>
   <div class="card" style="margin-bottom:14px;padding:0;overflow:hidden" id="rep-tbl"></div>
   <div class="card" style="margin-bottom:14px" id="rep-history"></div>
   <div class="g2" id="rep-ins"></div>
@@ -933,7 +935,7 @@ const S={
   cntFilter:'todos', cntSearch:'', cntView:'lista', cntResp:'todos',
   rondaSearch:'', rondaResp:'todos', rondaFilter:'todos', rondaOpen:{},
   exportLogs:[], firebaseCfg:null, firebaseReady:false,
-  lastCloudSyncAt:'',
+  lastCloudSyncAt:'', fechamentos:[],
   modal:null, editId:null,
 };
 
@@ -961,7 +963,7 @@ function migrateClientObs(c){
   }
 }
 function save(){
-  try{ localStorage.setItem(LS,JSON.stringify({clients:S.clients,contents:S.contents,nextId:S.nextId,exportLogs:S.exportLogs,firebaseCfg:S.firebaseCfg,lastCloudSyncAt:S.lastCloudSyncAt})); }
+  try{ localStorage.setItem(LS,JSON.stringify({clients:S.clients,contents:S.contents,nextId:S.nextId,exportLogs:S.exportLogs,fechamentos:S.fechamentos||[],firebaseCfg:S.firebaseCfg,lastCloudSyncAt:S.lastCloudSyncAt})); }
   catch(e){}
   queueCloudStateSave();
 }
@@ -977,6 +979,7 @@ function load(){
       S.contents=d.contents||[];
       S.nextId=d.nextId||300;
       S.exportLogs=Array.isArray(d.exportLogs)?d.exportLogs:[];
+      S.fechamentos=Array.isArray(d.fechamentos)?d.fechamentos:[];
       S.firebaseCfg=d.firebaseCfg||null;
       S.lastCloudSyncAt=d.lastCloudSyncAt||'';
     }
@@ -1021,6 +1024,7 @@ function buildCloudStatePayload(){
     contents:S.contents,
     nextId:S.nextId,
     exportLogs:S.exportLogs||[],
+    fechamentos:S.fechamentos||[],
     updatedAtIso:new Date().toISOString(),
     source:'move-dashboard-web'
   };
@@ -1037,6 +1041,7 @@ function applyCloudState(payload){
     S.contents=payload.contents;
     S.nextId=payload.nextId||300;
     S.exportLogs=Array.isArray(payload.exportLogs)?payload.exportLogs:[];
+    if(Array.isArray(payload.fechamentos)) S.fechamentos=payload.fechamentos;
     S.lastCloudSyncAt=payload.updatedAtIso||new Date().toISOString();
     save();
     return true;
@@ -1055,7 +1060,7 @@ async function saveCloudStateNow(){
     await fb.db.collection(CLOUD_STATE_COLLECTION).doc(CLOUD_STATE_DOC).set(payload,{merge:true});
     S.lastCloudSyncAt=payload.updatedAtIso;
     setSync('ok');
-    try{ localStorage.setItem(LS,JSON.stringify({clients:S.clients,contents:S.contents,nextId:S.nextId,exportLogs:S.exportLogs,firebaseCfg:S.firebaseCfg,lastCloudSyncAt:S.lastCloudSyncAt})); }catch(e){}
+    try{ localStorage.setItem(LS,JSON.stringify({clients:S.clients,contents:S.contents,nextId:S.nextId,exportLogs:S.exportLogs,fechamentos:S.fechamentos||[],firebaseCfg:S.firebaseCfg,lastCloudSyncAt:S.lastCloudSyncAt})); }catch(e){}
     return true;
   }catch(e){
     S.firebaseReady=false;
@@ -1342,27 +1347,38 @@ function openDatePicker(input){
   if(!input||typeof input.showPicker!=='function') return;
   try{ input.showPicker(); }catch(e){}
 }
-// Parser de data DD/MM/AAAA ou DD/MM (assume ano atual)
+// Parser de data DD/MM/AAAA, DD/MM ou YYYY-MM-DD
 function parseProgDate(s){
   if(!s) return null;
-  const p=String(s).trim().split('/');
+  const str=String(s).trim();
+  const isoMatch=str.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if(isoMatch){
+    return new Date(parseInt(isoMatch[1],10), parseInt(isoMatch[2],10)-1, parseInt(isoMatch[3],10));
+  }
+  const p=str.split('/');
   if(p.length<2) return null;
-  const d=parseInt(p[0]),m=parseInt(p[1]);
-  if(isNaN(d)||isNaN(m)) return null;
-  let y=p[2]?parseInt(p[2]):new Date().getFullYear();
+  const d=parseInt(p[0],10),m=parseInt(p[1],10);
+  if(isNaN(d)||isNaN(m)||d<1||d>31||m<1||m>12) return null;
+  let y=p[2]?parseInt(p[2],10):new Date().getFullYear();
   if(isNaN(y)) y=new Date().getFullYear();
   // Ano com 2 dígitos (ex: "26") vira 2026
   if(y<100) y+=2000;
   return new Date(y,m-1,d);
 }
-// Pauta suficiente? — fórmula do Notion: (lastProg - updated) >= 5 dias
+// Pauta suficiente? — Olha apenas para o "Último programado" (c.last):
+// - Se a data estiver a 7 dias ou mais de hoje (futuro >= 7 dias): 'bom' (✅ BOM)
+// - Se estiver dentro dos próximos 7 dias, já passou ou estiver vazia: 'agir' (⚠️ AGIR)
 function calcPauta(c){
-  if(!c.last||!c.updated) return 'unk';
+  if(!c||!c.last) return 'agir';
   const prog=parseProgDate(c.last);
-  const upd=new Date(c.updated);
-  if(!prog||isNaN(upd.getTime())) return 'unk';
-  const days=Math.round((prog-upd)/86400000);
-  return days>=5?'bom':'agir';
+  if(!prog||isNaN(prog.getTime())) return 'agir';
+
+  const now=new Date();
+  const today=new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const target=new Date(prog.getFullYear(), prog.getMonth(), prog.getDate());
+
+  const diffDays=Math.round((target-today)/86400000);
+  return diffDays>=7 ? 'bom' : 'agir';
 }
 
 /* ════════════════════════════════════════════
@@ -1684,7 +1700,7 @@ function renderClients(){
         +'<td><span class="cell-edit" data-edit="last" data-id="'+c.id+'" style="color:'+(c.last?'var(--ts)':'var(--tm)')+';font-size:11px">'+(c.last||'— vazio —')+'</span></td>'
         +'<td><span class="tag-pill" data-cc="'+c.id+'" data-next="'+nextSt+'" style="background:'+sc.b+';color:'+sc.c+'" title="Clique para avançar">'+sc.l+'</span></td>'
         +'<td><div style="cursor:pointer" data-r-open="'+c.id+'" title="Calculado a partir das pendências da Ronda">'+pendOwnersHtml+'</div></td>'
-        +'<td><span class="pauta-pill" style="background:'+pCfg.b+';color:'+pCfg.c+'" title="Calculado automaticamente: (Último programado − Última edição) ≥ 5 dias = BOM">'+pCfg.l+'</span></td>'
+        +'<td><span class="pauta-pill" style="background:'+pCfg.b+';color:'+pCfg.c+'" title="Pauta calculada pelo Último programado: a 7 dias ou mais de hoje = BOM; dentro de 7 dias, vencido ou vazio = AGIR">'+pCfg.l+'</span></td>'
         +'<td><span class="gmn-pill" data-gmn-cycle="'+c.id+'" data-next-gmn="'+nextGmn+'" style="background:'+gmnCfg.b+';color:'+gmnCfg.c+'" title="Clique para ciclar">'+gmnCfg.l+'</span></td>'
         +'<td><div class="'+obsCls+'" data-r-open="'+c.id+'" title="Clique para abrir e gerenciar na Ronda">'+obsDisplay+'</div></td>'
         +'<td style="white-space:nowrap">'
@@ -1893,7 +1909,7 @@ function renderRel(){
   let vistosHoje=0;
 
   S.clients.forEach(c=>{
-    if(c.rondaVistoEm && c.rondaVistoEm.slice(0,10)===hoje) vistosHoje++;
+    if(c.vistoEm===hoje) vistosHoje++;
     (c.pendencias||[]).forEach(it=>{
       totItens++;
       if(it.resolvidoEm){
@@ -2045,6 +2061,8 @@ function renderRel(){
     +'<div class="ir"><span style="color:var(--ts)">GMN feitos no mês</span><span style="color:var(--in);font-weight:600">'+gmnFeito+'</span></div>'
     +'<div class="ir"><span style="color:var(--ts)">Total de publicações</span><span style="color:var(--violet);font-weight:600">'+totFeitos+'</span></div>'
     +'</div>';
+  renderCmp();
+  fchAplicaPermissoes();
   renderExportHistory();
 }
 
@@ -2453,7 +2471,7 @@ function openModal(mode,tid){
   const MB=document.getElementById('modal-body');
   const MS=document.getElementById('modal-save');
   const MF=document.getElementById('modal-foot');
-  MS.style.display=''; MF.style.display='flex';
+  MS.style.display=''; MS.disabled=false; MF.style.display='flex';
 
   if(mode==='new-c'||mode==='edit-c'){
     const c=tid?S.clients.find(x=>x.id===tid):null;
@@ -2532,6 +2550,20 @@ function openModal(mode,tid){
         +'<div class="field-hint">No Google Drive, clique direito no arquivo → Compartilhar → "Qualquer pessoa com o link" → Copiar link → cole aqui</div>'
       +'</div>';
   }
+  else if(mode==='fechar-mes'){
+    const hoje=new Date(), dia=hoje.getDate();
+    const cur=mesKey(hoje), prev=mesKey(new Date(hoje.getFullYear(),hoje.getMonth()-1,1)), prev2=mesKey(new Date(hoje.getFullYear(),hoje.getMonth()-2,1));
+    const def=dia<=7?prev:cur;
+    const fechados=(S.fechamentos||[]).map(function(f){return f.mes;});
+    MT.innerHTML='Fechar <em>mês</em>';
+    MS.textContent='Fechar mês';
+    MB.innerHTML=
+      '<div style="font-size:13px;color:var(--ts);margin-bottom:16px;line-height:1.6">Guarda um retrato dos números do mês para comparar com os próximos. Entregas, situação e GMN são os de agora; as pendências são calculadas pelas datas.</div>'
+      +'<div class="field"><label>Mês que está sendo fechado</label><select id="fcm-mes">'+[cur,prev,prev2].map(function(k){return '<option value="'+k+'"'+(k===def?' selected':'')+'>'+mesLabel(k)+(fechados.indexOf(k)>=0?' — já fechado':'')+'</option>';}).join('')+'</select></div>'
+      +'<div id="fcm-prev" style="padding:12px 14px;background:var(--card2);border:1px solid var(--bdr);border-radius:var(--r-sm);font-size:12.5px;line-height:1.7;color:var(--ts);margin-bottom:16px"></div>'
+      +'<div class="field" style="margin-bottom:6px"><label style="display:flex;gap:10px;align-items:flex-start;text-transform:none;letter-spacing:0;font-size:13px;color:var(--t);cursor:pointer"><input type="checkbox" id="fcm-zerar" style="width:auto;padding:0;margin-top:3px"'+(dia<=7?' checked':'')+'><span>Zerar para o novo mês<br><span style="color:var(--tm);font-size:12px;line-height:1.5">Posts feitos voltam a 0 e GMN “Feito” volta a “Não feito”. Os números são guardados antes de zerar. As pendências abertas continuam na ronda.</span></span></label></div>';
+    setTimeout(fchPreview,0);
+  }
   else if(mode==='fbcfg'){
     const fc=S.firebaseCfg||{};
     MT.textContent='Configuração Firebase';
@@ -2603,6 +2635,7 @@ async function saveModal(){
     else { S.contents.push({id:gid(),...obj}); toast('"'+obj.title+'" adicionado ✓'); }
     save(); closeModal(); renderContents(); renderDash();
   }
+  else if(m==='fechar-mes'){ fchSalvar(); }
   else if(m==='fbcfg'){
     const cfg={
       apiKey:(document.getElementById('fb-apiKey').value||'').trim(),
@@ -2775,6 +2808,8 @@ function exportPDF(){
       +'</tr>';
   }).join('');
 
+  const cmpOn=cmpPrintOk(), TP=cmpOn?3:2;
+  const cmpPg=cmpOn?cmpPrintPage(ds,2,TP):'';
   document.getElementById('print-area').innerHTML=
     // ════ PÁGINA 1: VISÃO EXECUTIVA & GARGALOS ════
     '<div class="pr-page">'
@@ -2786,7 +2821,7 @@ function exportPDF(){
           +'</div>'
           +'<div>'
             +'<div class="pr-title">Relatório <em>Executivo</em></div>'
-            +'<div class="pr-subtitle">Gerado em '+ds+' · <strong>Página 1 de 2</strong></div>'
+            +'<div class="pr-subtitle">Gerado em '+ds+' · <strong>Página 1 de '+TP+'</strong></div>'
           +'</div>'
         +'</div>'
 
@@ -2826,9 +2861,10 @@ function exportPDF(){
             :'<div class="pr-att-empty">✓ Nenhuma conta requer atenção imediata no momento. Todas as operações em dia.</div>')
         +'</div>'
       +'</div>'
-      +'<div class="pr-footer"><span>MOVE Marketing — Central Operacional</span><span>Página 1 de 2 · Visão Executiva & Gargalos</span></div>'
+      +'<div class="pr-footer"><span>MOVE Marketing — Central Operacional</span><span>Página 1 de '+TP+' · Visão Executiva & Gargalos</span></div>'
     +'</div>'
 
+    +cmpPg
     // ════ PÁGINA 2: FECHAMENTO GERAL DE CONTAS ════
     +'<div class="pr-page">'
       +'<div>'
@@ -2839,7 +2875,7 @@ function exportPDF(){
           +'</div>'
           +'<div style="text-align:right">'
             +'<div style="font-size:12px;font-weight:600;color:#030303">Relatório Operacional de Todas as Contas</div>'
-            +'<div class="pr-subtitle">Gerado em '+ds+' · <strong>Página 2 de 2</strong></div>'
+            +'<div class="pr-subtitle">Gerado em '+ds+' · <strong>Página '+(cmpOn?3:2)+' de '+TP+'</strong></div>'
           +'</div>'
         +'</div>'
 
@@ -2848,7 +2884,7 @@ function exportPDF(){
           +'<table class="pr-tbl"><thead><tr><th>Cliente</th><th style="text-align:center">Pacote</th><th style="text-align:center">Feitos</th><th style="text-align:center">Faltam</th><th>Situação</th><th>Resp.</th><th>GMN</th><th>Próxima Etapa / Status</th></tr></thead><tbody>'+cliRows+'</tbody></table>'
         +'</div>'
       +'</div>'
-      +'<div class="pr-footer"><span>MOVE Marketing — Central Operacional</span><span>Página 2 de 2 · Fechamento Geral</span></div>'
+      +'<div class="pr-footer"><span>MOVE Marketing — Central Operacional</span><span>Página '+(cmpOn?3:2)+' de '+TP+' · Fechamento Geral</span></div>'
     +'</div>';
 
   setTimeout(()=>{
@@ -2948,6 +2984,338 @@ async function pullExportLogsCloud(){
 /* ════════════════════════════════════════════
    NAVIGATION
 ════════════════════════════════════════════ */
+/* ════════════════════════════════════════════
+   FECHAMENTO MENSAL & COMPARATIVOS
+   Os fechamentos ficam em S.fechamentos (dentro de app_state/current),
+   então não exigem nenhuma regra nova no Firestore.
+   Mês a mês: usa os fechamentos salvos + o mês em andamento (ao vivo).
+   Semana a semana: calculado ao vivo pelas datas das pendências.
+════════════════════════════════════════════ */
+const FCH_ADMINS=['brunaminellyd@gmail.com'];
+const FCH_MAX=36;
+const CMP={view:'mes',a:undefined,b:undefined,det:false};
+const MES_N=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+const MES_C=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+
+function fchEmail(){ const u=FBX&&FBX.auth&&FBX.auth.currentUser; return (u&&u.email)?String(u.email).toLowerCase():''; }
+function fchAdmin(){ return FCH_ADMINS.indexOf(fchEmail())>=0; }
+function fchAplicaPermissoes(){
+  const b=document.getElementById('btn-reset');
+  if(b) b.style.display=fchAdmin()?'':'none';
+}
+function mesKey(d){ d=d||new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'); }
+function mesRange(k){ const p=k.split('-'), y=+p[0], m=+p[1]; return {ini:new Date(y,m-1,1), fim:new Date(y,m,1)}; }
+function mesLabel(k,curto){
+  const p=k.split('-'), y=+p[0], m=+p[1];
+  return curto?MES_C[m-1]+'/'+String(y).slice(2):MES_N[m-1].charAt(0).toUpperCase()+MES_N[m-1].slice(1)+' de '+y;
+}
+function fchData(iso){ const d=new Date(iso); return isNaN(d)?'—':d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}); }
+
+/* ── Cálculo de um mês (usado no fechamento e no "ao vivo") ── */
+function calcMes(key,ate){
+  const r=mesRange(key), ini=r.ini.getTime(), fimMes=r.fim.getTime();
+  const lim=(ate&&ate.getTime()<fimMes)?ate.getTime():fimMes;
+  const cl=S.clients||[];
+  const out={mes:key,parcial:lim<fimMes,cli:cl.length,pkg:0,feitos:0,pct:0,
+    st:{em_dia:0,pend:0,atras:0,sem:0},gmn:{f:0,nf:0,at:0,pct:0},
+    p:{criadas:0,resolvidas:0,abertas:0,tempo:null,origem:{move:0,cliente:0,terceiro:0}},
+    resp:[],c:[]};
+  let somaT=0,nT=0;
+  const porResp={};
+  cl.forEach(function(c){
+    const pk=c.pkg||0, f=c.feitos||0;
+    out.pkg+=pk; out.feitos+=f;
+    const st=c.status||'';
+    if(st==='tudo_em_dia') out.st.em_dia++; else if(st==='alguma_pendencia') out.st.pend++;
+    else if(st==='atrasado') out.st.atras++; else if(st==='sem_dados') out.st.sem++;
+    const g=normGMN(c.gmn);
+    if(g==='feito') out.gmn.f++; else if(g==='nao_feito') out.gmn.nf++;
+    if(g!=='nao_tem') out.gmn.at++;
+    let ab=0;
+    (c.pendencias||[]).forEach(function(p){
+      const cr=new Date(p.criadoEm).getTime(); if(isNaN(cr)) return;
+      const rsRaw=p.resolvidoEm?new Date(p.resolvidoEm).getTime():null;
+      const rs=(rsRaw===null||isNaN(rsRaw))?null:rsRaw;
+      const o=(p.responsavel==='cliente'||p.responsavel==='terceiro')?p.responsavel:'move';
+      if(cr>=ini&&cr<lim) out.p.criadas++;
+      if(rs!==null&&rs>=ini&&rs<lim){ out.p.resolvidas++; somaT+=Math.max(0,(rs-cr)/864e5); nT++; }
+      if(cr<lim&&(rs===null||rs>=lim)) ab++;
+      if(cr<lim&&(rs===null||rs>=ini)) out.p.origem[o]++;
+    });
+    out.p.abertas+=ab;
+    const rn=c.resp||'Sem responsável';
+    const R=porResp[rn]||(porResp[rn]={n:rn,cli:0,pkg:0,feitos:0,ab:0});
+    R.cli++; R.pkg+=pk; R.feitos+=f; R.ab+=ab;
+    out.c.push({id:c.id,n:c.name||'',pk:pk,f:f,st:st,g:g,ab:ab});
+  });
+  out.resp=Object.keys(porResp).map(function(k){return porResp[k];});
+  out.pct=out.pkg>0?Math.round(out.feitos/out.pkg*100):0;
+  out.gmn.pct=out.gmn.at?Math.round(out.gmn.f/out.gmn.at*100):0;
+  out.p.tempo=nT?Math.round(somaT/nT*10)/10:null;
+  return out;
+}
+function calcSemana(off){
+  const fim=Date.now()-off*7*864e5, ini=fim-7*864e5;
+  let cr_=0,rs_=0,ab=0,par=0;
+  (S.clients||[]).forEach(function(c){ (c.pendencias||[]).forEach(function(p){
+    const cr=new Date(p.criadoEm).getTime(); if(isNaN(cr)) return;
+    const rsRaw=p.resolvidoEm?new Date(p.resolvidoEm).getTime():null;
+    const rs=(rsRaw===null||isNaN(rsRaw))?null:rsRaw;
+    if(cr>=ini&&cr<fim) cr_++;
+    if(rs!==null&&rs>=ini&&rs<fim) rs_++;
+    if(cr<fim&&(rs===null||rs>=fim)){ ab++; if(fim-cr>=7*864e5) par++; }
+  }); });
+  return {ini:ini,fim:fim,criadas:cr_,resolvidas:rs_,abertas:ab,paradas:par};
+}
+
+/* ── Seleção A (principal) x B (comparação) ── */
+function cmpOrdenados(){ return (S.fechamentos||[]).slice().sort(function(x,y){return y.mes.localeCompare(x.mes);}); }
+function cmpGet(k){
+  if(k==='live') return calcMes(mesKey(),new Date());
+  return (S.fechamentos||[]).find(function(f){return f.mes===k;})||null;
+}
+function cmpSel(){
+  const fs=cmpOrdenados();
+  const d=fs.length?{a:fs[0].mes,b:fs[1]?fs[1].mes:null}:{a:'live',b:null};
+  const ok=function(k){ return k==='live'||(S.fechamentos||[]).some(function(f){return f.mes===k;}); };
+  let a=CMP.a, b=CMP.b;
+  if(a===undefined||!ok(a)) a=d.a;
+  if(b===undefined||(b!==null&&!ok(b))) b=d.b;
+  return {a:a,b:b};
+}
+function cmpLabel(m,curto){ return mesLabel(m.mes,curto)+(m.parcial?(curto?' (parcial)':' · em andamento'):''); }
+
+/* ── Formatação de variações ── */
+function dl(a,b,o){
+  o=o||{};
+  if(a===null||a===undefined||b===null||b===undefined) return '<span style="color:var(--tm)">sem base de comparação</span>';
+  let d=a-b; d=o.dec?Math.round(d*10)/10:Math.round(d);
+  if(d===0) return '<span style="color:var(--tm)">= igual a '+o.l+'</span>';
+  const good=o.low?d<0:d>0;
+  return '<span style="color:'+(good?'var(--ok)':'var(--er)')+';font-weight:600">'+(d>0?'▲ +':'▼ −')+String(Math.abs(d)).replace('.',',')+(o.u||'')+'</span> <span style="color:var(--tm)">vs '+o.l+'</span>';
+}
+function dlp(a,b,o){
+  o=o||{};
+  if(a===null||a===undefined||b===null||b===undefined) return '<span style="color:#A39EAE">—</span>';
+  let d=a-b; d=o.dec?Math.round(d*10)/10:Math.round(d);
+  if(d===0) return '<span style="color:#6B647A">= igual</span>';
+  const good=o.low?d<0:d>0;
+  return '<span style="color:'+(good?'#1E9E6A':'#C0392B')+';font-weight:600">'+(d>0?'▲ +':'▼ −')+String(Math.abs(d)).replace('.',',')+(o.u||'')+'</span>';
+}
+function cmpBox(l,v,sub,d){
+  return '<div style="padding:12px;background:var(--card2);border-radius:var(--r-sm);border:1px solid var(--bdr)">'
+    +'<div style="font-size:11px;color:var(--tm);font-weight:500">'+l+'</div>'
+    +'<div style="font-family:var(--font-d);font-size:26px;font-weight:600;color:var(--t);margin:2px 0">'+v+'</div>'
+    +'<div style="font-size:11px;color:var(--ts)">'+sub+'</div>'
+    +'<div style="font-size:11.5px;margin-top:4px">'+d+'</div></div>';
+}
+function cmpStack(m,lbl,print){
+  const o=m.p.origem, t=o.move+o.cliente+o.terceiro, ks=['move','cliente','terceiro'];
+  const seg=function(k){ return t?'<i style="display:block;height:100%;width:'+(o[k]/t*100).toFixed(1)+'%;background:'+RPEND[k].c+'"></i>':''; };
+  return '<div style="margin-bottom:'+(print?'7':'12')+'px"><div style="font-size:'+(print?'9':'12')+'px;color:'+(print?'#3B3141':'var(--ts)')+';margin-bottom:4px"><b>'+lbl+'</b> · '+t+' itens no mês</div>'
+    +'<div style="display:flex;height:'+(print?'10':'14')+'px;border-radius:7px;overflow:hidden;background:'+(print?'#F1EDF5':'var(--bdr)')+'">'+ks.map(seg).join('')+'</div>'
+    +'<div style="display:flex;gap:12px;flex-wrap:wrap;font-size:'+(print?'8.5':'11.5')+'px;color:'+(print?'#6B647A':'var(--tm)')+';margin-top:4px">'
+    +ks.map(function(k){return '<span><b style="display:inline-block;width:8px;height:8px;border-radius:2px;background:'+RPEND[k].c+';margin-right:4px"></b>'+RPEND[k].l+' '+(t?Math.round(o[k]/t*100):0)+'%</span>';}).join('')+'</div></div>';
+}
+function cmpSerie(){
+  const fs=cmpOrdenados().slice(0,6).reverse();
+  const ser=fs.map(function(f){return {k:f.mes,v:f.pct,p:false};});
+  const live=mesKey();
+  if(!fs.some(function(f){return f.mes===live;})){ const L=calcMes(live,new Date()); ser.push({k:live,v:L.pct,p:true}); }
+  return ser;
+}
+function cmpRespRows(A,B,print){
+  const names=[];
+  [A,B].forEach(function(m){ if(m) m.resp.forEach(function(r){ if(names.indexOf(r.n)<0) names.push(r.n); }); });
+  const get=function(m,n){ return m?m.resp.find(function(r){return r.n===n;}):null; };
+  const pc=function(r){ return r&&r.pkg>0?Math.round(r.feitos/r.pkg*100)+'%':'—'; };
+  const mu=print?'color:#6B647A':'color:var(--tm)';
+  return names.map(function(n){
+    const a=get(A,n), b=get(B,n);
+    return '<tr><td style="font-weight:'+(print?'600':'500')+'">'+esc(n)+'</td>'
+      +'<td style="text-align:center">'+(a?a.cli:'—')+'</td>'
+      +'<td style="text-align:center;font-weight:600">'+pc(a)+'</td>'
+      +'<td style="text-align:center;'+mu+'">'+(B?pc(b):'—')+'</td>'
+      +'<td style="text-align:center">'+(a?a.ab:'—')+'</td>'
+      +'<td style="text-align:center;'+mu+'">'+(B?(b?b.ab:'—'):'—')+'</td></tr>';
+  }).join('');
+}
+function cmpCliRows(A,B,print){
+  return A.c.map(function(c){
+    const b=B?B.c.find(function(x){return x.id===c.id;}):null;
+    const sc=SC[c.st]||{l:'—',c:'#6B647A',b:'rgba(107,100,122,.1)'};
+    const sb=b?(SC[b.st]||{l:'—',c:'#6B647A',b:'rgba(107,100,122,.1)'}):null;
+    const pill=function(s){ return print?'<span class="pr-pill" style="background:'+s.b+';color:'+s.c+'">'+s.l+'</span>':bdg(s); };
+    const dv=b?dlp(c.f,b.f):'<span style="color:#A39EAE">—</span>';
+    return '<tr><td style="font-weight:'+(print?'600':'500')+'">'+esc(c.n)+'</td>'
+      +'<td style="text-align:center">'+c.f+' / '+c.pk+'</td>'
+      +'<td style="text-align:center;color:'+(print?'#6B647A':'var(--tm)')+'">'+(b?b.f+' / '+b.pk:'—')+'</td>'
+      +'<td style="text-align:center">'+dv+'</td>'
+      +'<td>'+pill(sc)+'</td><td>'+(sb?pill(sb):'<span style="color:#A39EAE">—</span>')+'</td></tr>';
+  }).join('');
+}
+
+/* ── Tela: Mês a mês ── */
+function cmpMes(){
+  const sel=cmpSel(), A=cmpGet(sel.a), B=sel.b?cmpGet(sel.b):null, adm=fchAdmin();
+  const fs=cmpOrdenados(), live=mesKey();
+  if(!A) return '';
+  const opts=[{k:'live',l:mesLabel(live)+' · em andamento'}].concat(fs.map(function(f){return {k:f.mes,l:mesLabel(f.mes)+' · fechado'};}));
+  const selHtml=function(id,cur,none){
+    return '<select class="srch" id="'+id+'" style="min-width:210px;width:auto">'+(none?'<option value=""'+(cur?'':' selected')+'>Sem comparação</option>':'')
+      +opts.map(function(o){return '<option value="'+o.k+'"'+(o.k===(cur||'')?' selected':'')+'>'+o.l+'</option>';}).join('')+'</select>';
+  };
+  const la=cmpLabel(A,true), lb=B?cmpLabel(B,true):'';
+  let h='<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px;font-size:12.5px;color:var(--ts)"><span>Comparar</span>'+selHtml('cmp-a',sel.a,false)+'<span>com</span>'+selHtml('cmp-b',sel.b,true)+'</div>';
+  if(!fs.length) h+='<div style="margin-bottom:14px;padding:11px 14px;border-radius:var(--r-sm);background:var(--violet-pale);color:var(--violet-dark);font-size:12.5px;line-height:1.55">Ainda não há fechamentos salvos, então os números abaixo são do mês em andamento. Ao <b>fechar o mês</b>, este retrato fica guardado e a comparação aparece a partir do segundo fechamento.</div>';
+  else if(!B) h+='<div style="margin-bottom:14px;padding:11px 14px;border-radius:var(--r-sm);background:var(--violet-pale);color:var(--violet-dark);font-size:12.5px;line-height:1.55">Só existe um mês para mostrar. Escolha um segundo mês em “com” ou feche o próximo mês para ver as variações.</div>';
+  const o=B?{l:lb}:null;
+  h+='<div class="cmp-grid">'
+    +cmpBox('Entregue do pacote',A.pct+'%',A.feitos+' de '+A.pkg+' posts',B?dl(A.pct,B.pct,{u:' pts',l:lb}):'')
+    +cmpBox('Clientes atrasados',A.st.atras,A.st.sem+' sem dados',B?dl(A.st.atras,B.st.atras,{low:1,l:lb}):'')
+    +cmpBox('Pendências resolvidas',A.p.resolvidas,'de '+A.p.criadas+' criadas no mês',B?dl(A.p.resolvidas,B.p.resolvidas,{l:lb}):'')
+    +cmpBox('Tempo médio p/ resolver',A.p.tempo===null?'—':String(A.p.tempo).replace('.',',')+' d','pendências resolvidas no mês',B?dl(A.p.tempo,B.p.tempo,{low:1,dec:1,u:' d',l:lb}):'')
+    +cmpBox('Abertas ao fim do mês',A.p.abertas,'itens ainda na ronda',B?dl(A.p.abertas,B.p.abertas,{low:1,l:lb}):'')
+    +cmpBox('GMN feito',A.gmn.f+'/'+A.gmn.at,A.gmn.pct+'% dos clientes com GMN',B?dl(A.gmn.pct,B.gmn.pct,{u:' pts',l:lb}):'')
+    +'</div>';
+  const ser=cmpSerie(), mx=Math.max(100,Math.max.apply(null,ser.map(function(s){return s.v;})));
+  const bars='<div style="display:flex;align-items:flex-end;gap:10px;margin-top:6px">'+ser.map(function(s){
+    const px=Math.max(4,Math.round(s.v/mx*90));
+    return '<div style="flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;font-size:11px;color:var(--ts)">'
+      +'<span style="font-weight:600;color:var(--violet)">'+s.v+'%</span>'
+      +'<div style="width:100%;max-width:46px;height:'+px+'px;border-radius:6px 6px 0 0;margin:4px 0;'+(s.p?'background:var(--violet-pale);border:1.5px dashed var(--violet)':'background:linear-gradient(180deg,#D084FF,#5B108F)')+'"></div>'
+      +'<span style="color:var(--tm)">'+mesLabel(s.k,true)+(s.p?'*':'')+'</span></div>';
+  }).join('')+'</div>'+(ser.some(function(s){return s.p;})?'<div style="font-size:11px;color:var(--tm);margin-top:6px">* mês em andamento (ainda não fechado)</div>':'');
+  h+='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:16px;margin-bottom:18px">'
+    +'<div><div style="font-size:13px;font-weight:600;color:var(--t);margin-bottom:6px">Entregue do pacote, mês a mês</div>'+bars+'</div>'
+    +'<div><div style="font-size:13px;font-weight:600;color:var(--t);margin-bottom:10px">De quem eram as pendências</div>'+cmpStack(A,la)+(B?cmpStack(B,lb):'')+'</div></div>';
+  h+='<div style="font-size:13px;font-weight:600;color:var(--t);margin-bottom:8px">Por responsável principal</div>'
+    +'<div class="tbl-wrap" style="margin-bottom:16px"><table class="tbl"><thead><tr><th>Responsável</th><th style="text-align:center">Clientes</th><th style="text-align:center">Entregue '+la+'</th><th style="text-align:center">'+(B?'Entregue '+lb:'—')+'</th><th style="text-align:center">Abertas '+la+'</th><th style="text-align:center">'+(B?'Abertas '+lb:'—')+'</th></tr></thead><tbody>'+cmpRespRows(A,B,false)+'</tbody></table></div>';
+  h+='<details id="cmp-det"'+(CMP.det?' open':'')+' style="margin-bottom:16px"><summary style="cursor:pointer;font-size:13px;font-weight:600;color:var(--violet)">Ver por cliente ('+A.c.length+')</summary>'
+    +'<div class="tbl-wrap" style="margin-top:10px"><table class="tbl"><thead><tr><th>Cliente</th><th style="text-align:center">Feitos '+la+'</th><th style="text-align:center">'+(B?'Feitos '+lb:'—')+'</th><th style="text-align:center">Variação</th><th>Situação '+la+'</th><th>'+(B?'Situação '+lb:'—')+'</th></tr></thead><tbody>'+cmpCliRows(A,B,false)+'</tbody></table></div></details>';
+  h+='<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:11.5px;color:var(--tm);padding-top:12px;border-top:1px solid var(--div)"><span>Fechamentos salvos:</span>'
+    +(fs.length?fs.map(function(f){
+      return '<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:99px;border:1px solid var(--bdr);background:var(--card2);color:var(--ts)">'+mesLabel(f.mes,true)+' · '+fchData(f.fechadoEm)
+        +(adm?' <button type="button" class="ico del" data-cmp-del="'+f.mes+'" aria-label="Excluir fechamento de '+mesLabel(f.mes)+'" title="Excluir fechamento" style="width:22px;height:22px">✕</button>':'')+'</span>';
+    }).join(''):'<span>nenhum ainda</span>')
+    +'</div>'
+    +'<div style="font-size:11px;color:var(--tm);margin-top:8px;line-height:1.5">Entregas, situação e GMN refletem o dia do fechamento. Pendências são calculadas pelas datas de criação e resolução. Itens migrados das observações antigas usam a data da última edição do cliente.</div>';
+  return h;
+}
+
+/* ── Tela: Semana a semana (janela móvel de 7 dias) ── */
+function cmpSemana(){
+  const w=[0,1,2,3].map(calcSemana), a=w[0], b=w[1];
+  const fmt=function(x){ return new Date(x).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}); };
+  const lbl=function(x,i){ return i===0?'Últimos 7 dias':fmt(x.ini)+' a '+fmt(x.fim-1); };
+  let h='<div style="font-size:12.5px;color:var(--ts);margin-bottom:14px;line-height:1.55">Janela móvel: os últimos 7 dias contra os 7 anteriores. Calculado pelas datas das pendências, sem precisar fechar nada.</div>'
+    +'<div class="cmp-grid c4">'
+    +cmpBox('Criadas',a.criadas,'novas pendências',dl(a.criadas,b.criadas,{low:1,l:'7 dias antes'}))
+    +cmpBox('Resolvidas',a.resolvidas,'itens concluídos',dl(a.resolvidas,b.resolvidas,{l:'7 dias antes'}))
+    +cmpBox('Abertas agora',a.abertas,'na ronda',dl(a.abertas,b.abertas,{low:1,l:'7 dias antes'}))
+    +cmpBox('Paradas há 7+ dias',a.paradas,'gargalos',dl(a.paradas,b.paradas,{low:1,l:'7 dias antes'}))
+    +'</div>'
+    +'<div style="font-size:13px;font-weight:600;color:var(--t);margin-bottom:8px">Últimas 4 semanas</div>'
+    +'<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Período</th><th style="text-align:center">Criadas</th><th style="text-align:center">Resolvidas</th><th style="text-align:center">Abertas ao fim</th><th style="text-align:center">Paradas 7+</th></tr></thead><tbody>'
+    +w.map(function(x,i){return '<tr><td style="font-weight:'+(i===0?'600':'500')+'">'+lbl(x,i)+'</td><td style="text-align:center">'+x.criadas+'</td><td style="text-align:center">'+x.resolvidas+'</td><td style="text-align:center">'+x.abertas+'</td><td style="text-align:center">'+x.paradas+'</td></tr>';}).join('')
+    +'</tbody></table></div>'
+    +'<div style="font-size:11px;color:var(--tm);margin-top:8px;line-height:1.5">Pendências resolvidas há mais de 60 dias saem do sistema, por isso a visão semanal vale para períodos recentes.</div>';
+  return h;
+}
+
+function renderCmp(){
+  const el=document.getElementById('rep-cmp'); if(!el) return;
+  const adm=fchAdmin(), on=function(v){ return CMP.view===v?' on':''; };
+  const head='<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:16px">'
+    +'<div><div class="card-h" style="margin-bottom:2px">Comparativo · <em style="font-family:var(--font-d);font-style:italic;color:var(--violet)">evolução da operação</em></div>'
+    +'<div class="card-sub" style="margin:0">Como estamos em relação aos meses e semanas anteriores</div></div>'
+    +'<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">'
+    +'<button type="button" class="ftab'+on('mes')+'" data-cmp-view="mes">Mês a mês</button>'
+    +'<button type="button" class="ftab'+on('semana')+'" data-cmp-view="semana">Semana a semana</button>'
+    +(adm?'<button type="button" class="btn btn-p btn-sm" data-cmp-fechar>Fechar mês</button>':'')
+    +'</div></div>';
+  el.innerHTML=head+(CMP.view==='semana'?cmpSemana():cmpMes());
+}
+
+/* ── Fechar mês ── */
+function fchPreview(){
+  const sel=document.getElementById('fcm-mes'), box=document.getElementById('fcm-prev'), ms=document.getElementById('modal-save');
+  if(!sel||!box) return;
+  const k=sel.value, m=calcMes(k,null), ja=(S.fechamentos||[]).some(function(f){return f.mes===k;});
+  box.innerHTML='<b>'+mesLabel(k)+'</b><br>'+m.cli+' clientes · '+m.feitos+' de '+m.pkg+' posts ('+m.pct+'%) · '+m.st.atras+' atrasados<br>'
+    +m.p.criadas+' pendências criadas · '+m.p.resolvidas+' resolvidas · '+m.p.abertas+' abertas ao fim'
+    +(ja?'<br><span style="color:var(--er);font-weight:600">Este mês já foi fechado. Exclua o fechamento em Relatórios para refazer.</span>':'');
+  if(ms) ms.disabled=ja;
+}
+function fchSalvar(){
+  if(!fchAdmin()){ toast('Somente o administrador fecha o mês','er'); return; }
+  const key=document.getElementById('fcm-mes').value;
+  if((S.fechamentos||[]).some(function(f){return f.mes===key;})){ toast('Este mês já foi fechado','er'); return; }
+  const zerar=document.getElementById('fcm-zerar').checked;
+  const snap=calcMes(key,null);
+  snap.parcial=false; snap.fechadoEm=new Date().toISOString(); snap.por=fchEmail();
+  S.fechamentos=(S.fechamentos||[]).concat([snap]).sort(function(x,y){return x.mes.localeCompare(y.mes);}).slice(-FCH_MAX);
+  if(zerar) S.clients.forEach(function(c){ c.feitos=0; if(normGMN(c.gmn)==='feito') c.gmn='nao_feito'; });
+  CMP.a=undefined; CMP.b=undefined;
+  save(); closeModal(); renderRel();
+  toast(mesLabel(key)+' fechado ✓'+(zerar?' · contadores zerados':''));
+}
+
+/* ── Página do PDF ── */
+function cmpPrintOk(){ return (S.fechamentos||[]).length>0&&!!cmpGet(cmpSel().a); }
+function cmpPrintPage(ds,pagina,total){
+  const sel=cmpSel(), A=cmpGet(sel.a), B=sel.b?cmpGet(sel.b):null;
+  const la=cmpLabel(A,true), lb=B?cmpLabel(B,true):'';
+  const st=function(n,l,d,c){ return '<div class="pr-stat"><div class="pr-stat-n"'+(c?' style="color:'+c+'"':'')+'>'+n+'</div><div class="pr-stat-l">'+l+'</div><div style="font-size:8.5px;margin-top:3px">'+d+'</div></div>'; };
+  const ser=cmpSerie(), mx=Math.max(100,Math.max.apply(null,ser.map(function(s){return s.v;})));
+  const serRows=ser.map(function(s){
+    return '<div style="display:flex;align-items:center;gap:8px;font-size:9px;margin:3px 0"><span style="width:44px;color:#6B647A">'+mesLabel(s.k,true)+(s.p?'*':'')+'</span>'
+      +'<div class="pr-pbar" style="flex:1;margin:0"><div class="pr-pfill" style="width:'+Math.min(100,Math.round(s.v/mx*100))+'%;'+(s.p?'opacity:.45':'')+'"></div></div><span style="width:34px;text-align:right;font-weight:600;color:#5B108F">'+s.v+'%</span></div>';
+  }).join('');
+  return '<div class="pr-page"><div>'
+    +'<div class="pr-hdr-sm"><div class="pr-brand-info"><img class="pr-logo-image-sm" src="./assets/brand/move-logo.png" alt="MOVE Marketing"><div class="pr-sub-l">Comparativo Mensal</div></div>'
+    +'<div style="text-align:right"><div style="font-size:12px;font-weight:600;color:#030303">'+la+(B?' <span style="color:#6B647A;font-weight:400">vs</span> '+lb:'')+'</div>'
+    +'<div class="pr-subtitle">Gerado em '+ds+' · <strong>Página '+pagina+' de '+total+'</strong></div></div></div>'
+    +'<div class="pr-stats">'
+      +st(A.pct+'%','Entregue do pacote',B?dlp(A.pct,B.pct,{u:' pts'}):'—','#5B108F')
+      +st(A.st.atras,'Clientes atrasados',B?dlp(A.st.atras,B.st.atras,{low:1}):'—','#C0392B')
+      +st(A.p.resolvidas,'Pendências resolvidas',B?dlp(A.p.resolvidas,B.p.resolvidas):'—','#1E9E6A')
+      +st(A.p.tempo===null?'—':String(A.p.tempo).replace('.',',')+'d','Tempo médio p/ resolver',B?dlp(A.p.tempo,B.p.tempo,{low:1,dec:1,u:'d'}):'—','#5D6BE0')
+    +'</div>'
+    +'<div class="pr-sec"><div class="pr-sec-title">Entregue do pacote, <em>mês a mês</em></div>'+serRows+(ser.some(function(s){return s.p;})?'<div style="font-size:8px;color:#A39EAE;margin-top:2px">* mês em andamento</div>':'')+'</div>'
+    +'<div class="pr-sec"><div class="pr-sec-title">De quem eram as <em>pendências</em></div>'+cmpStack(A,la,true)+(B?cmpStack(B,lb,true):'')+'</div>'
+    +'<div class="pr-sec"><div class="pr-sec-title">Por <em>responsável principal</em></div><table class="pr-tbl"><thead><tr><th>Responsável</th><th style="text-align:center">Clientes</th><th style="text-align:center">Entregue '+la+'</th><th style="text-align:center">'+(B?'Entregue '+lb:'—')+'</th><th style="text-align:center">Abertas '+la+'</th><th style="text-align:center">'+(B?'Abertas '+lb:'—')+'</th></tr></thead><tbody>'+cmpRespRows(A,B,true)+'</tbody></table></div>'
+    +'<div class="pr-sec"><div class="pr-sec-title">Por <em>cliente</em></div><table class="pr-tbl"><thead><tr><th>Cliente</th><th style="text-align:center">Feitos '+la+'</th><th style="text-align:center">'+(B?'Feitos '+lb:'—')+'</th><th style="text-align:center">Variação</th><th>Situação '+la+'</th><th>'+(B?'Situação '+lb:'—')+'</th></tr></thead><tbody>'+cmpCliRows(A,B,true)+'</tbody></table></div>'
+    +'</div><div class="pr-footer"><span>MOVE Marketing — Central Operacional</span><span>Página '+pagina+' de '+total+' · Comparativo Mensal</span></div></div>';
+}
+
+/* ── Eventos ── */
+document.addEventListener('click',function(e){
+  const t=e.target; if(!t||!t.closest) return;
+  let x;
+  if((x=t.closest('[data-cmp-view]'))){ CMP.view=x.dataset.cmpView; renderCmp(); return; }
+  if(t.closest('[data-cmp-fechar]')){
+    if(!fchAdmin()){ toast('Somente o administrador fecha o mês','er'); return; }
+    openModal('fechar-mes'); return;
+  }
+  if((x=t.closest('[data-cmp-del]'))){
+    if(!fchAdmin()) return;
+    const k=x.dataset.cmpDel;
+    confirm2('🗑️','Excluir fechamento de '+mesLabel(k)+'?','Os números salvos desse mês serão apagados e não podem ser recuperados.','Excluir',function(){
+      S.fechamentos=(S.fechamentos||[]).filter(function(f){return f.mes!==k;});
+      CMP.a=undefined; CMP.b=undefined; save(); renderCmp(); toast('Fechamento excluído','wa');
+    });
+    return;
+  }
+});
+document.addEventListener('change',function(e){
+  const t=e.target;
+  if(t.id==='cmp-a'){ CMP.a=t.value; renderCmp(); }
+  else if(t.id==='cmp-b'){ CMP.b=t.value||null; renderCmp(); }
+  else if(t.id==='fcm-mes'){ fchPreview(); }
+});
+document.addEventListener('toggle',function(e){ if(e.target&&e.target.id==='cmp-det') CMP.det=e.target.open; },true);
+
 const REND={dashboard:renderDash,clientes:renderClients,relatorios:renderRel,ronda:renderRonda};
 function navigate(v){
   document.querySelectorAll('.view').forEach(e=>e.classList.remove('on'));
