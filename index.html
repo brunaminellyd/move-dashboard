@@ -661,6 +661,70 @@ body{background:radial-gradient(900px 600px at 8% 10%,rgba(208,132,255,.5),trans
     }
   </style>
 <style id="cmp-css">.cmp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}.cmp-grid.c4{grid-template-columns:repeat(4,1fr)}@media(max-width:768px){.cmp-grid,.cmp-grid.c4{grid-template-columns:repeat(2,1fr)}}</style>
+<style id="ronda-fix-css">
+#v-ronda .ronda-card-row.visto{background:rgba(30,158,106,.05);box-shadow:inset 3px 0 0 var(--ok)}
+#v-ronda .ronda-card-row.visto .ronda-cli-name{color:var(--ts)}
+#ronda-prog{margin:0 0 14px}
+#ronda-prog .rprog-top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:12.5px;color:var(--tm);margin-bottom:6px}
+#ronda-prog .rprog-top b{color:var(--t)}
+</style>
+<style id="ci-css">
+#cli-prog{margin:0 0 14px}
+#cli-prog .cprog-top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:12.5px;color:var(--tm);margin-bottom:6px}
+#cli-prog .cprog-top b{color:var(--t)}
+.visto-btn{display:inline-flex;align-items:center;gap:5px;margin-top:7px;padding:4px 12px;min-height:0;border-radius:99px;font-size:11.5px;font-weight:500;font-family:inherit;cursor:pointer;border:1.5px solid var(--bdr);background:#fff;color:var(--ts);transition:all .2s;white-space:nowrap}
+.visto-btn:hover{border-color:var(--violet-light);color:var(--violet);background:var(--violet-pale)}
+.visto-btn.on{background:var(--okb);color:var(--ok);border-color:rgba(30,158,106,.35);font-weight:600}
+#v-clientes .cli-tbl tr.row-visto td{background:rgba(30,158,106,.045)}
+#v-clientes .cli-tbl tr.row-visto td:nth-child(2){background:#F2FAF6}
+.sug-chip{display:block;margin:6px auto 0;padding:2px 8px;min-height:0;border-radius:99px;border:1px dashed var(--bdrh);background:transparent;color:var(--violet);font-size:10px;font-family:inherit;cursor:pointer;white-space:nowrap}
+.sug-chip:hover{background:var(--violet-pale)}
+.ci-wrap{min-width:250px;max-width:360px;display:flex;flex-direction:column;gap:6px;text-align:left}
+.cit{display:flex;gap:8px;align-items:flex-start;font-size:11.5px;line-height:1.4}
+.ci-ck{flex:none;width:20px;height:20px;min-height:0;margin-top:0;padding:0;border-radius:50%;border:1.5px solid var(--bdrh);background:#fff;color:transparent;cursor:pointer;font-size:11px;line-height:1;display:inline-flex;align-items:center;justify-content:center;transition:var(--tr)}
+.ci-ck:hover{border-color:var(--ok);color:var(--ok)}
+.cit.done .ci-ck{background:var(--okb);border-color:rgba(30,158,106,.5);color:var(--ok)}
+.ci-body{flex:1;min-width:0;overflow-wrap:anywhere;color:var(--t)}
+.cit.done .ci-tx{text-decoration:line-through;color:var(--tm)}
+.ci-tx{cursor:text}
+.ci-tx[data-ci-edit]:hover{background:var(--violet-pale);border-radius:4px}
+.ci-own{display:inline-block;padding:1px 7px;min-height:0;border:0;border-radius:99px;font-size:9.5px;font-weight:700;letter-spacing:.03em;font-family:inherit;cursor:pointer;vertical-align:1px}
+.ci-own.off{cursor:default}
+.ci-age{font-size:10px;color:var(--tm)}
+.ci-age.warn{color:var(--wa);font-weight:600}
+.ci-age.crit{color:var(--er);font-weight:700}
+.ci-age.ok{color:var(--ok)}
+.cit.nota{color:var(--ts)}
+.cit.nota .ci-tx{font-style:italic;color:var(--ts)}
+.ci-dot{flex:none;width:20px}
+.ci-tag{display:inline-block;padding:1px 7px;border-radius:99px;background:var(--card2);color:var(--tm);font-size:9.5px;font-weight:600;letter-spacing:.03em;vertical-align:1px}
+.ci-empty{font-size:11px;color:var(--tm);font-style:italic}
+.ci-add{align-self:flex-start;min-height:0;padding:2px 8px;border:1px dashed var(--bdrh);border-radius:99px;background:transparent;color:var(--violet);font-size:10.5px;font-family:inherit;cursor:pointer}
+.ci-add:hover{background:var(--violet-pale)}
+.ci-form{display:flex;flex-direction:column;gap:6px}
+.ci-in{width:100%;font-size:12px}
+.ci-act{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.ci-sel{width:auto;min-height:0;font-size:11.5px;padding:5px 8px}
+.ci-err{font-size:11px;color:var(--er)}
+.ci-err:empty{display:none}
+.ci-ck:focus-visible,.ci-own:focus-visible,.ci-tx:focus-visible,.visto-btn:focus-visible,.ci-add:focus-visible,.sug-chip:focus-visible{outline:2px solid var(--violet);outline-offset:2px}
+@media(max-width:768px){
+ #v-clientes .cli-tbl tr.row-visto{background:#F2FAF6}
+ .visto-btn{min-height:40px;padding:8px 16px;font-size:13px;margin-top:10px}
+ .ci-wrap{min-width:0;max-width:none}
+ .cit{font-size:13px;gap:10px}
+ .ci-ck{width:30px;height:30px;font-size:14px}
+ .ci-dot{width:30px}
+ .ci-own{font-size:11px;padding:3px 9px}
+ .ci-age{font-size:11.5px}
+ .ci-add{min-height:38px;padding:6px 14px;font-size:12.5px}
+ .ci-in{min-height:44px;font-size:14px}
+ .ci-sel{min-height:40px;font-size:13px}
+ .ci-act .btn{min-height:40px}
+ .sug-chip{min-height:34px;font-size:11px;padding:4px 12px}
+ #v-clientes .cli-tbl td:nth-child(11){order:3}
+}
+</style>
 </head>
 <body class="auth-pending move-index">
 <div id="auth-gate" aria-live="polite">
@@ -709,7 +773,6 @@ body{background:radial-gradient(900px 600px at 8% 10%,rgba(208,132,255,.5),trans
     <div class="s-sec">Operação</div>
     <button class="nb on" data-v="dashboard"><span class="nb-ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg></span>Dashboard</button>
     <button class="nb" data-v="clientes"><span class="nb-ico"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.4-5.5 6.5-5.5s5.9 1.9 6.5 5.5"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.8c2 .7 3.2 2.4 3.5 5.2"/></svg></span>Clientes<span class="nb-badge" id="nb-cli" style="display:none">0</span></button>
-    <button class="nb" data-v="ronda"><span class="nb-ico"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>Ronda<span class="nb-badge" id="nb-ronda" style="display:none">0</span></button>
     <div class="s-sec">Acompanhamento</div>
         <button class="nb" data-v="relatorios"><span class="nb-ico"><svg viewBox="0 0 24 24"><path d="M6 3h8l5 5v13H6z"/><path d="M14 3v5h5M9.5 13h6M9.5 17h6"/></svg></span>Relatórios</button>
     <div class="s-sec">Conteúdo</div>
@@ -763,21 +826,9 @@ body{background:radial-gradient(900px 600px at 8% 10%,rgba(208,132,255,.5),trans
       <button class="btn btn-p btn-sm" id="btn-new-cli">+ Novo cliente</button>
     </div>
   </div>
+  <div id="cli-prog"></div>
   <div class="ftabs" id="cli-tabs"></div>
   <div class="card" style="padding:0;overflow:hidden"><div class="tbl-wrap"><table class="tbl" id="cli-tbl"></table></div></div>
-</section>
-
-<!-- ═══ RONDA ══════════════════════════════ -->
-<section class="view" id="v-ronda">
-  <div class="ph">
-    <div class="ph-l"><div class="pt">Ronda <em style="font-family:var(--font-d);font-style:italic;color:var(--violet)">diária</em></div><div class="ps" id="ronda-sub"></div></div>
-    <div class="ph-r">
-      <select class="srch" id="ronda-resp" style="width:160px"><option value="todos">Todos responsáveis</option></select>
-      <input class="srch" id="ronda-srch" placeholder="🔍 Buscar cliente…" style="width:160px">
-    </div>
-  </div>
-  <div class="ftabs" id="ronda-tabs"></div>
-  <div class="card" style="padding:0;overflow:hidden"><div id="ronda-list"></div></div>
 </section>
 
 <!-- ═══ RELATÓRIOS ═════════════════════════ -->
@@ -1165,7 +1216,6 @@ async function startCloudStateListener(){
           if(active&&active.id==='v-clientes') renderClients();
           else if(active&&active.id==='v-conteudos') renderContents();
           else if(active&&active.id==='v-relatorios') renderRel();
-          else if(active&&active.id==='v-ronda') renderRonda();
           
           updateBadges();
         }
@@ -1242,7 +1292,6 @@ function updateBadges(){
   sb('nb-pend',pend); sb('nb-cnt',at); sb('nb-cli',atc);
   window.__pend=atc; if(window.updDot) window.updDot();
   const mob=document.getElementById('mob-badge'); if(mob){ mob.textContent=pend; mob.style.display=pend>0?'inline-flex':'none'; }
-  if(typeof rondaBadge==='function') rondaBadge();
 }
 
 // Formata timestamp ISO para "DD/MM HH:MM" — aceita texto legado também
@@ -1347,38 +1396,43 @@ function openDatePicker(input){
   if(!input||typeof input.showPicker!=='function') return;
   try{ input.showPicker(); }catch(e){}
 }
-// Parser de data DD/MM/AAAA, DD/MM ou YYYY-MM-DD
+// Parser de data DD/MM/AAAA ou DD/MM (assume ano atual)
 function parseProgDate(s){
   if(!s) return null;
-  const str=String(s).trim();
-  const isoMatch=str.match(/^(\d{4})-(\d{2})-(\d{2})/);
-  if(isoMatch){
-    return new Date(parseInt(isoMatch[1],10), parseInt(isoMatch[2],10)-1, parseInt(isoMatch[3],10));
-  }
-  const p=str.split('/');
+  const p=String(s).trim().split('/');
   if(p.length<2) return null;
-  const d=parseInt(p[0],10),m=parseInt(p[1],10);
-  if(isNaN(d)||isNaN(m)||d<1||d>31||m<1||m>12) return null;
-  let y=p[2]?parseInt(p[2],10):new Date().getFullYear();
+  const d=parseInt(p[0]),m=parseInt(p[1]);
+  if(isNaN(d)||isNaN(m)) return null;
+  let y=p[2]?parseInt(p[2]):new Date().getFullYear();
   if(isNaN(y)) y=new Date().getFullYear();
   // Ano com 2 dígitos (ex: "26") vira 2026
   if(y<100) y+=2000;
   return new Date(y,m-1,d);
 }
-// Pauta suficiente? — Olha apenas para o "Último programado" (c.last):
-// - Se a data estiver a 7 dias ou mais de hoje (futuro >= 7 dias): 'bom' (✅ BOM)
-// - Se estiver dentro dos próximos 7 dias, já passou ou estiver vazia: 'agir' (⚠️ AGIR)
+// Pauta: o último programado precisa estar a PAUTA_DIAS ou mais de hoje (conteúdo para mais 1 semana).
+// Sem data programada = precisa de conteúdo (AGIR). Só fica "?" para cliente marcado como "Sem dados".
+const PAUTA_DIAS=7;
+function pautaProg(c){
+  if(!c||!c.last) return null;
+  const t=String(c.last).trim();
+  const d=parseProgDate(/^\d{4}-\d{2}-\d{2}$/.test(t)?formatDateBR(t):t);
+  return d&&!isNaN(d.getTime())?d:null;
+}
+function pautaDias(prog){
+  const h=new Date(); h.setHours(0,0,0,0);
+  return Math.round((prog-h)/86400000);
+}
 function calcPauta(c){
-  if(!c||!c.last) return 'agir';
-  const prog=parseProgDate(c.last);
-  if(!prog||isNaN(prog.getTime())) return 'agir';
-
-  const now=new Date();
-  const today=new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const target=new Date(prog.getFullYear(), prog.getMonth(), prog.getDate());
-
-  const diffDays=Math.round((target-today)/86400000);
-  return diffDays>=7 ? 'bom' : 'agir';
+  const prog=pautaProg(c);
+  if(!prog) return c&&c.status==='sem_dados'?'unk':'agir';
+  return pautaDias(prog)>=PAUTA_DIAS?'bom':'agir';
+}
+function pautaTitle(c){
+  const prog=pautaProg(c);
+  if(!prog) return c&&c.status==='sem_dados'?'Sem dados para calcular':'Sem conteúdo programado: precisa de conteúdo (AGIR)';
+  const d=pautaDias(prog);
+  const quando=d<0?'há '+(-d)+(d===-1?' dia':' dias'):d===0?'hoje':'daqui a '+d+(d===1?' dia':' dias');
+  return 'Último programado: '+prog.toLocaleDateString('pt-BR')+' ('+quando+'). BOM = conteúdo programado para pelo menos '+PAUTA_DIAS+' dias à frente.';
 }
 
 /* ════════════════════════════════════════════
@@ -1591,14 +1645,16 @@ function renderDash(){
 ════════════════════════════════════════════ */
 function fCli(){
   let l=S.clients;
-  if(S.cliFilter!=='todos') l=l.filter(c=>c.status===S.cliFilter);
+  if(S.cliFilter==='a_verificar') l=l.filter(c=>c.vistoEm!==todayISO());
+  else if(S.cliFilter!=='todos') l=l.filter(c=>c.status===S.cliFilter);
   if(S.cliResp!=='todos') l=l.filter(c=>c.resp===S.cliResp||c.respSM===S.cliResp);
   if(S.cliGMN!=='todos') l=l.filter(c=>normGMN(c.gmn)===S.cliGMN);
-  if(S.cliSearch) l=l.filter(c=>c.name.toLowerCase().includes(S.cliSearch)||(c.resp||'').toLowerCase().includes(S.cliSearch)||(c.respSM||'').toLowerCase().includes(S.cliSearch));
+  if(S.cliSearch) l=l.filter(c=>c.name.toLowerCase().includes(S.cliSearch)||(c.resp||'').toLowerCase().includes(S.cliSearch)||(c.respSM||'').toLowerCase().includes(S.cliSearch)||(c.pendencias||[]).some(p=>(p.texto||'').toLowerCase().includes(S.cliSearch))||(c.notas||[]).some(n=>(n.texto||'').toLowerCase().includes(S.cliSearch)));
   return l;
 }
 function renderCliTabs(){
   const tabs=[{k:'todos',l:'Todos',n:S.clients.length},...Object.entries(SC).map(([k,v])=>({k,l:v.l,n:S.clients.filter(c=>c.status===k).length}))];
+  tabs.push({k:'a_verificar',l:'A verificar',n:S.clients.filter(c=>c.vistoEm!==todayISO()).length});
   document.getElementById('cli-tabs').innerHTML=tabs.map(t=>{
     const on=t.k===S.cliFilter,cfg=SC[t.k];
     return '<button class="ftab'+(on?' on':'')+'" data-cf="'+t.k+'"'
@@ -1616,6 +1672,9 @@ function renderCliGmnPills(){
   document.querySelectorAll('[data-gf]').forEach(btn=>btn.classList.toggle('on',btn.dataset.gf===S.cliGMN));
 }
 function renderClients(){
+  const _ci=ciCapture();
+  cleanOldPendencias();
+  renderCliProg();
   const _w=document.querySelector('#v-clientes .tbl-wrap'); const _st=_w?_w.scrollTop:0, _sl=_w?_w.scrollLeft:0;
   renderCliTabs();
   renderCliGmnPills();
@@ -1670,20 +1729,15 @@ function renderClients(){
           }).join(' ')
         : (pendenciaValue(c)?pendenciaChip(c):'<span style="color:var(--tm);font-size:11px">—</span>');
 
-      const obsDisplay=abertos.length
-        ? abertos.slice(0,3).map(p=>{
-            const cfg=RPEND[p.responsavel||'move']||RPEND.move;
-            return '<div style="margin-bottom:2px;font-size:11.5px;line-height:1.3"><strong style="color:'+cfg.c+'">['+cfg.l+']</strong> '+esc(p.texto)+'</div>';
-          }).join('')+(abertos.length>3?'<div style="font-size:10.5px;color:var(--violet)">+ '+(abertos.length-3)+' item(ns) na ronda…</div>':'')
-        : (c.obs?esc(c.obs):'<span style="color:var(--tm);font-style:italic">— sem pendências —</span>');
-      const obsCls=abertos.length?'obs-cell':'obs-cell empty';
-      return '<tr data-row="'+c.id+'">'
+      const obsDisplay=ciCell(c);
+      return '<tr data-row="'+c.id+'"'+(c.vistoEm===todayISO()?' class="row-visto"':'')+'>'
         +'<td style="color:var(--tm);font-size:11px;white-space:nowrap">'+fmtTime(c.updated)+'</td>'
         +'<td>'
           +'<div class="client-name-row">'
             +'<div class="av" style="background:'+avc(c.name)+';width:26px;height:26px;font-size:11px">'+ini(c.name)+'</div>'
             +'<span class="cell-edit" data-edit="name" data-id="'+c.id+'">'+esc(c.name)+'</span>'
           +'</div>'
+          +ciVistoBtn(c)
         +'</td>'
         +'<td class="col-num"><span class="cell-edit" data-edit="pkg" data-id="'+c.id+'" title="Clique para editar pacote">'+pkgDisplay+'</span></td>'
         +'<td class="col-num">'
@@ -1698,13 +1752,12 @@ function renderClients(){
         +'</td>'
         +'<td><span class="cell-edit" data-edit="resp" data-id="'+c.id+'" style="display:inline-block;min-width:120px">'+respPills+'</span></td>'
         +'<td><span class="cell-edit" data-edit="last" data-id="'+c.id+'" style="color:'+(c.last?'var(--ts)':'var(--tm)')+';font-size:11px">'+(c.last||'— vazio —')+'</span></td>'
-        +'<td><span class="tag-pill" data-cc="'+c.id+'" data-next="'+nextSt+'" style="background:'+sc.b+';color:'+sc.c+'" title="Clique para avançar">'+sc.l+'</span></td>'
-        +'<td><div style="cursor:pointer" data-r-open="'+c.id+'" title="Calculado a partir das pendências da Ronda">'+pendOwnersHtml+'</div></td>'
-        +'<td><span class="pauta-pill" style="background:'+pCfg.b+';color:'+pCfg.c+'" title="Pauta calculada pelo Último programado: a 7 dias ou mais de hoje = BOM; dentro de 7 dias, vencido ou vazio = AGIR">'+pCfg.l+'</span></td>'
+        +'<td><span class="tag-pill" data-cc="'+c.id+'" data-next="'+nextSt+'" style="background:'+sc.b+';color:'+sc.c+'" title="Clique para avançar">'+sc.l+'</span>'+ciSugChip(c)+'</td>'
+        +'<td><div title="Calculado a partir dos itens abertos">'+pendOwnersHtml+'</div></td>'
+        +'<td><span class="pauta-pill" style="background:'+pCfg.b+';color:'+pCfg.c+'" title="'+esc(pautaTitle(c))+'">'+pCfg.l+'</span></td>'
         +'<td><span class="gmn-pill" data-gmn-cycle="'+c.id+'" data-next-gmn="'+nextGmn+'" style="background:'+gmnCfg.b+';color:'+gmnCfg.c+'" title="Clique para ciclar">'+gmnCfg.l+'</span></td>'
-        +'<td><div class="'+obsCls+'" data-r-open="'+c.id+'" title="Clique para abrir e gerenciar na Ronda">'+obsDisplay+'</div></td>'
+        +'<td>'+obsDisplay+'</td>'
         +'<td style="white-space:nowrap">'
-          +'<button class="ico" data-r-open="'+c.id+'" title="Abrir na ronda">📋</button>'
           +'<button class="ico" data-ec="'+c.id+'" title="Editar tudo">✏</button>'
           +'<button class="ico del" data-dc="'+c.id+'" title="Excluir">✕</button>'
         +'</td>'
@@ -1713,6 +1766,7 @@ function renderClients(){
     +'</tbody>';
   if(_w){ _w.scrollTop=_st; _w.scrollLeft=_sl; }
   updateBadges();
+  ciRestore(_ci);
 }
 
 /* ════════════════════════════════════════════
@@ -1963,7 +2017,7 @@ function renderRel(){
             +' <span style="color:var(--er);font-weight:600">('+g.d+' dias)</span>'
             +'</div>';
         }).join('')
-        +(gargalosCriticos.length>6?'<div style="font-size:10.5px;color:var(--er);margin-top:4px">+ '+(gargalosCriticos.length-6)+' outros itens críticos na Ronda…</div>':'')
+        +(gargalosCriticos.length>6?'<div style="font-size:10.5px;color:var(--er);margin-top:4px">+ '+(gargalosCriticos.length-6)+' outros itens críticos em Clientes…</div>':'')
         +'</div>'
       :'<div style="margin-top:10px;font-size:12px;color:var(--ok);font-weight:500">✓ Nenhum item estagnado há mais de 7 dias. Operação fluindo no prazo.</div>';
 
@@ -2027,7 +2081,7 @@ function renderRel(){
           const ageWarn=age>=7?' style="color:var(--er);font-weight:700"':'';
           return '<div style="margin-bottom:2px;font-size:11px;line-height:1.35">'
             +'<strong style="color:'+cfg.c+'">['+cfg.l+']</strong> '+esc(p.texto)+' <span'+ageWarn+' style="color:var(--tm);font-size:10px">('+ageTxt+')</span></div>';
-        }).join('')+(abertos.length>3?'<div style="font-size:10px;color:var(--violet)">+ '+(abertos.length-3)+' item(ns) na ronda…</div>':'');
+        }).join('')+(abertos.length>3?'<div style="font-size:10px;color:var(--violet)">+ '+(abertos.length-3)+' item(ns) em Clientes…</div>':'');
       } else if((c.obs||'').trim()){
         obsCell=esc((c.obs||'').trim()).replace(/\n/g,'<br>');
       } else {
@@ -2114,194 +2168,6 @@ function sugerirStatus(c){
   if(abertos.length===0&&c.status==='alguma_pendencia') return 'tudo_em_dia';
   return null;
 }
-
-function rondaBadge(){
-  const today=todayISO();
-  const naovistos=(S.clients||[]).filter(c=>!c.vistoEm||c.vistoEm!==today).length;
-  const el=document.getElementById('nb-ronda');
-  if(el){
-    el.textContent=naovistos;
-    el.style.display=naovistos>0?'inline-flex':'none';
-  }
-}
-
-function renderRondaTabs(){
-  const today=todayISO();
-  const tot=S.clients.length;
-  const aVerificar=S.clients.filter(c=>!c.vistoEm||c.vistoEm!==today).length;
-  const comItens=S.clients.filter(c=>(c.pendencias||[]).some(p=>!p.resolvidoEm)).length;
-  const tabs=[
-    {k:'todos',l:'Todos',n:tot},
-    {k:'a_verificar',l:'A verificar',n:aVerificar},
-    {k:'com_itens',l:'Com itens abertos',n:comItens}
-  ];
-  const el=document.getElementById('ronda-tabs');
-  if(!el) return;
-  el.innerHTML=tabs.map(t=>{
-    const on=S.rondaFilter===t.k;
-    return '<button class="ftab'+(on?' on':'')+'" data-rft="'+t.k+'">'+t.l+' <span style="opacity:.55">('+t.n+')</span></button>';
-  }).join('');
-}
-
-function fRonda(){
-  const today=todayISO();
-  let list=S.clients.slice();
-  if(S.rondaFilter==='a_verificar') list=list.filter(c=>!c.vistoEm||c.vistoEm!==today);
-  else if(S.rondaFilter==='com_itens') list=list.filter(c=>(c.pendencias||[]).some(p=>!p.resolvidoEm));
-  
-  if(S.rondaResp&&S.rondaResp!=='todos'){
-    list=list.filter(c=>c.resp===S.rondaResp||c.respSM===S.rondaResp);
-  }
-  if(S.rondaSearch){
-    const q=S.rondaSearch.toLowerCase().trim();
-    list=list.filter(c=>{
-      const matchName=(c.name||'').toLowerCase().includes(q);
-      const matchResp=(c.resp||'').toLowerCase().includes(q)||(c.respSM||'').toLowerCase().includes(q);
-      const matchItems=(c.pendencias||[]).some(p=>(p.texto||'').toLowerCase().includes(q));
-      return matchName||matchResp||matchItems;
-    });
-  }
-  return list;
-}
-
-function renderRonda(){
-  cleanOldPendencias();
-  renderRondaTabs();
-  fillRespSelect('ronda-resp',S.rondaResp||'todos');
-  
-  const today=todayISO();
-  const list=fRonda();
-  const aVerificarCount=S.clients.filter(c=>!c.vistoEm||c.vistoEm!==today).length;
-  const sub='Verificação diária dos clientes · '+list.length+' exibidos · '+aVerificarCount+' a verificar hoje';
-  const subEl=document.getElementById('ronda-sub');
-  if(subEl) subEl.textContent=sub;
-  
-  const container=document.getElementById('ronda-list');
-  if(!container) return;
-  
-  if(!list.length){
-    container.innerHTML='<div class="empty">Nenhum cliente encontrado na ronda com os filtros atuais.</div>';
-    rondaBadge();
-    return;
-  }
-  
-  container.innerHTML=list.map(c=>{
-    const pendencias=c.pendencias||[];
-    const abertos=pendencias.filter(p=>!p.resolvidoEm);
-    const resolvidosRecentes=pendencias.filter(p=>p.resolvidoEm).slice(-3);
-    const vistoHoje=c.vistoEm===today;
-    const sc=SC[c.status]||{l:c.status,c:'#6B647A',b:'rgba(107,100,122,.1)'};
-    const sug=sugerirStatus(c);
-    const scSug=sug?SC[sug]:null;
-    
-    // Controle de expansão
-    const isOpen=S.rondaOpen[c.id]!==undefined?S.rondaOpen[c.id]:(abertos.length>0);
-    
-    // Idade do item mais antigo
-    let oldestPill='';
-    if(abertos.length>0){
-      const maxDays=Math.max(...abertos.map(p=>ageDays(p.criadoEm)));
-      if(maxDays>=7){
-        oldestPill='<span class="ronda-age-pill critico" title="Parado há '+maxDays+' dias">⚠️ mais antigo há '+maxDays+' dias</span>';
-      }else if(maxDays>=3){
-        oldestPill='<span class="ronda-age-pill alerta">mais antigo há '+maxDays+' dias</span>';
-      }else if(maxDays===1){
-        oldestPill='<span class="ronda-age-pill">mais antigo há 1 dia</span>';
-      }else if(maxDays===0){
-        oldestPill='<span class="ronda-age-pill">criado hoje</span>';
-      }else{
-        oldestPill='<span class="ronda-age-pill">mais antigo há '+maxDays+' dias</span>';
-      }
-    }
-    
-    const abertosPill=abertos.length>0
-      ?'<span class="ronda-count-pill abertos">'+abertos.length+' pendência'+(abertos.length>1?'s':'')+'</span>'
-      :'<span class="ronda-count-pill zerado">✓ tudo resolvido</span>';
-    
-    let sugestaoHtml='';
-    if(scSug){
-      sugestaoHtml='<div class="ronda-sugestao-banner">'
-        +'<span>Sugestão da situação (item 7+ dias ou resolvido):</span>'
-        +bdg(scSug)
-        +'<button type="button" class="btn btn-p btn-sm" style="padding:2px 10px;height:24px;font-size:11px" data-ronda-accept-status="'+c.id+'" data-st="'+sug+'">Aplicar</button>'
-        +'</div>';
-    }
-    
-    const openItemsHtml=abertos.map(p=>{
-      const days=ageDays(p.criadoEm);
-      const ageCls=days>=7?' critico':days>=3?' alerta':'';
-      const respKey=p.responsavel||'move';
-      const respCfg=RPEND[respKey]||RPEND.move;
-      return '<div class="ronda-item" data-pid="'+p.id+'" data-cid="'+c.id+'">'
-        +'<button type="button" class="ronda-circle-btn" data-ronda-resolve="'+p.id+'" data-cid="'+c.id+'" title="Marcar como resolvido"></button>'
-        +'<button type="button" class="ronda-resp-pill" data-ronda-cycle-resp="'+p.id+'" data-cid="'+c.id+'" style="background:'+respCfg.b+';color:'+respCfg.c+'" title="Clique para alternar responsável (MOVE / CLIENTE / TERCEIRO)">'+respCfg.l+'</button>'
-        +'<span class="ronda-item-txt">'+esc(p.texto)+'</span>'
-        +'<span class="ronda-item-age'+ageCls+'">'+ageLabel(p.criadoEm)+'</span>'
-        +'<button type="button" class="ico" data-ronda-edit="'+p.id+'" data-cid="'+c.id+'" title="Editar item">✏</button>'
-        +'<button type="button" class="ico del" data-ronda-del="'+p.id+'" data-cid="'+c.id+'" title="Excluir item">✕</button>'
-        +'</div>';
-    }).join('');
-    
-    const resolvedItemsHtml=resolvidosRecentes.map(p=>{
-      const respKey=p.responsavel||'move';
-      const respCfg=RPEND[respKey]||RPEND.move;
-      return '<div class="ronda-item resolvido" data-pid="'+p.id+'" data-cid="'+c.id+'">'
-        +'<span class="ronda-circle-btn ok">✓</span>'
-        +'<span class="ronda-resp-pill" style="background:'+respCfg.b+';color:'+respCfg.c+'">'+respCfg.l+'</span>'
-        +'<span class="ronda-item-txt">'+esc(p.texto)+'</span>'
-        +'<span class="ronda-item-age" style="color:var(--ok)">resolvido '+ageLabel(p.resolvidoEm)+'</span>'
-        +'<button type="button" class="ico del" data-ronda-del="'+p.id+'" data-cid="'+c.id+'" title="Excluir item">✕</button>'
-        +'</div>';
-    }).join('');
-    
-    const emptyNotice=(!abertos.length&&!resolvidosRecentes.length)
-      ?'<div class="ronda-empty-itens">Nenhuma pendência cadastrada para este cliente. Adicione uma abaixo.</div>'
-      :'';
-    
-    return '<div class="ronda-card-row" data-rcid="'+c.id+'">'
-      +'<div class="ronda-summary-row" data-ronda-toggle="'+c.id+'">'
-        +'<div class="ronda-sum-left">'
-          +'<span class="ronda-toggle-ico">'+(isOpen?'▾':'▸')+'</span>'
-          +'<div class="av" style="background:'+avc(c.name)+';width:28px;height:28px;font-size:11px">'+ini(c.name)+'</div>'
-          +'<div class="ronda-cli-info">'
-            +'<div class="ronda-cli-name">'+esc(c.name)+'</div>'
-            +'<div class="ronda-cli-resp">'+esc(c.respSM||c.resp||'')+'</div>'
-          +'</div>'
-          +bdg(sc)
-        +'</div>'
-        +'<div class="ronda-sum-mid">'
-          +abertosPill
-          +oldestPill
-        +'</div>'
-        +'<div class="ronda-sum-right" onclick="event.stopPropagation()">'
-          +'<button type="button" class="ronda-visto-btn'+(vistoHoje?' ok':'')+'" data-ronda-visto="'+c.id+'" title="'+(vistoHoje?'Clique para desmarcar':'Marcar como olhei hoje')+'">'
-            +(vistoHoje?'✓ Olhei hoje':'Olhei hoje')
-          +'</button>'
-        +'</div>'
-      +'</div>'
-      +'<div class="ronda-details" style="'+(isOpen?'':'display:none')+'">'
-        +sugestaoHtml
-        +'<div class="ronda-items-list">'
-          +openItemsHtml
-          +resolvedItemsHtml
-          +emptyNotice
-        +'</div>'
-        +'<form class="ronda-add-box" data-ronda-add-form="'+c.id+'">'
-          +'<input class="ronda-add-input" placeholder="+ Adicionar pendência para '+esc(c.name)+'..." data-ronda-add-input="'+c.id+'">'
-          +'<select class="srch ronda-add-resp" data-ronda-add-resp="'+c.id+'" style="width:110px;height:34px;font-size:12px">'
-            +'<option value="move">MOVE</option>'
-            +'<option value="cliente">Cliente</option>'
-            +'<option value="terceiro">Terceiro</option>'
-          +'</select>'
-          +'<button type="submit" class="btn btn-p btn-sm" style="height:34px;padding:0 14px">Adicionar</button>'
-        +'</form>'
-      +'</div>'
-    +'</div>';
-  }).join('');
-  
-  rondaBadge();
-}
-
 
 /* ════════════════════════════════════════════
    INLINE EDIT (estilo Notion)
@@ -2501,10 +2367,7 @@ function openModal(mode,tid){
         +'</div>'
       +'</div>'
       +(c
-        ? '<div style="background:var(--card2);border:1px solid var(--bdr);border-radius:var(--r-sm);padding:12px 14px;margin-top:10px;display:flex;justify-content:space-between;align-items:center">'
-            +'<div><div style="font-weight:600;font-size:13px;color:var(--t)">Pendências &amp; Itens da Ronda</div><div style="font-size:11.5px;color:var(--tm)">'+(c.pendencias||[]).filter(p=>!p.resolvidoEm).length+' pendência(s) em aberto</div></div>'
-            +'<button type="button" class="btn btn-p btn-sm" data-r-open="'+c.id+'">📋 Gerenciar na Ronda</button>'
-          +'</div>'
+        ? '<div class="field-hint" style="margin-top:10px">Pendências e anotações deste cliente são editadas direto na lista, na coluna “Texto / Observações”.</div>'
           +'<div class="field-hint" style="margin-top:6px">Última edição registrada: '+fmtTime(c.updated)+'</div>'
         : '');
   }
@@ -2561,7 +2424,7 @@ function openModal(mode,tid){
       '<div style="font-size:13px;color:var(--ts);margin-bottom:16px;line-height:1.6">Guarda um retrato dos números do mês para comparar com os próximos. Entregas, situação e GMN são os de agora; as pendências são calculadas pelas datas.</div>'
       +'<div class="field"><label>Mês que está sendo fechado</label><select id="fcm-mes">'+[cur,prev,prev2].map(function(k){return '<option value="'+k+'"'+(k===def?' selected':'')+'>'+mesLabel(k)+(fechados.indexOf(k)>=0?' — já fechado':'')+'</option>';}).join('')+'</select></div>'
       +'<div id="fcm-prev" style="padding:12px 14px;background:var(--card2);border:1px solid var(--bdr);border-radius:var(--r-sm);font-size:12.5px;line-height:1.7;color:var(--ts);margin-bottom:16px"></div>'
-      +'<div class="field" style="margin-bottom:6px"><label style="display:flex;gap:10px;align-items:flex-start;text-transform:none;letter-spacing:0;font-size:13px;color:var(--t);cursor:pointer"><input type="checkbox" id="fcm-zerar" style="width:auto;padding:0;margin-top:3px"'+(dia<=7?' checked':'')+'><span>Zerar para o novo mês<br><span style="color:var(--tm);font-size:12px;line-height:1.5">Posts feitos voltam a 0 e GMN “Feito” volta a “Não feito”. Os números são guardados antes de zerar. As pendências abertas continuam na ronda.</span></span></label></div>';
+      +'<div class="field" style="margin-bottom:6px"><label style="display:flex;gap:10px;align-items:flex-start;text-transform:none;letter-spacing:0;font-size:13px;color:var(--t);cursor:pointer"><input type="checkbox" id="fcm-zerar" style="width:auto;padding:0;margin-top:3px"'+(dia<=7?' checked':'')+'><span>Zerar para o novo mês<br><span style="color:var(--tm);font-size:12px;line-height:1.5">Posts feitos voltam a 0 e GMN “Feito” volta a “Não feito”. Os números são guardados antes de zerar. As pendências abertas continuam nos clientes.</span></span></label></div>';
     setTimeout(fchPreview,0);
   }
   else if(mode==='fbcfg'){
@@ -2796,6 +2659,7 @@ function exportPDF(){
       const o=cleanItemText(String(c.obs||'').split(/\r?\n/)[0].trim());
       obsCell=o?'<span style="font-size:8.5px">'+esc(o)+'</span>':'<span style="color:#A39EAE">—</span>';
     }
+    obsCell+=notasPdf(c);
     return '<tr>'
       +'<td style="font-weight:600;color:#030303;white-space:nowrap">'+esc(c.name)+'</td>'
       +'<td style="text-align:center;font-weight:500;color:#3B3141">'+pkgTxt+'</td>'
@@ -3175,7 +3039,7 @@ function cmpMes(){
     +cmpBox('Clientes atrasados',A.st.atras,A.st.sem+' sem dados',B?dl(A.st.atras,B.st.atras,{low:1,l:lb}):'')
     +cmpBox('Pendências resolvidas',A.p.resolvidas,'de '+A.p.criadas+' criadas no mês',B?dl(A.p.resolvidas,B.p.resolvidas,{l:lb}):'')
     +cmpBox('Tempo médio p/ resolver',A.p.tempo===null?'—':String(A.p.tempo).replace('.',',')+' d','pendências resolvidas no mês',B?dl(A.p.tempo,B.p.tempo,{low:1,dec:1,u:' d',l:lb}):'')
-    +cmpBox('Abertas ao fim do mês',A.p.abertas,'itens ainda na ronda',B?dl(A.p.abertas,B.p.abertas,{low:1,l:lb}):'')
+    +cmpBox('Abertas ao fim do mês',A.p.abertas,'pendências ainda abertas',B?dl(A.p.abertas,B.p.abertas,{low:1,l:lb}):'')
     +cmpBox('GMN feito',A.gmn.f+'/'+A.gmn.at,A.gmn.pct+'% dos clientes com GMN',B?dl(A.gmn.pct,B.gmn.pct,{u:' pts',l:lb}):'')
     +'</div>';
   const ser=cmpSerie(), mx=Math.max(100,Math.max.apply(null,ser.map(function(s){return s.v;})));
@@ -3212,7 +3076,7 @@ function cmpSemana(){
     +'<div class="cmp-grid c4">'
     +cmpBox('Criadas',a.criadas,'novas pendências',dl(a.criadas,b.criadas,{low:1,l:'7 dias antes'}))
     +cmpBox('Resolvidas',a.resolvidas,'itens concluídos',dl(a.resolvidas,b.resolvidas,{l:'7 dias antes'}))
-    +cmpBox('Abertas agora',a.abertas,'na ronda',dl(a.abertas,b.abertas,{low:1,l:'7 dias antes'}))
+    +cmpBox('Abertas agora',a.abertas,'pendências em aberto',dl(a.abertas,b.abertas,{low:1,l:'7 dias antes'}))
     +cmpBox('Paradas há 7+ dias',a.paradas,'gargalos',dl(a.paradas,b.paradas,{low:1,l:'7 dias antes'}))
     +'</div>'
     +'<div style="font-size:13px;font-weight:600;color:var(--t);margin-bottom:8px">Últimas 4 semanas</div>'
@@ -3316,7 +3180,211 @@ document.addEventListener('change',function(e){
 });
 document.addEventListener('toggle',function(e){ if(e.target&&e.target.id==='cmp-det') CMP.det=e.target.open; },true);
 
-const REND={dashboard:renderDash,clientes:renderClients,relatorios:renderRel,ronda:renderRonda};
+/* ════════════════════════════════════════════
+   RONDA DENTRO DA LISTA DE CLIENTES
+   - "Olhei hoje": c.vistoEm (AAAA-MM-DD) + c.vistoHora
+   - Tarefas: c.pendencias (têm responsável, idade e resolvem)
+   - Notas:   c.notas      (texto informativo; NÃO contam como pendência)
+════════════════════════════════════════════ */
+const CI={add:null,edit:null,type:'move'};
+const CI_TYPES={move:'MOVE',cliente:'Cliente',terceiro:'Terceiro',nota:'Nota (sem tarefa)'};
+const SUG_L={atrasado:'Atrasado',alguma_pendencia:'Pendência',tudo_em_dia:'Em dia'};
+
+function ciFind(cid){ return S.clients.find(function(x){return x.id===parseInt(cid);}); }
+function ciNid(){ return Date.now()+'_'+Math.random().toString(36).slice(2,7); }
+function ciSameDay(iso){ return !!iso&&new Date(iso).toDateString()===new Date().toDateString(); }
+function ciTouch(c){ c.updated=new Date().toISOString(); save(); renderClients(); }
+function ciFocus(sel){
+  setTimeout(function(){
+    const el=document.querySelector(sel);
+    if(el){ el.focus(); if(el.hasAttribute&&el.hasAttribute('data-ci-in')&&el.select) el.select(); }
+  },0);
+}
+function ciTypeSelect(attr,cur){
+  return '<select class="srch ci-sel" '+attr+' aria-label="Tipo do item">'
+    +Object.keys(CI_TYPES).map(function(k){return '<option value="'+k+'"'+(k===cur?' selected':'')+'>'+CI_TYPES[k]+'</option>';}).join('')+'</select>';
+}
+
+/* ── Progresso da ronda (topo da lista) ── */
+function renderCliProg(){
+  const el=document.getElementById('cli-prog'); if(!el) return;
+  const hoje=todayISO(), tot=S.clients.length, v=S.clients.filter(function(c){return c.vistoEm===hoje;}).length;
+  el.innerHTML='<div class="cprog-top"><span><b>'+v+' de '+tot+'</b> clientes vistos hoje</span><span>'+(tot-v?(tot-v)+' a verificar':'✓ ronda completa')+'</span></div>'
+    +'<div class="pbar"><div class="pfill" style="width:'+(tot?Math.round(v/tot*100):0)+'%"></div></div>';
+}
+function ciVistoBtn(c){
+  const on=c.vistoEm===todayISO();
+  return '<button type="button" class="visto-btn'+(on?' on':'')+'" data-visto="'+c.id+'" aria-pressed="'+(on?'true':'false')+'" title="'+(on?'Clique para desmarcar':'Marcar que você olhou este cliente hoje')+'">'
+    +(on?'✓ Visto'+(c.vistoHora?' às '+c.vistoHora:''):'Olhei hoje')+'</button>';
+}
+function ciSugChip(c){
+  const sg=sugerirStatus(c);
+  if(!sg||!SC[sg]) return '';
+  return '<button type="button" class="sug-chip" data-ci-apply="'+c.id+':'+sg+'" title="Sugestão pelos itens (7+ dias ou todos resolvidos). Clique para aplicar">sugerido: '+(SUG_L[sg]||SC[sg].l)+'</button>';
+}
+
+/* ── Itens (célula Texto / Observações) ── */
+function ciEditForm(texto,tipo,key){
+  return '<form class="ci-form" data-ci-save="'+key+'">'
+    +'<input class="srch ci-in" data-ci-in maxlength="300" value="'+esc(texto)+'" aria-label="Texto do item">'
+    +'<div class="ci-act">'+ciTypeSelect('data-ci-type',tipo)
+    +'<button type="submit" class="btn btn-p btn-sm">Salvar</button>'
+    +'<button type="button" class="btn btn-o btn-sm" data-ci-cancel>Cancelar</button>'
+    +'<button type="button" class="ico del" data-ci-del="'+key+'" title="Excluir item" aria-label="Excluir item">✕</button></div></form>';
+}
+function ciTask(c,p,done){
+  const key=c.id+':'+p.id+':t';
+  if(!done&&CI.edit&&CI.edit.k===key) return ciEditForm(p.texto,p.responsavel||'move',key);
+  const cfg=RPEND[p.responsavel||'move']||RPEND.move, d=ageDays(p.criadoEm);
+  const age=done?'<span class="ci-age ok">resolvido</span>'
+    :'<span class="ci-age'+(d>=7?' crit':d>=3?' warn':'')+'">'+(d===0?'hoje':d+'d')+'</span>';
+  const own=done
+    ?'<span class="ci-own off" style="background:'+cfg.b+';color:'+cfg.c+'">'+cfg.l+'</span>'
+    :'<button type="button" class="ci-own" data-ci-owner="'+c.id+':'+p.id+'" style="background:'+cfg.b+';color:'+cfg.c+'" title="Clique para trocar o responsável">'+cfg.l+'</button>';
+  return '<div class="cit'+(done?' done':'')+'">'
+    +'<button type="button" class="ci-ck" data-ci-done="'+c.id+':'+p.id+'" aria-label="'+(done?'Reabrir item':'Marcar como resolvido')+'" title="'+(done?'Reabrir':'Marcar como resolvido')+'">✓</button>'
+    +'<div class="ci-body">'+own+' <span class="ci-tx"'+(done?'':' data-ci-edit="'+key+'" role="button" tabindex="0" title="Clique para editar"')+'>'+esc(p.texto)+'</span> '+age+'</div></div>';
+}
+function ciNote(c,n){
+  const key=c.id+':'+n.id+':n';
+  if(CI.edit&&CI.edit.k===key) return ciEditForm(n.texto,'nota',key);
+  return '<div class="cit nota"><span class="ci-dot" aria-hidden="true"></span>'
+    +'<div class="ci-body"><span class="ci-tag">nota</span> <span class="ci-tx" data-ci-edit="'+key+'" role="button" tabindex="0" title="Clique para editar">'+esc(n.texto)+'</span></div></div>';
+}
+function ciCell(c){
+  const pend=c.pendencias||[];
+  const abertos=pend.filter(function(p){return !p.resolvidoEm;}).sort(function(a,b){return String(a.criadoEm).localeCompare(String(b.criadoEm));});
+  const hoje=pend.filter(function(p){return p.resolvidoEm&&ciSameDay(p.resolvidoEm);});
+  const notas=c.notas||[];
+  let h='<div class="ci-wrap">';
+  if(!abertos.length&&!hoje.length&&!notas.length) h+='<div class="ci-empty">— sem pendências —</div>';
+  h+=abertos.map(function(p){return ciTask(c,p,false);}).join('')
+    +hoje.map(function(p){return ciTask(c,p,true);}).join('')
+    +notas.map(function(n){return ciNote(c,n);}).join('');
+  if(CI.add===c.id){
+    h+='<form class="ci-form" data-ci-new="'+c.id+'">'
+      +'<input class="srch ci-in" data-ci-newin maxlength="300" placeholder="Novo item…" aria-label="Novo item para '+esc(c.name)+'">'
+      +'<div class="ci-act">'+ciTypeSelect('data-ci-newtype',CI.type)
+      +'<button type="submit" class="btn btn-p btn-sm">Adicionar</button>'
+      +'<button type="button" class="btn btn-o btn-sm" data-ci-cancel>Fechar</button></div>'
+      +'<div class="ci-err" data-ci-err role="alert"></div></form>';
+  }else{
+    h+='<button type="button" class="ci-add" data-ci-add="'+c.id+'">+ item</button>';
+  }
+  return h+'</div>';
+}
+function notasPdf(c){
+  const n=c.notas||[]; if(!n.length) return '';
+  return n.slice(0,2).map(function(x){return '<div style="font-size:8px;line-height:1.25;color:#6B647A;font-style:italic">nota: '+esc(x.texto)+'</div>';}).join('')
+    +(n.length>2?'<div style="font-size:8px;color:#A39EAE">+ '+(n.length-2)+' nota(s)</div>':'');
+}
+
+/* Preserva o que você está digitando se a lista for redesenhada (ex.: atualização da nuvem) */
+function ciCapture(){
+  const a=document.activeElement;
+  if(!a||!a.matches) return null;
+  if(a.matches('[data-ci-newin]')) return {k:'new',v:a.value,s:a.selectionStart};
+  if(a.matches('[data-ci-in]')) return {k:'edit',v:a.value,s:a.selectionStart};
+  return null;
+}
+function ciRestore(st){
+  if(!st) return;
+  const el=document.querySelector(st.k==='new'?'[data-ci-newin]':'[data-ci-in]');
+  if(el){ el.value=st.v; el.focus(); try{ el.setSelectionRange(st.s,st.s); }catch(e){} }
+}
+
+/* ── Edição: salvar / converter tarefa ↔ nota ── */
+function ciApplyEdit(key,texto,tipo){
+  const k=key.split(':'), c=ciFind(k[0]); if(!c) return;
+  c.pendencias=c.pendencias||[]; c.notas=c.notas||[];
+  if(k[2]==='t'){
+    const p=c.pendencias.find(function(i){return String(i.id)===k[1];}); if(!p) return;
+    if(tipo==='nota'){
+      c.pendencias=c.pendencias.filter(function(i){return i!==p;});
+      c.notas.push({id:p.id,texto:texto,criadoEm:p.criadoEm});
+    }else{ p.texto=texto; p.responsavel=tipo; }
+  }else{
+    const n=c.notas.find(function(i){return String(i.id)===k[1];}); if(!n) return;
+    if(tipo==='nota'){ n.texto=texto; }
+    else{
+      c.notas=c.notas.filter(function(i){return i!==n;});
+      c.pendencias.push({id:n.id,texto:texto,responsavel:tipo,criadoEm:n.criadoEm,resolvidoEm:null});
+    }
+  }
+  ciTouch(c);
+}
+
+/* ── Eventos ── */
+document.addEventListener('click',function(e){
+  const t=e.target; if(!t||!t.closest) return;
+  let x;
+  if((x=t.closest('[data-visto]'))){
+    const c=ciFind(x.dataset.visto); if(!c) return;
+    const hoje=todayISO();
+    if(c.vistoEm===hoje){ c.vistoEm=''; c.vistoHora=''; toast('Desmarcado como visto hoje'); }
+    else{
+      c.vistoEm=hoje;
+      c.vistoHora=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+      toast(c.name+' · visto ✓ ('+S.clients.filter(function(z){return z.vistoEm===hoje;}).length+' de '+S.clients.length+')');
+    }
+    c.updated=new Date().toISOString(); save(); renderClients(); return;
+  }
+  if((x=t.closest('[data-ci-done]'))){
+    const k=x.dataset.ciDone.split(':'), c=ciFind(k[0]), p=c&&(c.pendencias||[]).find(function(i){return String(i.id)===k[1];});
+    if(p){ p.resolvidoEm=p.resolvidoEm?null:new Date().toISOString(); ciTouch(c); toast(p.resolvidoEm?'Item resolvido ✓':'Item reaberto'); }
+    return;
+  }
+  if((x=t.closest('[data-ci-owner]'))){
+    const k=x.dataset.ciOwner.split(':'), c=ciFind(k[0]), p=c&&(c.pendencias||[]).find(function(i){return String(i.id)===k[1];});
+    if(p){ const o=['move','cliente','terceiro']; p.responsavel=o[(o.indexOf(p.responsavel||'move')+1)%o.length]; ciTouch(c); toast('Responsável: '+RPEND[p.responsavel].l); }
+    return;
+  }
+  if((x=t.closest('[data-ci-add]'))){ CI.add=parseInt(x.dataset.ciAdd); CI.edit=null; renderClients(); ciFocus('[data-ci-newin]'); return; }
+  if((x=t.closest('[data-ci-edit]'))){ CI.edit={k:x.dataset.ciEdit}; CI.add=null; renderClients(); ciFocus('[data-ci-in]'); return; }
+  if(t.closest('[data-ci-cancel]')){ CI.add=null; CI.edit=null; renderClients(); return; }
+  if((x=t.closest('[data-ci-del]'))){
+    const key=x.dataset.ciDel, k=key.split(':'), c=ciFind(k[0]); if(!c) return;
+    confirm2('🗑️','Excluir este item?','Para manter o histórico, prefira marcar como resolvido.','Excluir',function(){
+      if(k[2]==='t') c.pendencias=(c.pendencias||[]).filter(function(i){return String(i.id)!==k[1];});
+      else c.notas=(c.notas||[]).filter(function(i){return String(i.id)!==k[1];});
+      CI.edit=null; ciTouch(c); toast('Item excluído','wa');
+    });
+    return;
+  }
+  if((x=t.closest('[data-ci-apply]'))){
+    const k=x.dataset.ciApply.split(':'), c=ciFind(k[0]);
+    if(c&&SC[k[1]]){ c.status=k[1]; ciTouch(c); toast('Situação: '+SC[k[1]].l+' ✓'); }
+    return;
+  }
+});
+document.addEventListener('submit',function(e){
+  const f=e.target&&e.target.closest?e.target.closest('[data-ci-new],[data-ci-save]'):null;
+  if(!f) return;
+  e.preventDefault();
+  const inp=f.querySelector('[data-ci-newin],[data-ci-in]'), txt=(inp.value||'').trim();
+  if(f.hasAttribute('data-ci-new')){
+    const err=f.querySelector('[data-ci-err]'), c=ciFind(f.dataset.ciNew);
+    if(!txt){ if(err) err.textContent='Escreva o item antes de adicionar.'; inp.focus(); return; }
+    if(!c) return;
+    const tipo=f.querySelector('[data-ci-newtype]').value; CI.type=CI_TYPES[tipo]?tipo:'move';
+    c.pendencias=c.pendencias||[]; c.notas=c.notas||[];
+    if(tipo==='nota') c.notas.push({id:ciNid(),texto:txt,criadoEm:new Date().toISOString()});
+    else c.pendencias.push({id:ciNid(),texto:txt,responsavel:CI.type,criadoEm:new Date().toISOString(),resolvidoEm:null});
+    inp.value=''; ciTouch(c); toast(tipo==='nota'?'Nota adicionada ✓':'Item adicionado ✓'); ciFocus('[data-ci-newin]');
+  }else{
+    if(!txt){ inp.focus(); return; }
+    const tipo=f.querySelector('[data-ci-type]').value;
+    CI.edit=null; ciApplyEdit(f.dataset.ciSave,txt.slice(0,300),CI_TYPES[tipo]?tipo:'move'); toast('Item atualizado ✓');
+  }
+});
+document.addEventListener('keydown',function(e){
+  const t=e.target; if(!t||!t.matches) return;
+  if(e.key==='Escape'&&t.matches('[data-ci-in],[data-ci-newin],.ci-sel')){ e.stopPropagation(); CI.add=null; CI.edit=null; renderClients(); return; }
+  if((e.key==='Enter'||e.key===' ')&&t.matches('[data-ci-edit]')){ e.preventDefault(); t.click(); }
+  if(t.matches('[data-ci-newin]')){ const er=document.querySelector('[data-ci-err]'); if(er) er.textContent=''; }
+},true);
+
+const REND={dashboard:renderDash,clientes:renderClients,relatorios:renderRel};
 function navigate(v){
   document.querySelectorAll('.view').forEach(e=>e.classList.remove('on'));
   document.querySelectorAll('.nb').forEach(e=>e.classList.remove('on'));
@@ -3443,207 +3511,17 @@ document.addEventListener('click',e=>{
   const ck=t.closest('[data-ck]');
   if(ck){ const it=S.contents.find(x=>x.id===parseInt(ck.dataset.ck)); if(it){ it.status=ck.dataset.next; save(); renderContents(); renderDash(); toast('Status: '+(SK[ck.dataset.next]?.l||ck.dataset.next)); } return; }
 
-  // Ronda: Marcar / desmarcar visto hoje
-  const rv=t.closest('[data-ronda-visto]');
-  if(rv){
-    const cId=parseInt(rv.dataset.rondaVisto);
-    const c=S.clients.find(x=>x.id===cId);
-    if(c){
-      const today=todayISO();
-      if(c.vistoEm===today){
-        c.vistoEm='';
-        toast('Desmarcado como visto hoje');
-      }else{
-        c.vistoEm=today;
-        toast('Marcado como visto hoje ✓');
-      }
-      c.updated=new Date().toISOString();
-      save();
-      renderRonda();
-    }
-    return;
-  }
 
-  // Ronda: Alternar expansão (toca no cliente para abrir/fechar itens)
-  const rt=t.closest('[data-ronda-toggle]');
-  if(rt){
-    const cId=parseInt(rt.dataset.rondaToggle);
-    const cur=S.rondaOpen[cId]!==undefined?S.rondaOpen[cId]:true;
-    S.rondaOpen[cId]=!cur;
-    renderRonda();
-    return;
-  }
-
-  // Ronda: Alternar responsável do item (MOVE -> CLIENTE -> TERCEIRO)
-  const rcr=t.closest('[data-ronda-cycle-resp]');
-  if(rcr){
-    const cId=parseInt(rcr.dataset.cid);
-    const pId=rcr.dataset.rondaCycleResp;
-    const c=S.clients.find(x=>x.id===cId);
-    if(c){
-      const p=(c.pendencias||[]).find(x=>String(x.id)===String(pId));
-      if(p){
-        const order=['move','cliente','terceiro'];
-        const nextIdx=(order.indexOf(p.responsavel||'move')+1)%order.length;
-        p.responsavel=order[nextIdx];
-        c.updated=new Date().toISOString();
-        save();
-        renderRonda();
-        renderClients();
-        toast('Responsável: '+RPEND[p.responsavel].l);
-      }
-    }
-    return;
-  }
-
-  // Ronda: Resolver item
-  const rr=t.closest('[data-ronda-resolve]');
-  if(rr){
-    const cId=parseInt(rr.dataset.cid);
-    const pId=rr.dataset.rondaResolve;
-    const c=S.clients.find(x=>x.id===cId);
-    if(c){
-      const p=(c.pendencias||[]).find(x=>String(x.id)===String(pId));
-      if(p){
-        p.resolvidoEm=new Date().toISOString();
-        c.updated=new Date().toISOString();
-        save();
-        renderRonda();
-        renderClients();
-        toast('Item resolvido ✓');
-      }
-    }
-    return;
-  }
-
-  // Ronda: Editar texto do item
-  const re=t.closest('[data-ronda-edit]');
-  if(re){
-    const cId=parseInt(re.dataset.cid);
-    const pId=re.dataset.rondaEdit;
-    const c=S.clients.find(x=>x.id===cId);
-    if(c){
-      const p=(c.pendencias||[]).find(x=>String(x.id)===String(pId));
-      if(p){
-        const novo=prompt('Editar pendência:',p.texto);
-        if(novo!==null && novo.trim()){
-          p.texto=novo.trim();
-          c.updated=new Date().toISOString();
-          save();
-          renderRonda();
-          renderClients();
-          toast('Item atualizado ✓');
-        }
-      }
-    }
-    return;
-  }
-
-  // Ronda: Excluir item
-  const rd=t.closest('[data-ronda-del]');
-  if(rd){
-    const cId=parseInt(rd.dataset.cid);
-    const pId=rd.dataset.rondaDel;
-    const c=S.clients.find(x=>x.id===cId);
-    if(c){
-      confirm2('🗑️','Excluir este item?','Esta pendência será removida imediatamente.','Excluir',()=>{
-        c.pendencias=(c.pendencias||[]).filter(x=>String(x.id)!==String(pId));
-        c.updated=new Date().toISOString();
-        save();
-        renderRonda();
-        renderClients();
-        toast('Item excluído','wa');
-      });
-    }
-    return;
-  }
-
-  // Ronda: Aceitar status sugerido
-  const ras=t.closest('[data-ronda-accept-status]');
-  if(ras){
-    const cId=parseInt(ras.dataset.rondaAcceptStatus);
-    const newSt=ras.dataset.st;
-    const c=S.clients.find(x=>x.id===cId);
-    if(c&&SC[newSt]){
-      c.status=newSt;
-      c.updated=new Date().toISOString();
-      save();
-      renderRonda();
-      renderClients();
-      renderDash();
-      toast('Situação alterada para: '+SC[newSt].l+' ✓');
-    }
-    return;
-  }
-
-  // Ronda: Filtro tabs
-  const rft=t.closest('[data-rft]');
-  if(rft){
-    S.rondaFilter=rft.dataset.rft;
-    renderRonda();
-    return;
-  }
-
-  // Ronda: Abrir cliente na ronda (a partir da tabela ou modal)
-  const ro=t.closest('[data-r-open]');
-  if(ro){
-    closeModal();
-    const cId=parseInt(ro.dataset.rOpen);
-    const c=S.clients.find(x=>x.id===cId);
-    if(c){
-      S.rondaSearch=c.name.toLowerCase();
-      S.rondaFilter='todos';
-      S.rondaOpen[cId]=true;
-      const srchInp=document.getElementById('ronda-srch');
-      if(srchInp) srchInp.value=c.name;
-    }
-    navigate('ronda');
-    return;
-  }
-
-});
-
-// Submit listener (adicionar item na ronda com responsável)
-document.addEventListener('submit',e=>{
-  const form=e.target.closest('[data-ronda-add-form]');
-  if(form){
-    e.preventDefault();
-    const cId=parseInt(form.dataset.rondaAddForm);
-    const c=S.clients.find(x=>x.id===cId);
-    const inp=form.querySelector('[data-ronda-add-input]');
-    const sel=form.querySelector('[data-ronda-add-resp]');
-    const val=(inp?inp.value:'').trim();
-    const resp=(sel?sel.value:'move')||'move';
-    if(!val) return;
-    if(c){
-      c.pendencias=c.pendencias||[];
-      c.pendencias.push({
-        id:Date.now()+'_'+Math.random().toString(36).slice(2,7),
-        texto:val,
-        responsavel:resp,
-        criadoEm:new Date().toISOString(),
-        resolvidoEm:null
-      });
-      c.updated=new Date().toISOString();
-      S.rondaOpen[cId]=true;
-      save();
-      renderRonda();
-      renderClients();
-      toast('Item adicionado ✓');
-    }
-  }
 });
 
 // Search + filters
 document.addEventListener('input',e=>{
   if(e.target.id==='cli-srch'){ S.cliSearch=e.target.value.toLowerCase(); renderClients(); }
   if(e.target.id==='cnt-srch'){ S.cntSearch=e.target.value.toLowerCase(); renderContents(); }
-  if(e.target.id==='ronda-srch'){ S.rondaSearch=e.target.value.toLowerCase(); renderRonda(); }
 });
 document.addEventListener('change',e=>{
   if(e.target.id==='cli-resp'){ S.cliResp=e.target.value; renderClients(); }
   if(e.target.id==='cnt-resp'){ S.cntResp=e.target.value; renderContents(); }
-  if(e.target.id==='ronda-resp'){ S.rondaResp=e.target.value; renderRonda(); }
 });
 
 // ESC
@@ -3733,7 +3611,7 @@ document.getElementById('login-reset').addEventListener('click',async()=>{
   catch(err){ error.style.color='var(--er)'; error.textContent='Não foi possível enviar o e-mail agora. Tente novamente.'; }
 });
 
-(function(){ var h=(location.hash||'').slice(1); if(['dashboard','clientes','pendencias','atrasados','relatorios','ronda'].indexOf(h)<0) return; var n=0; var iv=setInterval(function(){ n++; var b=document.body.classList; if(b.contains('auth-pending')&&n<60) return; clearInterval(iv); if(!b.contains('auth-logged-out')&&typeof navigate==='function') if(h==='pendencias'||h==='ronda'){ navigate('ronda'); } else if(h==='atrasados'){ S.cliFilter='atrasado'; navigate('clientes'); } else { navigate(h); } },150); })();
+(function(){ var h=(location.hash||'').slice(1); if(['dashboard','clientes','pendencias','atrasados','relatorios'].indexOf(h)<0) return; var n=0; var iv=setInterval(function(){ n++; var b=document.body.classList; if(b.contains('auth-pending')&&n<60) return; clearInterval(iv); if(!b.contains('auth-logged-out')&&typeof navigate==='function') if(h==='pendencias'||h==='ronda'){ navigate('ronda'); } else if(h==='atrasados'){ S.cliFilter='atrasado'; navigate('clientes'); } else { navigate(h); } },150); })();
 </script>
 <script src="./assets/brand/move-ui.js?v=1"></script>
 </body>
